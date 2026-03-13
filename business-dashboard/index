@@ -1,1 +1,1301 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Business Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0e0e0e;--bg2:#1a1a1a;--bg3:#222;--bg4:#2c2c2c;
+  --border:rgba(255,255,255,0.1);--border2:rgba(255,255,255,0.18);
+  --text:#f5f5f3;--text2:#c0c0b8;--text3:#888880;
+  --green:#3dd68c;--green-dim:rgba(61,214,140,0.1);
+  --red:#f06060;--red-dim:rgba(240,96,96,0.1);
+  --amber:#f0a840;--amber-dim:rgba(240,168,64,0.1);
+  --blue:#60aaff;--blue-dim:rgba(96,170,255,0.1);
+  --radius:10px;--radius-sm:6px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;display:flex;flex-direction:column;padding:1.5rem 1.5rem 0}
+.main-content{flex:1}
+
+/* HEADER */
+.header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:0.35rem;flex-wrap:nowrap;gap:0.4rem;width:100%}
+.header-left{display:flex;flex-direction:column;gap:4px}
+.header-title{font-size:30px;font-weight:500;letter-spacing:-0.03em;color:var(--text);line-height:1.1}
+.header-sub{font-size:12px;color:var(--text3);font-family:'DM Mono',monospace}
+
+
+.header-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0}
+.save-row{display:flex;align-items:center;gap:5px;white-space:nowrap}
+.saved-dot{width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0}
+.save-label{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;white-space:nowrap}
+.save-time-row{display:flex;align-items:center;gap:4px;white-space:nowrap}
+.save-time-label{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace}
+.save-time{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace}
+.btn-undo{background:var(--bg3);border:0.5px solid var(--border2);border-radius:var(--radius-sm);padding:5px 12px;font-size:12px;color:var(--text3);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.btn-undo:hover{background:var(--bg4);color:var(--text2)}
+.btn-undo:disabled{opacity:0.25;cursor:not-allowed;pointer-events:none}
+
+/* TABS */
+.tabs-row{margin-bottom:0.6rem}
+.tabs{display:inline-flex;gap:2px;background:var(--bg2);border-radius:var(--radius);padding:4px;border:0.5px solid var(--border)}
+.tab{font-size:13px;padding:6px 16px;border-radius:var(--radius-sm);border:none;background:transparent;color:var(--text3);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;line-height:1.4}
+.tab:hover{color:var(--text2)}
+.tab.active{background:var(--bg4);color:var(--text);font-weight:500}
+.panel{display:none;animation:fadeIn 0.2s ease}
+.panel.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:translateY(0)}}
+
+/* SECTION LABEL */
+.section-label{font-size:11px;font-weight:500;color:var(--text2);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:10px;margin-top:1.5rem;font-family:'DM Mono',monospace}
+.section-label:first-child{margin-top:0}
+
+/* METRICS */
+.metric-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:8px;margin-bottom:0.5rem}
+.metric{background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius);padding:14px 16px;transition:border-color 0.15s}
+.metric:hover{border-color:var(--border2)}
+.metric-label{font-size:10px;color:var(--text3);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.08em;font-family:'DM Mono',monospace}
+.metric-value{font-size:21px;font-weight:500;color:var(--text);letter-spacing:-0.02em;font-family:'DM Mono',monospace}
+.metric-sub{font-size:10px;color:var(--text3);margin-top:3px}
+.metric.positive{border-color:rgba(61,214,140,0.25);background:var(--green-dim)}.metric.positive .metric-value{color:var(--green)}
+.metric.negative{border-color:rgba(240,96,96,0.25);background:var(--red-dim)}.metric.negative .metric-value{color:var(--red)}
+.metric.warning{border-color:rgba(240,168,64,0.25);background:var(--amber-dim)}.metric.warning .metric-value{color:var(--amber)}
+.profit-bar-wrap{height:3px;background:var(--bg4);border-radius:2px;overflow:hidden;margin-top:7px}
+.profit-bar{height:100%;border-radius:2px;background:var(--green);transition:width 0.5s cubic-bezier(0.4,0,0.2,1)}
+
+/* ── TABLES ── */
+.card{background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:10px}
+table{width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed}
+th{font-size:12px;font-weight:500;color:var(--text);text-align:left;padding:10px 12px;border-bottom:0.5px solid var(--border);background:var(--bg3);white-space:nowrap;user-select:none;font-family:'DM Sans',sans-serif;position:relative}
+td{padding:8px 12px;border-bottom:0.5px solid var(--border);color:var(--text);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+.total-row td{font-weight:500;background:var(--bg3);color:var(--text2);font-family:'DM Mono',monospace;font-size:13px}
+tbody tr:nth-child(even) td{background:var(--bg3)}
+tbody tr:nth-child(odd) td{background:var(--bg2)}
+
+/*
+  SHARED EXPENSE COLUMN GRID — all 3 expense tables use these exact widths
+  so Monthly Wage / Monthly Amount / Monthly Payment all land at the same X position,
+  and Role / Total Owing also land at the same X position.
+
+  Col1 (name/desc)  : 44%
+  Col2 (monthly $)  : 24%
+  Col3 (role/owing) : 24%
+  Col4 (delete)     :  8%
+
+  Opex has no col3 data — its col2 spans into col3 visually (still same 24% width),
+  and col3 cell is left empty so the delete button stays in col4.
+*/
+.exp-col1{width:44%}
+.exp-col2{width:24%}
+.exp-col3{width:24%}
+.exp-col4{width:8%}
+
+/* SORT */
+.th-inner{display:inline-flex;align-items:center;gap:5px;cursor:pointer;white-space:nowrap}
+.th-inner:hover{color:var(--green)}
+.th-chevron{font-size:9px;opacity:0.5}
+.th-inner.active .th-chevron{opacity:1;color:var(--green)}
+.sort-menu{display:none;position:absolute;top:100%;left:0;z-index:200;background:var(--bg3);border:0.5px solid var(--border2);border-radius:var(--radius-sm);min-width:150px;margin-top:4px;overflow:hidden}
+.sort-menu.open{display:block}
+.sort-option{padding:9px 12px;font-size:12px;cursor:pointer;color:var(--text2);display:flex;align-items:center;gap:8px;font-family:'DM Sans',sans-serif}
+.sort-option:hover{background:var(--bg4);color:var(--text)}
+.sort-option .check{font-size:10px;width:12px;color:var(--green)}
+
+/* INPUTS */
+.field-money{display:flex;align-items:center;gap:3px}
+.field-money .sym{font-size:17px;font-weight:500;color:var(--text3);font-family:'DM Mono',monospace;flex-shrink:0}
+.field-money input[type=number]{font-family:'DM Mono',monospace;font-size:17px;font-weight:500;padding:2px 4px;border:0.5px solid transparent;border-radius:var(--radius-sm);background:transparent;color:var(--text);width:100%;min-width:0}
+.field-money input[type=number]:hover{border-color:var(--border2);background:var(--bg4)}
+.field-money input[type=number]:focus{outline:none;border-color:var(--green);background:var(--bg4)}
+input[type=text]{font-family:'DM Sans',sans-serif;font-size:13px;padding:5px 8px;border:0.5px solid var(--border);border-radius:var(--radius-sm);background:transparent;color:var(--text);width:100%;transition:border-color 0.15s}
+input[type=text]:focus{outline:none;border-color:var(--green);background:var(--bg4)}
+select{font-family:'DM Sans',sans-serif;font-size:12px;padding:4px 7px;border:0.5px solid var(--border);border-radius:var(--radius-sm);background:transparent;color:var(--text2);width:100%;cursor:pointer}
+select:focus{outline:none;border-color:var(--green)}
+
+/* BUTTONS */
+.btn{font-family:'DM Sans',sans-serif;font-size:12px;padding:6px 13px;border-radius:var(--radius-sm);border:0.5px solid var(--border2);background:transparent;color:var(--text2);cursor:pointer;transition:all 0.15s}
+.btn:hover{background:var(--bg3);color:var(--text)}
+.btn-danger{color:var(--red);border-color:rgba(240,96,96,0.2);font-size:11px;padding:3px 7px;background:transparent;cursor:pointer;font-family:'DM Sans',sans-serif;border-radius:var(--radius-sm);transition:all 0.15s}
+.btn-danger:hover{background:var(--red-dim)}
+.btn-add{margin-top:8px;border-style:dashed;color:var(--text3)}
+.btn-add:hover{color:var(--green);border-color:rgba(61,214,140,0.4);background:var(--green-dim)}
+
+/* RINGS */
+.ring-bg{fill:none;stroke:var(--bg4);stroke-width:8}
+.ring-fill{fill:none;stroke-width:8;stroke-linecap:round;transition:stroke-dashoffset 0.8s cubic-bezier(0.4,0,0.2,1),stroke 0.4s ease}
+.ov-rings-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:0.5rem}
+@media(max-width:700px){.ov-rings-row{grid-template-columns:repeat(2,1fr)}}
+.ov-ring-card{background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius);padding:14px 10px 12px;display:flex;flex-direction:column;align-items:center;gap:8px;transition:border-color 0.15s}
+.ov-ring-card:hover{border-color:var(--border2)}
+.ov-ring-wrap{position:relative;width:90px;height:90px;flex-shrink:0}
+.ov-ring-wrap svg,.goal-ring-wrap svg{transform:rotate(-90deg)}
+.ov-ring-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;width:72px}
+.ov-ring-pct{font-size:17px;font-weight:500;font-family:'DM Mono',monospace;line-height:1}
+.ov-ring-tick{font-size:20px;line-height:1;margin-bottom:1px}
+.ov-ring-sublabel{font-size:8px;color:var(--text3);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:0.04em;margin-top:1px}
+.ov-ring-info{text-align:center;width:100%}
+.ov-ring-title{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;font-family:'DM Mono',monospace;margin-bottom:4px}
+.ov-ring-current{font-size:15px;font-weight:500;font-family:'DM Mono',monospace;color:var(--text);line-height:1.1}
+.ov-ring-goal{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;margin-top:2px}
+
+/* GOAL CARDS */
+.goals-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:0.5rem}
+.goal-card{background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius);padding:20px 16px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px;transition:border-color 0.15s}
+.goal-card:hover{border-color:var(--border2)}
+.goal-ring-wrap{position:relative;width:110px;height:110px;flex-shrink:0}
+.goal-ring-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;width:85px}
+.goal-ring-pct{font-size:22px;font-weight:500;font-family:'DM Mono',monospace;line-height:1}
+.goal-ring-tick{font-size:26px;line-height:1;margin-bottom:2px}
+.goal-ring-sub{font-size:8px;color:var(--text3);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:0.04em;margin-top:2px}
+.goal-body{width:100%;text-align:center}
+.goal-label-top{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;font-family:'DM Mono',monospace;margin-bottom:4px}
+.goal-input-row{display:flex;align-items:center;justify-content:center;gap:3px}
+.goal-sym{font-size:24px;font-weight:500;color:var(--text3);font-family:'DM Mono',monospace;line-height:1}
+/* goal display span (formatted with commas) */
+.goal-display{font-family:'DM Mono',monospace;font-size:24px;font-weight:500;color:var(--text);cursor:text;padding:2px 4px;border:0.5px solid transparent;border-radius:var(--radius-sm);min-width:80px;display:inline-block;text-align:center;transition:border-color 0.15s}
+.goal-display:hover{border-color:var(--border2);background:var(--bg3)}
+/* goal edit input (raw number, hidden by default) */
+.goal-edit{font-family:'DM Mono',monospace;font-size:24px;font-weight:500;padding:2px 4px;border:0.5px solid var(--green);border-radius:var(--radius-sm);background:var(--bg3);color:var(--text);width:130px;text-align:center;display:none;outline:none}
+.goal-unit{font-size:18px;color:var(--text3);font-family:'DM Mono',monospace}
+.goal-divider{width:40px;height:0.5px;background:var(--border);margin:4px auto}
+.goal-current-label{font-size:9px;color:var(--text3);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:3px}
+.goal-current-val{font-size:14px;font-weight:400;font-family:'DM Mono',monospace;color:var(--text2)}
+
+/* INSIGHTS */
+.insights-wrap{display:flex;flex-direction:column;gap:10px}
+.insights-top-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:600px){.insights-top-row{grid-template-columns:1fr}}
+.insight-card{border-radius:var(--radius);padding:20px 22px}
+.insight-card.strength{background:var(--green-dim);border:0.5px solid rgba(61,214,140,0.22)}
+.insight-card.weakness{background:var(--red-dim);border:0.5px solid rgba(240,96,96,0.22)}
+.insight-card.health{background:var(--bg2);border:0.5px solid var(--border2)}
+.insight-card.nudge{background:var(--amber-dim);border:0.5px solid rgba(240,168,64,0.22)}
+.insight-header{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.insight-icon{font-size:15px;line-height:1}
+.insight-tag{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;font-family:'DM Mono',monospace}
+.insight-card.strength .insight-tag{color:var(--green)}
+.insight-card.weakness .insight-tag{color:var(--red)}
+.insight-card.health .insight-tag{color:var(--blue)}
+.insight-card.nudge .insight-tag{color:var(--amber)}
+.insight-title{font-size:16px;font-weight:500;color:var(--text);margin-bottom:8px;line-height:1.3}
+.insight-body{font-size:13px;color:var(--text2);line-height:1.7}
+.insight-body p{margin-bottom:8px}.insight-body p:last-child{margin-bottom:0}
+.insight-action{margin-top:12px;font-size:12px;font-family:'DM Mono',monospace;color:var(--text3);padding-top:10px;border-top:0.5px solid rgba(255,255,255,0.06);line-height:1.6}
+.health-items{display:flex;flex-direction:column;gap:14px;margin-top:4px}
+.health-item{display:flex;flex-direction:column;gap:5px}
+.health-item-header{display:flex;align-items:center;gap:8px}
+.health-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.health-dot.good{background:var(--green)}.health-dot.warn{background:var(--amber)}.health-dot.bad{background:var(--red)}
+.health-item-title{font-size:13px;font-weight:500;color:var(--text)}
+.health-item-body{font-size:12px;color:var(--text2);line-height:1.65;padding-left:15px}
+.health-item-action{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;padding-left:15px;margin-top:2px}
+
+/* FOOTER */
+.footer{margin-top:2.5rem;padding:1.25rem 0;border-top:0.5px solid var(--border);text-align:center}
+.footer p{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;line-height:1.9}
+.footer a{color:var(--text3);text-decoration:none;border-bottom:0.5px solid var(--border2)}
+.footer a:hover{color:var(--text2)}
+
+/* TOAST */
+.toast{position:fixed;bottom:2rem;right:2rem;background:var(--bg3);border:0.5px solid var(--border2);border-radius:var(--radius-sm);padding:10px 16px;font-size:12px;color:var(--text2);opacity:0;transform:translateY(8px);transition:all 0.2s;pointer-events:none;font-family:'DM Mono',monospace;z-index:999}
+.toast.show{opacity:1;transform:translateY(0)}
+</style>
+</head>
+<body>
+<div class="main-content">
+
+<div class="header">
+  <div class="header-left">
+    <div class="header-title">Business Dashboard</div>
+    <div class="header-sub">Revenue, expenses and goals in one place</div>
+  </div>
+  <div class="header-right">
+    <div style="display:flex;align-items:center;gap:6px">
+      <span class="saved-dot"></span><span class="save-label">Auto-saving</span>
+    </div>
+    <div class="save-time-row"><span class="save-time-label">Last saved:</span><span class="save-time" id="last-saved"></span></div>
+    <div style="display:flex;gap:6px">
+      <button class="btn-undo" onclick="resetAll()" style="border-color:rgba(240,96,96,0.35);color:var(--red)">⊘ Reset</button>
+      <button class="btn-undo" id="undo-btn" onclick="undo()" disabled>↩ Undo</button>
+    </div>
+  </div>
+</div>
+
+<div class="tabs-row">
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('overview',this)">Overview</button>
+    <button class="tab" onclick="switchTab('clients',this)">Clients</button>
+    <button class="tab" onclick="switchTab('expenses',this)">Expenses</button>
+    <button class="tab" onclick="switchTab('goals',this)">Goals</button>
+  </div>
+</div>
+
+<!-- ══ OVERVIEW ══ -->
+<div id="overview" class="panel active">
+  <div class="section-label">Goal progress</div>
+  <div id="ov-top-banner" style="display:none;margin-bottom:10px;padding:9px 14px;background:rgba(240,168,64,0.08);border:0.5px solid rgba(240,168,64,0.22);border-radius:8px;font-size:12px;color:var(--text2);line-height:1.5"></div>
+  <div class="ov-rings-row" id="ov-rings"></div>
+  <div class="section-label">Revenue</div>
+  <div class="metric-grid">
+    <div class="metric"><div class="metric-label">Total revenue (inc GST)</div><div class="metric-value" id="ov-revenue">$0</div><div class="metric-sub">Monthly</div></div>
+    <div class="metric"><div class="metric-label">GST payable</div><div class="metric-value" id="ov-gst">$0</div><div class="metric-sub">Monthly</div></div>
+    <div class="metric"><div class="metric-label">Automotive revenue</div><div class="metric-value" id="ov-auto">$0</div><div class="metric-sub">Monthly</div></div>
+    <div class="metric"><div class="metric-label">Real estate revenue</div><div class="metric-value" id="ov-re">$0</div><div class="metric-sub">Monthly</div></div>
+  </div>
+  <div class="section-label">Expenses</div>
+  <div class="metric-grid">
+    <div class="metric"><div class="metric-label">Total wages</div><div class="metric-value" id="ov-wages">$0</div><div class="metric-sub">Monthly</div></div>
+    <div class="metric"><div class="metric-label">Operating expenses</div><div class="metric-value" id="ov-opex">$0</div><div class="metric-sub">Monthly</div></div>
+    <div class="metric"><div class="metric-label">Debt payments</div><div class="metric-value" id="ov-ato">$0</div><div class="metric-sub">Monthly</div></div>
+    <div class="metric warning"><div class="metric-label">Total expenses</div><div class="metric-value" id="ov-expenses">$0</div><div class="metric-sub">Monthly</div></div>
+  </div>
+  <div class="section-label">Profit</div>
+  <div class="metric-grid">
+    <div class="metric" id="ov-profit-card"><div class="metric-label">Company profit</div><div class="metric-value" id="ov-profit">$0</div><div class="metric-sub">Monthly</div></div>
+    <div class="metric"><div class="metric-label">Profit margin</div><div class="metric-value" id="ov-margin">0%</div><div class="profit-bar-wrap"><div class="profit-bar" id="ov-margin-bar" style="width:0%"></div></div></div>
+    <div class="metric positive"><div class="metric-label">Annual profit</div><div class="metric-value" id="ov-annual">$0</div><div class="metric-sub">Annual</div></div>
+  </div>
+  <div class="section-label">Company Debt</div>
+  <div class="metric-grid">
+    <div class="metric negative"><div class="metric-label">Total debt owing</div><div class="metric-value" id="ov-debt-total">$0</div><div class="metric-sub">Total</div></div>
+    <div class="metric warning"><div class="metric-label">Monthly debt payments</div><div class="metric-value" id="ov-debt-monthly">$0</div><div class="metric-sub">Monthly</div></div>
+  </div>
+  <div class="section-label">Insights</div>
+  <div id="ov-insights"></div>
+</div>
+
+<!-- ══ CLIENTS ══ -->
+<div id="clients" class="panel">
+  <div class="card">
+    <table>
+      <thead><tr>
+        <th style="width:44%">
+          <div class="th-inner" id="th-cname" onclick="toggleSortMenu('cname',event)">Client name <span class="th-chevron">▾</span>
+            <div class="sort-menu" id="menu-cname">
+              <div class="sort-option" onclick="applySort('clients','name','asc',event)"><span class="check" id="chk-cname-asc"></span>A → Z</div>
+              <div class="sort-option" onclick="applySort('clients','name','desc',event)"><span class="check" id="chk-cname-desc"></span>Z → A</div>
+            </div>
+          </div>
+        </th>
+        <th style="width:24%">
+          <div class="th-inner" id="th-camount" onclick="toggleSortMenu('camount',event)">Monthly (inc GST) <span class="th-chevron">▾</span>
+            <div class="sort-menu" id="menu-camount">
+              <div class="sort-option" onclick="applySort('clients','amount','asc',event)"><span class="check" id="chk-camount-asc"></span>Low → High</div>
+              <div class="sort-option" onclick="applySort('clients','amount','desc',event)"><span class="check" id="chk-camount-desc"></span>High → Low</div>
+            </div>
+          </div>
+        </th>
+        <th style="width:24%">
+          <div class="th-inner" id="th-ctype" onclick="toggleSortMenu('ctype',event)">Type <span class="th-chevron">▾</span>
+            <div class="sort-menu" id="menu-ctype">
+              <div class="sort-option" onclick="applySort('clients','type','asc',event)"><span class="check" id="chk-ctype-asc"></span>A → Z</div>
+              <div class="sort-option" onclick="applySort('clients','type','desc',event)"><span class="check" id="chk-ctype-desc"></span>Z → A</div>
+            </div>
+          </div>
+        </th>
+        <th style="width:8%"></th>
+      </tr></thead>
+      <tbody id="all-clients"></tbody>
+      <tfoot><tr class="total-row"><td id="clients-count-cell">Total clients: 0</td><td id="clients-total">$0</td><td></td><td></td></tr></tfoot>
+    </table>
+  </div>
+  <button class="btn btn-add" onclick="addClient()">+ Add client</button>
+  <div class="section-label">Client insights</div>
+  <div id="clients-insights"></div>
+</div>
+
+<!-- ══ EXPENSES ══
+     All 3 tables share the same 4-column grid: 44% | 24% | 24% | 8%
+     → Monthly Wage / Monthly Amount / Monthly Payment all start at 44%
+     → Role / Total Owing all start at 68%
+-->
+<div id="expenses" class="panel">
+
+  <div class="section-label">Wages</div>
+  <div class="card">
+    <table>
+      <thead><tr>
+        <th class="exp-col1">
+          <div class="th-inner" id="th-wname" onclick="toggleSortMenu('wname',event)">Name <span class="th-chevron">▾</span>
+            <div class="sort-menu" id="menu-wname">
+              <div class="sort-option" onclick="applySort('wages','name','asc',event)"><span class="check" id="chk-wname-asc"></span>A → Z</div>
+              <div class="sort-option" onclick="applySort('wages','name','desc',event)"><span class="check" id="chk-wname-desc"></span>Z → A</div>
+            </div>
+          </div>
+        </th>
+        <th class="exp-col2">
+          <div class="th-inner" id="th-wamount" onclick="toggleSortMenu('wamount',event)">Monthly wage <span class="th-chevron">▾</span>
+            <div class="sort-menu" id="menu-wamount">
+              <div class="sort-option" onclick="applySort('wages','amount','asc',event)"><span class="check" id="chk-wamount-asc"></span>Low → High</div>
+              <div class="sort-option" onclick="applySort('wages','amount','desc',event)"><span class="check" id="chk-wamount-desc"></span>High → Low</div>
+            </div>
+          </div>
+        </th>
+        <th class="exp-col3">
+          <div class="th-inner" id="th-wrole" onclick="toggleSortMenu('wrole',event)">Role <span class="th-chevron">▾</span>
+            <div class="sort-menu" id="menu-wrole">
+              <div class="sort-option" onclick="applySort('wages','type','asc',event)"><span class="check" id="chk-wrole-asc"></span>A → Z</div>
+              <div class="sort-option" onclick="applySort('wages','type','desc',event)"><span class="check" id="chk-wrole-desc"></span>Z → A</div>
+            </div>
+          </div>
+        </th>
+        <th class="exp-col4"></th>
+      </tr></thead>
+      <tbody id="wages-list"></tbody>
+      <tfoot><tr class="total-row"><td class="exp-col1">Total wages</td><td class="exp-col2" id="wages-total">$0</td><td class="exp-col3"></td><td class="exp-col4"></td></tr></tfoot>
+    </table>
+  </div>
+  <button class="btn btn-add" onclick="addWage()">+ Add staff member</button>
+
+  <div class="section-label">Operating expenses</div>
+  <div class="card">
+    <table>
+      <thead><tr>
+        <th class="exp-col1">
+          <div class="th-inner" id="th-odesc" onclick="toggleSortMenu('odesc',event)">Description <span class="th-chevron">▾</span>
+            <div class="sort-menu" id="menu-odesc">
+              <div class="sort-option" onclick="applySort('opex','desc','asc',event)"><span class="check" id="chk-odesc-asc"></span>A → Z</div>
+              <div class="sort-option" onclick="applySort('opex','desc','desc',event)"><span class="check" id="chk-odesc-desc"></span>Z → A</div>
+            </div>
+          </div>
+        </th>
+        <th class="exp-col2">
+          <div class="th-inner" id="th-oamount" onclick="toggleSortMenu('oamount',event)">Monthly amount <span class="th-chevron">▾</span>
+            <div class="sort-menu" id="menu-oamount">
+              <div class="sort-option" onclick="applySort('opex','amount','asc',event)"><span class="check" id="chk-oamount-asc"></span>Low → High</div>
+              <div class="sort-option" onclick="applySort('opex','amount','desc',event)"><span class="check" id="chk-oamount-desc"></span>High → Low</div>
+            </div>
+          </div>
+        </th>
+        <th class="exp-col3"></th><!-- empty col3 keeps delete in col4 -->
+        <th class="exp-col4"></th>
+      </tr></thead>
+      <tbody id="opex-list"></tbody>
+      <tfoot><tr class="total-row"><td class="exp-col1">Total operating expenses</td><td class="exp-col2" id="opex-total">$0</td><td class="exp-col3"></td><td class="exp-col4"></td></tr></tfoot>
+    </table>
+  </div>
+  <button class="btn btn-add" onclick="addOpex()">+ Add expense</button>
+
+  <div class="section-label">Company Debt</div>
+  <div class="card">
+    <table>
+      <thead><tr>
+        <th class="exp-col1">
+          <div class="th-inner" id="th-ddesc" onclick="toggleSortMenu('ddesc',event)">Description <span class="th-chevron">▾</span>
+            <div class="sort-menu" id="menu-ddesc">
+              <div class="sort-option" onclick="applySort('debts','desc','asc',event)"><span class="check" id="chk-ddesc-asc"></span>A → Z</div>
+              <div class="sort-option" onclick="applySort('debts','desc','desc',event)"><span class="check" id="chk-ddesc-desc"></span>Z → A</div>
+            </div>
+          </div>
+        </th>
+        <th class="exp-col2">
+          <div class="th-inner" id="th-dmonthly" onclick="toggleSortMenu('dmonthly',event)">Monthly payment <span class="th-chevron">▾</span>
+            <div class="sort-menu" id="menu-dmonthly">
+              <div class="sort-option" onclick="applySort('debts','monthly','asc',event)"><span class="check" id="chk-dmonthly-asc"></span>Low → High</div>
+              <div class="sort-option" onclick="applySort('debts','monthly','desc',event)"><span class="check" id="chk-dmonthly-desc"></span>High → Low</div>
+            </div>
+          </div>
+        </th>
+        <th class="exp-col3">
+          <div class="th-inner" id="th-dowing" onclick="toggleSortMenu('dowing',event)">Total owing <span class="th-chevron">▾</span>
+            <div class="sort-menu" id="menu-dowing">
+              <div class="sort-option" onclick="applySort('debts','owing','asc',event)"><span class="check" id="chk-dowing-asc"></span>Low → High</div>
+              <div class="sort-option" onclick="applySort('debts','owing','desc',event)"><span class="check" id="chk-dowing-desc"></span>High → Low</div>
+            </div>
+          </div>
+        </th>
+        <th class="exp-col4"></th>
+      </tr></thead>
+      <tbody id="debt-list"></tbody>
+      <tfoot><tr class="total-row"><td class="exp-col1">Totals</td><td class="exp-col2" id="debt-total-monthly">$0</td><td class="exp-col3" id="debt-total-owing">$0</td><td class="exp-col4"></td></tr></tfoot>
+    </table>
+  </div>
+  <button class="btn btn-add" onclick="addDebt()">+ Add debt</button>
+
+  <div class="section-label">Expenses insights</div>
+  <div id="expenses-insights"></div>
+</div>
+
+<!-- ══ GOALS ══ -->
+<div id="goals" class="panel">
+  <div class="section-label">Set your goals</div>
+  <div id="goals-top-banner" style="display:none;margin-bottom:10px;padding:9px 14px;background:rgba(240,168,64,0.08);border:0.5px solid rgba(240,168,64,0.22);border-radius:8px;font-size:12px;color:var(--text2);line-height:1.5"></div>
+  <div class="goals-grid" id="goals-grid"></div>
+  <div class="section-label">Insights</div>
+  <div id="goals-insights"></div>
+</div>
+
+</div><!-- /main-content -->
+
+<div class="footer">
+  <p>© <span id="footer-year"></span> <strong>Consistent Creative Pty Ltd</strong> — All rights reserved.</p>
+  <p>This business dashboard is the intellectual property of Consistent Creative Pty Ltd.</p>
+  <p>Unauthorised reproduction, distribution or use of this tool is strictly prohibited.</p>
+  <p style="margin-top:5px"><a href="https://www.consistentcreative.com" target="_blank">www.ConsistentCreative.com</a></p>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+document.getElementById('footer-year').textContent=new Date().getFullYear();
+
+const STORAGE_KEY='biz_dashboard_v1';
+const MAX_HISTORY=50;
+let history=[],historyIndex=-1,skipHistory=false;
+
+const defaultState={
+  companyName:'Business Dashboard',newClientId:null,
+  sortClients:{field:'name',dir:'asc'},
+  sortWages:{field:'name',dir:'asc'},
+  sortOpex:{field:'desc',dir:'asc'},
+  sortDebts:{field:'desc',dir:'asc'},
+  clients:[
+    {name:'Client Name',amount:0,type:'Automotive'},
+  ],
+  wages:[
+    {name:'Staff Member',amount:0,type:'Role'},
+  ],
+  opex:[{desc:'Expense',amount:0}],
+  debts:[
+    {desc:'Debt Description',owing:0,monthly:0},
+  ],
+  goals:{revenue:0,clients:0,acv:0,margin:0}
+};
+
+let state=JSON.parse(JSON.stringify(defaultState));
+
+// ── history ──
+function snapshot(){
+  if(skipHistory)return;
+  const snap=JSON.stringify(state);
+  if(history[historyIndex]===snap)return;
+  history=history.slice(0,historyIndex+1);
+  history.push(snap);
+  if(history.length>MAX_HISTORY)history.shift();
+  historyIndex=history.length-1;
+  updateUndoBtn();
+}
+function resetAll(){
+  if(!confirm('Reset all data? This cannot be undone.'))return;
+  state=JSON.parse(JSON.stringify(defaultState));
+  try{localStorage.removeItem(STORAGE_KEY);}catch(e){}
+  history=[];historyIndex=-1;snapshot();
+  saveToStorage();update();showToast('Dashboard reset');updateUndoBtn();
+}
+
+function undo(){
+  if(historyIndex<=0)return;
+  historyIndex--;skipHistory=true;
+  state=JSON.parse(history[historyIndex]);
+  skipHistory=false;saveToStorage();update();showToast('Change undone');updateUndoBtn();
+}
+function updateUndoBtn(){document.getElementById('undo-btn').disabled=historyIndex<=0;}
+document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='z'){e.preventDefault();undo();}});
+
+// ── storage ──
+function loadFromStorage(){
+  try{
+    const saved=localStorage.getItem(STORAGE_KEY);
+    if(saved){
+      const p=JSON.parse(saved);
+      state={...JSON.parse(JSON.stringify(defaultState)),...p};
+      state.goals={...defaultState.goals,...(p.goals||{})};
+    }
+    updateSaveStatus();
+  }catch(e){}
+  snapshot();
+}
+function saveToStorage(){
+  try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));updateSaveStatus();}catch(e){}
+}
+function updateSaveStatus(){
+  document.getElementById('last-saved').textContent=new Date().toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit'});
+}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+
+// ── formatting ──
+const fmt=n=>'$'+Math.round(n).toLocaleString('en-AU');
+const fmtN=n=>Math.round(n).toLocaleString('en-AU');
+const fmtGoal=(n,prefix,unit)=>(prefix||'')+(n>=1000?Math.round(n).toLocaleString('en-AU'):Math.round(n))+(unit||'');
+const pct=(a,b)=>b>0?Math.round((a/b)*100):0;
+
+function moneyField(val,onch){
+  return`<div class="field-money"><span class="sym">$</span><input type="number" value="${val}" min="0" onchange="${onch}"></div>`;
+}
+function commit(fn){fn();snapshot();saveToStorage();update();}
+
+// ── calculations ──
+function getCalc(){
+  const autoRev=state.clients.filter(c=>c.type==='Automotive').reduce((s,c)=>s+c.amount,0);
+  const reRev=state.clients.filter(c=>c.type==='Real Estate').reduce((s,c)=>s+c.amount,0);
+  const revenue=autoRev+reRev;
+  const gst=revenue/11;
+  const revExGST=revenue-gst;
+  const wages=state.wages.reduce((s,w)=>s+w.amount,0);
+  const opex=state.opex.reduce((s,o)=>s+o.amount,0);
+  const debtMonthly=state.debts.reduce((s,d)=>s+d.monthly,0);
+  const debtOwing=state.debts.reduce((s,d)=>s+d.owing,0);
+  const totalExp=wages+opex+debtMonthly;
+  const profit=revExGST-totalExp;
+  const margin=revExGST>0?Math.round((profit/revExGST)*100):0;
+  const clientCount=state.clients.length;
+  const acv=clientCount>0?Math.round(revenue/clientCount):0;
+  const wageRatio=revExGST>0?wages/revExGST:0;
+  const monthsToDebtFree=profit>0?debtOwing/profit:null;
+  return{autoRev,reRev,revenue,gst,revExGST,wages,opex,debtMonthly,debtOwing,totalExp,profit,margin,clientCount,acv,wageRatio,monthsToDebtFree};
+}
+
+// ring colour: 0-40 red, 41-74 amber, 75-99 green, 100 blue
+function ringColor(p){
+  if(p>=100)return'#60aaff';
+  if(p>=75) return'#3dd68c';
+  if(p>=41) return'#f0a840';
+  return'#f06060';
+}
+function ringPath(r,sz,p,color){
+  const c=2*Math.PI*r,f=Math.min(p/100,1)*c;
+  return`<svg width="${sz}" height="${sz}" viewBox="0 0 ${sz} ${sz}"><circle class="ring-bg" cx="${sz/2}" cy="${sz/2}" r="${r}"/><circle class="ring-fill" cx="${sz/2}" cy="${sz/2}" r="${r}" stroke="${color}" stroke-dasharray="${c.toFixed(2)}" stroke-dashoffset="${(c-f).toFixed(2)}"/></svg>`;
+}
+
+function getGoalItems(calc){
+  const g=state.goals;
+  return[
+    {key:'revenue',label:'Revenue',current:calc.revenue,goal:g.revenue,fmtV:fmt,fmtG:fmt,prefix:'$',unit:''},
+    {key:'clients',label:'Clients',current:calc.clientCount,goal:g.clients,fmtV:fmtN,fmtG:fmtN,prefix:'',unit:''},
+    {key:'acv',label:'Avg Client Value',current:calc.acv,goal:g.acv,fmtV:fmt,fmtG:fmt,prefix:'$',unit:''},
+    {key:'margin',label:'Profit Margin',current:calc.margin,goal:g.margin,fmtV:v=>v+'%',fmtG:v=>v+'%',prefix:'',unit:'%'},
+  ];
+}
+
+function renderOvRings(items){
+  document.getElementById('ov-rings').innerHTML=items.map(item=>{
+    const isUnset=item.goal<=0;
+    if(isUnset){
+      return`<div class="ov-ring-card" style="opacity:0.38">
+        <div class="ov-ring-wrap">${ringPath(37,90,0,'var(--border2)')}<div class="ov-ring-center">
+          <div style="font-size:16px;color:var(--text3);line-height:1">+</div>
+          <div class="ov-ring-sublabel">set goal</div>
+        </div></div>
+        <div class="ov-ring-info"><div class="ov-ring-title">${item.label}</div>
+          <div class="ov-ring-current" style="color:var(--text3)">—</div>
+          <div class="ov-ring-goal" style="color:var(--text3)">No goal set</div>
+        </div>
+      </div>`;
+    }
+    const p=pct(item.current,item.goal),cl=Math.min(p,100),col=ringColor(cl),done=cl>=100;
+    return`<div class="ov-ring-card">
+      <div class="ov-ring-wrap">${ringPath(37,90,cl,col)}<div class="ov-ring-center">
+        ${done?`<div class="ov-ring-tick" style="color:${col}">✓</div>`:`<div class="ov-ring-pct" style="color:${col}">${cl}%</div>`}
+        <div class="ov-ring-sublabel">${done?'achieved':'of goal'}</div>
+      </div></div>
+      <div class="ov-ring-info"><div class="ov-ring-title">${item.label}</div>
+        <div class="ov-ring-current">${item.fmtV(item.current)}</div>
+        <div class="ov-ring-goal">Goal ${item.fmtG(item.goal)}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// Goal cards — click display to switch to editable input, blur to save
+function renderGoalCards(items){
+  const setCount=items.filter(i=>i.goal>0).length;
+
+  document.getElementById('goals-grid').innerHTML=items.map(item=>{
+    const isUnset=item.goal<=0;
+    if(isUnset){
+      return`<div class="goal-card" style="opacity:0.45;cursor:pointer" onclick="startGoalEdit('${item.key}')" title="Click to set ${item.label} goal">
+        <div class="goal-metric-name" style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;font-family:'DM Mono',monospace;margin-bottom:4px">${item.label}</div>
+        <div class="goal-ring-wrap">${ringPath(47,110,0,'var(--border2)')}<div class="goal-ring-center">
+          <div style="font-size:22px;color:var(--text3);line-height:1">+</div>
+          <div class="goal-ring-sub">set goal</div>
+        </div></div>
+        <div class="goal-body">
+          <div class="goal-label-top">Goal</div>
+          <div class="goal-input-row" id="goal-row-${item.key}">
+            ${item.prefix?`<span class="goal-sym" id="goal-sym-${item.key}" style="display:none">${item.prefix}</span>`:''}
+            <span class="goal-display" id="goal-disp-${item.key}" style="color:var(--text3)">—</span>
+            <input class="goal-edit" id="goal-edit-${item.key}" type="number" value="0"
+              onblur="commitGoalEdit('${item.key}')"
+              onkeydown="if(event.key==='Enter')this.blur();if(event.key==='Escape')cancelGoalEdit('${item.key}')">
+            ${item.unit?`<span class="goal-unit">${item.unit}</span>`:''}
+          </div>
+          <div class="goal-divider"></div>
+          <div class="goal-current-label">Current</div>
+          <div class="goal-current-val" style="color:var(--text3)">—</div>
+        </div>
+      </div>`;
+    }
+    const p=pct(item.current,item.goal),cl=Math.min(p,100),col=ringColor(cl),done=cl>=100;
+    return`<div class="goal-card">
+      <div class="goal-metric-name" style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;font-family:'DM Mono',monospace;margin-bottom:4px">${item.label}</div>
+      <div class="goal-ring-wrap">${ringPath(47,110,cl,col)}<div class="goal-ring-center">
+        ${done?`<div class="goal-ring-tick" style="color:${col}">✓</div>`:`<div class="goal-ring-pct" style="color:${col}">${cl}%</div>`}
+        <div class="goal-ring-sub">${done?'achieved':'of goal'}</div>
+      </div></div>
+      <div class="goal-body">
+        <div class="goal-label-top">Goal</div>
+        <div class="goal-input-row" id="goal-row-${item.key}">
+          ${item.prefix?`<span class="goal-sym" id="goal-sym-${item.key}">${item.prefix}</span>`:''}
+          <span class="goal-display" id="goal-disp-${item.key}" onclick="startGoalEdit('${item.key}')">${item.goal>=1000?Math.round(item.goal).toLocaleString('en-AU'):Math.round(item.goal)}</span>
+          <input class="goal-edit" id="goal-edit-${item.key}" type="number" value="${item.goal}"
+            onblur="commitGoalEdit('${item.key}')"
+            onkeydown="if(event.key==='Enter')this.blur();if(event.key==='Escape')cancelGoalEdit('${item.key}')">
+          ${item.unit?`<span class="goal-unit">${item.unit}</span>`:''}
+        </div>
+        <div class="goal-divider"></div>
+        <div class="goal-current-label">Current</div>
+        <div class="goal-current-val">${item.fmtV(item.current)}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function startGoalEdit(key){
+  const disp=document.getElementById('goal-disp-'+key);
+  const edit=document.getElementById('goal-edit-'+key);
+  const sym=document.getElementById('goal-sym-'+key);
+  disp.style.display='none';
+  if(sym){sym.style.display='';} 
+  edit.style.display='inline-block';
+  edit.focus();edit.select();
+  // Brighten the card while editing
+  const card=edit.closest('.goal-card');
+  if(card){card.style.opacity='1';card.style.cursor='default';}
+}
+function commitGoalEdit(key){
+  const edit=document.getElementById('goal-edit-'+key);
+  const val=parseFloat(edit.value)||0;
+  state.goals[key]=val;
+  snapshot();saveToStorage();update();
+}
+function cancelGoalEdit(key){
+  const edit=document.getElementById('goal-edit-'+key);
+  edit.value=state.goals[key];
+  const disp=document.getElementById('goal-disp-'+key);
+  const sym=document.getElementById('goal-sym-'+key);
+  disp.style.display='';
+  if(sym)sym.style.display='';
+  edit.style.display='none';
+  // Re-dim if goal still unset
+  const card=edit.closest('.goal-card');
+  if(card&&state.goals[key]<=0){card.style.opacity='0.45';card.style.cursor='pointer';}
+}
+
+// ── SORT HELPERS ──
+function sortedRows(arr,field,dir){
+  return[...arr].map((r,i)=>({...r,_orig:i})).sort((a,b)=>{
+    const num=typeof a[field]==='number';
+    const va=num?a[field]:(a[field]||'').toLowerCase();
+    const vb=num?b[field]:(b[field]||'').toLowerCase();
+    if(va<vb)return dir==='asc'?-1:1;
+    if(va>vb)return dir==='asc'?1:-1;
+    return 0;
+  });
+}
+
+// fieldMap: table -> { dataField: thKey }
+const fieldMap={
+  clients:{name:'cname',amount:'camount',type:'ctype'},
+  wages:{name:'wname',amount:'wamount',type:'wrole'},
+  opex:{desc:'odesc',amount:'oamount'},
+  debts:{desc:'ddesc',monthly:'dmonthly',owing:'dowing'},
+};
+function updateSortChecks(table,field,dir){
+  const map=fieldMap[table];if(!map)return;
+  Object.entries(map).forEach(([f,k])=>{
+    const thEl=document.getElementById('th-'+k);
+    if(thEl)thEl.classList.toggle('active',f===field);
+    const a=document.getElementById('chk-'+k+'-asc');
+    const d=document.getElementById('chk-'+k+'-desc');
+    if(a)a.textContent=(f===field&&dir==='asc')?'✓':'';
+    if(d)d.textContent=(f===field&&dir==='desc')?'✓':'';
+  });
+}
+function applySort(table,field,dir,e){
+  e.stopPropagation();
+  const key='sort'+table.charAt(0).toUpperCase()+table.slice(1);
+  state[key]={field,dir};
+  document.querySelectorAll('.sort-menu').forEach(m=>m.classList.remove('open'));
+  saveToStorage();
+  if(table==='clients')renderClients();
+  else if(table==='wages')renderWages();
+  else if(table==='opex')renderOpex();
+  else if(table==='debts')renderDebt();
+}
+function toggleSortMenu(key,e){
+  e.stopPropagation();
+  const m=document.getElementById('menu-'+key);
+  const open=m&&m.classList.contains('open');
+  document.querySelectorAll('.sort-menu').forEach(x=>x.classList.remove('open'));
+  if(!open&&m)m.classList.add('open');
+}
+document.addEventListener('click',()=>document.querySelectorAll('.sort-menu').forEach(m=>m.classList.remove('open')));
+
+// ── RENDER TABLES ──
+function renderClients(){
+  const{field,dir}=state.sortClients||{field:'name',dir:'asc'};
+  const pinnedId=state.newClientId;
+  const sorted=state.clients.map((c,i)=>({...c,_orig:i}))
+    .filter(c=>c._orig!==pinnedId)
+    .sort((a,b)=>{
+      const va=field==='amount'?a.amount:(a[field]||'').toLowerCase();
+      const vb=field==='amount'?b.amount:(b[field]||'').toLowerCase();
+      if(va<vb)return dir==='asc'?-1:1;
+      if(va>vb)return dir==='asc'?1:-1;
+      return 0;
+    });
+  if(pinnedId!==null&&pinnedId!==undefined&&state.clients[pinnedId]){
+    sorted.push({...state.clients[pinnedId],_orig:pinnedId});
+  }
+  document.getElementById('all-clients').innerHTML=sorted.map(c=>{
+    const i=c._orig,pin=i===pinnedId;
+    return`<tr${pin?' style="outline:0.5px solid rgba(61,214,140,0.3);outline-offset:-1px"':''}>
+      <td><input type="text" value="${c.name.replace(/"/g,'&quot;')}" onchange="onClientNameChange(${i},this.value)"></td>
+      <td>${moneyField(c.amount,`commit(()=>{state.clients[${i}].amount=parseFloat(this.value)||0})`)}</td>
+      <td><select onchange="commit(()=>{state.clients[${i}].type=this.value})">
+        <option ${c.type==='Automotive'?'selected':''}>Automotive</option>
+        <option ${c.type==='Real Estate'?'selected':''}>Real Estate</option>
+      </select></td>
+      <td><button class="btn-danger" onclick="commit(()=>{if(state.newClientId===${i})state.newClientId=null;state.clients.splice(${i},1);if(state.newClientId!==null&&state.newClientId>${i})state.newClientId--})">✕</button></td>
+    </tr>`;
+  }).join('');
+  document.getElementById('clients-total').textContent=fmt(state.clients.reduce((s,c)=>s+c.amount,0));
+  document.getElementById('clients-count-cell').textContent=`Total clients: ${state.clients.length}`;
+  updateSortChecks('clients',field,dir);
+}
+function onClientNameChange(i,val){
+  state.clients[i].name=val;
+  if(state.newClientId===i&&val!=='New client')state.newClientId=null;
+  snapshot();saveToStorage();renderClients();
+  refreshInsights();
+}
+function renderWages(){
+  const{field,dir}=state.sortWages||{field:'name',dir:'asc'};
+  const sorted=sortedRows(state.wages,field,dir);
+  document.getElementById('wages-list').innerHTML=sorted.map(w=>{const i=w._orig;return`<tr>
+    <td><input type="text" value="${w.name.replace(/"/g,'&quot;')}" onchange="commit(()=>{state.wages[${i}].name=this.value})"></td>
+    <td>${moneyField(w.amount,`commit(()=>{state.wages[${i}].amount=parseFloat(this.value)||0})`)}</td>
+    <td><input type="text" value="${w.type.replace(/"/g,'&quot;')}" onchange="commit(()=>{state.wages[${i}].type=this.value})"></td>
+    <td><button class="btn-danger" onclick="commit(()=>{state.wages.splice(${i},1)})">✕</button></td>
+  </tr>`;}).join('');
+  document.getElementById('wages-total').textContent=fmt(state.wages.reduce((s,w)=>s+w.amount,0));
+  updateSortChecks('wages',field,dir);
+}
+function renderOpex(){
+  const{field,dir}=state.sortOpex||{field:'desc',dir:'asc'};
+  const sorted=sortedRows(state.opex,field,dir);
+  document.getElementById('opex-list').innerHTML=sorted.map(o=>{const i=o._orig;return`<tr>
+    <td><input type="text" value="${o.desc.replace(/"/g,'&quot;')}" onchange="commit(()=>{state.opex[${i}].desc=this.value})"></td>
+    <td>${moneyField(o.amount,`commit(()=>{state.opex[${i}].amount=parseFloat(this.value)||0})`)}</td>
+    <td></td>
+    <td><button class="btn-danger" onclick="commit(()=>{state.opex.splice(${i},1)})">✕</button></td>
+  </tr>`;}).join('');
+  document.getElementById('opex-total').textContent=fmt(state.opex.reduce((s,o)=>s+o.amount,0));
+  updateSortChecks('opex',field,dir);
+}
+function renderDebt(){
+  const{field,dir}=state.sortDebts||{field:'desc',dir:'asc'};
+  const sorted=sortedRows(state.debts,field,dir);
+  document.getElementById('debt-list').innerHTML=sorted.map(d=>{const i=d._orig;return`<tr>
+    <td><input type="text" value="${d.desc.replace(/"/g,'&quot;')}" onchange="commit(()=>{state.debts[${i}].desc=this.value})"></td>
+    <td>${moneyField(d.monthly,`commit(()=>{state.debts[${i}].monthly=parseFloat(this.value)||0})`)}</td>
+    <td>${moneyField(d.owing,`commit(()=>{state.debts[${i}].owing=parseFloat(this.value)||0})`)}</td>
+    <td><button class="btn-danger" onclick="commit(()=>{state.debts.splice(${i},1)})">✕</button></td>
+  </tr>`;}).join('');
+  document.getElementById('debt-total-monthly').textContent=fmt(state.debts.reduce((s,d)=>s+d.monthly,0));
+  document.getElementById('debt-total-owing').textContent=fmt(state.debts.reduce((s,d)=>s+d.owing,0));
+  updateSortChecks('debts',field,dir);
+}
+
+function updateOverview(calc){
+  document.getElementById('ov-revenue').textContent=fmt(calc.revenue);
+  document.getElementById('ov-gst').textContent=fmt(calc.gst);
+  document.getElementById('ov-auto').textContent=fmt(calc.autoRev);
+  document.getElementById('ov-re').textContent=fmt(calc.reRev);
+  document.getElementById('ov-wages').textContent=fmt(calc.wages);
+  document.getElementById('ov-opex').textContent=fmt(calc.opex);
+  document.getElementById('ov-ato').textContent=fmt(calc.debtMonthly);
+  document.getElementById('ov-expenses').textContent=fmt(calc.totalExp);
+  document.getElementById('ov-profit').textContent=fmt(calc.profit);
+  document.getElementById('ov-margin').textContent=calc.margin+'%';
+  document.getElementById('ov-margin-bar').style.width=Math.max(0,Math.min(100,calc.margin))+'%';
+  document.getElementById('ov-annual').textContent=fmt(calc.profit*12);
+  document.getElementById('ov-debt-total').textContent=fmt(calc.debtOwing);
+  document.getElementById('ov-debt-monthly').textContent=fmt(calc.debtMonthly);
+  document.getElementById('ov-profit-card').className='metric '+(calc.profit>0?'positive':calc.profit<0?'negative':'');
+}
+
+// ── INSIGHTS ──
+function healthCard(items,tag,title){
+  if(!items.length)return'';
+  return`<div class="insight-card health">
+    <div class="insight-header"><span class="insight-icon">◈</span><span class="insight-tag">${tag}</span></div>
+    <div class="insight-title">${title}</div>
+    <div class="health-items">${items.map(h=>`<div class="health-item">
+      <div class="health-item-header"><span class="health-dot ${h.dot}"></span><span class="health-item-title">${h.title}</span></div>
+      <div class="health-item-body">${h.body}</div>
+      <div class="health-item-action">${h.action}</div>
+    </div>`).join('')}</div>
+  </div>`;
+}
+
+// Overview insights — whole business
+function buildOverviewInsights(calc){
+  const g=state.goals;
+  const goalsSet=g.revenue>0&&g.clients>0&&g.acv>0&&g.margin>0;
+  const goalScores=goalsSet?[
+    {label:'Monthly Revenue',p:pct(calc.revenue,g.revenue),current:fmt(calc.revenue),goal:fmt(g.revenue),
+      strongMsg:`Revenue is tracking well at ${fmt(calc.revenue)} against your ${fmt(g.revenue)} goal — the business is generating solid income.`,
+      strongAction:`Consider raising the goal to keep the business stretching. Growth follows ambition.`,
+      weakMsg:`Revenue is at ${fmt(calc.revenue)} against your ${fmt(g.revenue)} goal. There's meaningful ground to close here.`,
+      weakAction:`Focus on adding 1–2 new retainer clients or review pricing with existing ones — even a modest increase across the board adds up fast.`},
+    {label:'Total Clients',p:pct(calc.clientCount,g.clients),current:String(calc.clientCount),goal:String(g.clients),
+      strongMsg:`You have ${calc.clientCount} clients, well on the way to your ${g.clients} target. A healthy client base is one of the best assets a service business can have.`,
+      strongAction:`With a strong count, make sure no single client makes up more than 25–30% of total revenue — diversity protects you.`,
+      weakMsg:`At ${calc.clientCount} of ${g.clients} clients, there's room to grow the base and reduce reliance on any single relationship.`,
+      weakAction:`Consistent outreach — even 2–3 conversations a week — compounds over time. A warm referral from a happy client is the fastest path to a new one.`},
+    {label:'Avg Client Value',p:pct(calc.acv,g.acv),current:fmt(calc.acv),goal:fmt(g.acv),
+      strongMsg:`Average client value is ${fmt(calc.acv)}, ahead of your ${fmt(g.acv)} target. You're earning strong revenue per relationship.`,
+      strongAction:`Protect your pricing discipline on renewals. Erosion here is often gradual and easy to miss.`,
+      weakMsg:`Average client value is ${fmt(calc.acv)} against your ${fmt(g.acv)} target. Lifting this is one of the highest-leverage moves available.`,
+      weakAction:`Even a 10–15% price increase across existing clients can make a significant difference without adding a single new client.`},
+    {label:'Profit Margin',p:pct(calc.margin,g.margin),current:calc.margin+'%',goal:g.margin+'%',
+      strongMsg:`A ${calc.margin}% margin against a ${g.margin}% goal means the business is keeping healthy profit from every dollar earned.`,
+      strongAction:`Keep watching wage costs as the team grows — they're the main lever that compresses margin at scale.`,
+      weakMsg:`Margin is at ${calc.margin}% against your ${g.margin}% goal. Understanding whether it's a cost or revenue issue is the key question.`,
+      weakAction:`Higher revenue at the same cost base will naturally lift margin — it's often the cleaner path than cutting costs.`},
+  ]:null;
+
+  const healthItems=[];
+  if(calc.debtOwing>0){
+    const months=calc.monthsToDebtFree,dVR=calc.revExGST>0?calc.debtOwing/calc.revExGST:999;
+    if(calc.profit<=0)healthItems.push({dot:'bad',title:'Debt requires immediate attention',
+      body:`The business carries ${fmt(calc.debtOwing)} in total debt and is not generating profit to service it. Knowing is the first step.`,
+      action:`→ Focus on revenue growth or cost reduction before accelerating debt repayment.`});
+    else if(dVR>12)healthItems.push({dot:'warn',title:'Debt is significant — grow revenue first',
+      body:`${fmt(calc.debtOwing)} in debt at ${fmt(calc.profit)}/month profit means roughly ${months?Math.round(months)+' months':'some time'} to clear. Growing revenue shortens that timeline faster than anything else.`,
+      action:`→ Every new client or price increase directly reduces months to debt-free.`});
+    else if(months&&months<=24)healthItems.push({dot:'good',title:'Debt is on a clear path to being cleared',
+      body:`With ${fmt(calc.debtOwing)} owing and ${fmt(calc.profit)}/month profit, you're roughly ${Math.round(months)} months from debt-free. That's a real milestone within reach.`,
+      action:`→ Stay consistent. Every month of discipline gets you closer to keeping 100% of your profit.`});
+    else healthItems.push({dot:'warn',title:'Debt is manageable — stay consistent',
+      body:`${fmt(calc.debtOwing)} total debt, ${fmt(calc.debtMonthly)}/month in payments. At current profit, freedom is ${months?Math.round(months)+' months away':'achievable with focus'}.`,
+      action:`→ Any surplus beyond drawings is best directed at debt. It's the most reliable return available right now.`});
+  } else {
+    healthItems.push({dot:'good',title:'No outstanding debt',
+      body:`No debt recorded — profit flows directly to wealth rather than past obligations. That opens real options for growth and investment.`,
+      action:`→ Surplus cash is best directed toward growth, a cash reserve, or long-term investment.`});
+  }
+  if(calc.revExGST>0){
+    const wr=Math.round(calc.wageRatio*100);
+    if(calc.wageRatio>0.65)healthItems.push({dot:'bad',title:'Wages are absorbing most of revenue',
+      body:`Wages at ${wr}% of net revenue is above healthy range (target: below 55%). This is the biggest single lever on profitability.`,
+      action:`→ Ask whether efficiency or process improvements could reduce cost before cutting roles.`});
+    else if(calc.wageRatio>0.5)healthItems.push({dot:'warn',title:'Wage costs are worth watching',
+      body:`Wages at ${wr}% of net revenue — not critical, but limited room to absorb growth without compressing margin.`,
+      action:`→ Before adding headcount, confirm existing capacity is fully utilised.`});
+    else healthItems.push({dot:'good',title:'Wage structure is running efficiently',
+      body:`At ${wr}% of net revenue, wages are well-managed. The business is retaining a healthy portion of each dollar earned.`,
+      action:`→ Keep this ratio in check as you scale — it's a primary indicator of operational health.`});
+  }
+  if(calc.clientCount>0){
+    const top=Math.max(...state.clients.map(c=>c.amount)),topPct=calc.revenue>0?Math.round((top/calc.revenue)*100):0;
+    if(topPct>35)healthItems.push({dot:'warn',title:'Revenue is concentrated in one relationship',
+      body:`Your highest-value client is ~${topPct}% of total revenue. A change to that relationship would be felt immediately.`,
+      action:`→ Actively grow others so no single client exceeds 25–30% of revenue. Diversification is protection.`});
+    else if(calc.clientCount>=6)healthItems.push({dot:'good',title:'Revenue is well spread across clients',
+      body:`${calc.clientCount} clients with no single dominant account means the business has a resilient base. Losing any one won't threaten the whole.`,
+      action:`→ Keep this balance as you grow. Diversification is one of the most underappreciated strengths a service business can have.`});
+  }
+  if(calc.profit>0&&calc.margin>=25)healthItems.push({dot:'good',title:'Profit is healthy and sustainable',
+    body:`${fmt(calc.profit)}/month at ${calc.margin}% margin — the business is creating real value, not just turning over revenue.`,
+    action:`→ Protect this margin as you scale. It's easier to erode than to rebuild.`});
+  else if(calc.profit>0&&calc.margin<15)healthItems.push({dot:'warn',title:'Profit is positive but the margin is thin',
+    body:`At ${calc.margin}%, the buffer is slim. Thin margins make businesses fragile when costs shift or a client is lost.`,
+    action:`→ A 10–15% revenue lift or equivalent cost reduction would move this meaningfully.`});
+  else if(calc.profit<=0)healthItems.push({dot:'bad',title:'The business is not currently generating profit',
+    body:`Expenses are exceeding net revenue. Seeing it clearly is the first step — now you can act on it.`,
+    action:`→ Identify the biggest cost lever and the fastest revenue opportunity. Small moves on both sides compound quickly.`});
+
+  const anyGoalSetOv=g.revenue>0||g.clients>0||g.acv>0||g.margin>0;
+  const allGoalsSetOv=g.revenue>0&&g.clients>0&&g.acv>0&&g.margin>0;
+  // Bottom nudge: state 1 = no goals, state 2 = some goals, state 3 = all set (hidden)
+  const bottomNudgeOv=allGoalsSetOv?'':anyGoalSetOv
+    ?`<div class="insight-card nudge">
+      <div class="insight-header"><span class="insight-icon">💡</span><span class="insight-tag">Great start</span></div>
+      <div class="insight-title">Fill in more goals to unlock deeper insights</div>
+      <div class="insight-body">Head to the <strong>Goals</strong> tab to set more targets — the more you set, the more the dashboard can tell you about where to focus.</div>
+      <div class="insight-action">→ Goals tab → click any + ring to add another goal</div>
+    </div>`
+    :`<div class="insight-card nudge">
+      <div class="insight-header"><span class="insight-icon">💡</span><span class="insight-tag">Get started</span></div>
+      <div class="insight-title">Head to the Goals tab to set your first target</div>
+      <div class="insight-body">It only takes a few seconds and immediately brings your dashboard to life — revenue target, client count, average value, or profit margin.</div>
+      <div class="insight-action">→ Goals tab → click any + ring to set your first goal</div>
+    </div>`;
+  let topRow='';
+  if(anyGoalSetOv){
+    const g2=state.goals;
+    const goalScoresOv=[
+      {label:'Monthly Revenue',p:pct(calc.revenue,g2.revenue),current:fmt(calc.revenue),goal:fmt(g2.revenue),active:g2.revenue>0,
+        strongMsg:`Revenue is at ${fmt(calc.revenue)} against your ${fmt(g2.revenue)} goal — a strong position.`,
+        strongAction:`Consider raising the revenue goal to keep stretching.`,
+        weakMsg:`At ${fmt(calc.revenue)} against a ${fmt(g2.revenue)} goal, revenue has the most room to move.`,
+        weakAction:`Adding 1–2 new retainer clients or a modest price increase can close this gap quickly.`},
+      {label:'Total Clients',p:pct(calc.clientCount,g2.clients),current:String(calc.clientCount),goal:String(g2.clients),active:g2.clients>0,
+        strongMsg:`${calc.clientCount} clients against a goal of ${g2.clients} — the client base is healthy.`,
+        strongAction:`Focus on the quality of each relationship. A satisfied client stays longer and refers others.`,
+        weakMsg:`${calc.clientCount} of ${g2.clients} clients — room to grow the base.`,
+        weakAction:`A warm referral from an existing client is the lowest-friction path to the next one.`},
+      {label:'Avg Client Value',p:pct(calc.acv,g2.acv),current:fmt(calc.acv),goal:fmt(g2.acv),active:g2.acv>0,
+        strongMsg:`Average client value at ${fmt(calc.acv)} is ahead of your ${fmt(g2.acv)} goal.`,
+        strongAction:`Maintain pricing discipline on renewals.`,
+        weakMsg:`Average client value is ${fmt(calc.acv)} against a ${fmt(g2.acv)} target — a high-leverage lever.`,
+        weakAction:`A 10–15% price increase on lower-value clients can lift this without adding new clients.`},
+      {label:'Profit Margin',p:pct(calc.margin,g2.margin),current:calc.margin+'%',goal:g2.margin+'%',active:g2.margin>0,
+        strongMsg:`${calc.margin}% margin against a ${g2.margin}% goal — healthy.`,
+        strongAction:`Protect it. Wage creep and scope expansion erode margins silently.`,
+        weakMsg:`Margin at ${calc.margin}% against a ${g2.margin}% goal — costs may be high relative to revenue.`,
+        weakAction:`Revenue growth at a fixed cost base is the most natural path to higher margin.`},
+    ].filter(gs=>gs.active);
+    if(goalScoresOv.length>=2){
+      const srt=[...goalScoresOv].sort((a,b)=>b.p-a.p),best=srt[0],worst=srt[srt.length-1];
+      topRow=`<div class="insights-top-row" style="margin-bottom:10px">
+        <div class="insight-card strength">
+          <div class="insight-header"><span class="insight-icon">✦</span><span class="insight-tag">Strongest area</span></div>
+          <div class="insight-title">${best.label}</div>
+          <div class="insight-body"><p>${best.strongMsg}</p></div>
+          <div class="insight-action">→ ${best.strongAction}<br><br>Current: ${best.current} &nbsp;·&nbsp; Goal: ${best.goal}</div>
+        </div>
+        <div class="insight-card weakness">
+          <div class="insight-header"><span class="insight-icon">◎</span><span class="insight-tag">Focus area</span></div>
+          <div class="insight-title">${worst.label}</div>
+          <div class="insight-body"><p>${worst.weakMsg}</p></div>
+          <div class="insight-action">→ ${worst.weakAction}<br><br>Current: ${worst.current} &nbsp;·&nbsp; Goal: ${worst.goal}</div>
+        </div>
+      </div>`;
+    }
+  }
+  return`<div class="insights-wrap">${topRow}${healthCard(healthItems,'Business health','What the numbers are telling you')}${bottomNudgeOv?'<div style="margin-top:10px">'+bottomNudgeOv+'</div>':''}</div>`;
+}
+
+// Goals insights — goal-specific
+function buildGoalsInsights(calc){
+  const g=state.goals;
+  const anyGoalSet=g.revenue>0||g.clients>0||g.acv>0||g.margin>0;
+  const allGoalsSet=g.revenue>0&&g.clients>0&&g.acv>0&&g.margin>0;
+  if(!anyGoalSet)return`<div class="insight-card nudge">
+    <div class="insight-header"><span class="insight-icon">💡</span><span class="insight-tag">Set your first goal</span></div>
+    <div class="insight-title">Click any + ring above to set your first goal</div>
+    <div class="insight-body">You only need to set one goal to start getting insights. Set a revenue target, a client count, an average client value, or a profit margin — whichever matters most to you right now. You can always add more later.</div>
+  </div>`;
+  // Only include goals that have been set
+  const allGoalDefs=[
+    {label:'Monthly Revenue',p:pct(calc.revenue,g.revenue),current:fmt(calc.revenue),goal:fmt(g.revenue),active:g.revenue>0,
+      strongMsg:`Revenue is at ${fmt(calc.revenue)} against your ${fmt(g.revenue)} goal — a strong position that the rest of the business needs to catch up to.`,
+      strongAction:`Consider raising the revenue goal to keep stretching. The best businesses always give themselves a moving target.`,
+      weakMsg:`At ${fmt(calc.revenue)} against a ${fmt(g.revenue)} goal, revenue is the area with the most room to move.`,
+      weakAction:`Adding 1–2 new retainer clients or a modest price increase across existing ones can close a meaningful portion of this gap quickly.`},
+    {label:'Total Clients',p:pct(calc.clientCount,g.clients),current:String(calc.clientCount),goal:String(g.clients),
+      active:g.clients>0,
+      strongMsg:`${calc.clientCount} clients against a goal of ${g.clients} — the client base is healthy and well on track.`,
+      strongAction:`With a strong count, focus on the quality of each relationship as much as the quantity. A satisfied client stays longer and refers others.`,
+      weakMsg:`${calc.clientCount} of ${g.clients} clients — there's room to grow the base and reduce risk from any single relationship.`,
+      weakAction:`Consistent outreach compounds over time. A warm referral from an existing client is the lowest-friction path to the next one.`},
+    {label:'Avg Client Value',p:pct(calc.acv,g.acv),current:fmt(calc.acv),goal:fmt(g.acv),
+      active:g.acv>0,
+      strongMsg:`Average client value at ${fmt(calc.acv)} is ahead of your ${fmt(g.acv)} goal — you're earning strong revenue per relationship.`,
+      strongAction:`Protect this by maintaining pricing discipline on renewals. It's easy to erode gradually without noticing.`,
+      weakMsg:`Average client value is ${fmt(calc.acv)} against a ${fmt(g.acv)} target. This is one of the highest-leverage levers available — small changes here have a big impact.`,
+      weakAction:`A structured review of your service tiers or a 10–15% price increase on lower-value clients can lift this number without adding a single new client.`},
+    {label:'Profit Margin',p:pct(calc.margin,g.margin),current:calc.margin+'%',goal:g.margin+'%',
+      active:g.margin>0,
+      strongMsg:`${calc.margin}% margin against a ${g.margin}% goal — the business is retaining a healthy share of every dollar it earns.`,
+      strongAction:`The margin goal is met — now protect it. Wage creep and scope expansion are the two most common ways this erodes silently.`,
+      weakMsg:`Margin at ${calc.margin}% against a ${g.margin}% goal suggests either costs are high relative to revenue, or revenue hasn't caught up to the cost base yet.`,
+      weakAction:`Revenue growth at a fixed cost base is the most natural path to higher margin — every additional dollar earned at the same overhead improves it directly.`},
+  ];
+  const goalScores=allGoalDefs.filter(g=>g.active);
+  if(goalScores.length===0)return'';
+  const srt=[...goalScores].sort((a,b)=>b.p-a.p),best=srt[0],worst=srt[srt.length-1];
+  const gi=[];
+  goalScores.forEach(gs=>{
+    const gap=gs.goal!==gs.current?` The gap is ${gs.goal} − ${gs.current} = ${gs.p>=100?'achieved ✓':'still to close'}.`:'';
+    gi.push({dot:gs.p>=100?'good':gs.p>=75?'good':gs.p>=41?'warn':'bad',
+      title:`${gs.label}: ${gs.p>=100?'Goal achieved':gs.p+'% of goal'}`,
+      body:gs.p>=75?gs.strongMsg:gs.weakMsg,
+      action:`→ ${gs.p>=75?gs.strongAction:gs.weakAction}`});
+  });
+  const topRow=goalScores.length>=2?`<div class="insights-top-row" style="margin-bottom:10px">
+      <div class="insight-card strength">
+        <div class="insight-header"><span class="insight-icon">✦</span><span class="insight-tag">Strongest area</span></div>
+        <div class="insight-title">${best.label}</div>
+        <div class="insight-body"><p>${best.strongMsg}</p></div>
+        <div class="insight-action">→ ${best.strongAction}<br><br>Current: ${best.current} &nbsp;·&nbsp; Goal: ${best.goal}</div>
+      </div>
+      <div class="insight-card weakness">
+        <div class="insight-header"><span class="insight-icon">◎</span><span class="insight-tag">Focus area</span></div>
+        <div class="insight-title">${worst.label}</div>
+        <div class="insight-body"><p>${worst.weakMsg}</p></div>
+        <div class="insight-action">→ ${worst.weakAction}<br><br>Current: ${worst.current} &nbsp;·&nbsp; Goal: ${worst.goal}</div>
+      </div>
+    </div>`:'';
+  // Bottom nudge: state 1 handled above (no goals = early return), state 2 = some, state 3 = all set (hidden)
+  const bottomNudgeGoals=allGoalsSet?'':goalScores.length===1
+    ?`<div class="insight-card nudge">
+      <div class="insight-header"><span class="insight-icon">💡</span><span class="insight-tag">Great start</span></div>
+      <div class="insight-title">Set more goals to unlock deeper insights</div>
+      <div class="insight-body">You've made a start — add more targets above and you'll start seeing your strongest area, your biggest opportunity, and what to focus on next.</div>
+      <div class="insight-action">→ Click any dimmed + ring above to add another goal</div>
+    </div>`
+    :`<div class="insight-card nudge">
+      <div class="insight-header"><span class="insight-icon">💡</span><span class="insight-tag">Almost there</span></div>
+      <div class="insight-title">Set all four goals to get the full picture</div>
+      <div class="insight-body">You're ${goalScores.length} of 4 goals in — one or two more and every insight on this page will be fully unlocked.</div>
+      <div class="insight-action">→ Click any dimmed + ring above to complete your goals</div>
+    </div>`;
+  return`<div class="insights-wrap">
+    ${topRow}
+    ${healthCard(gi,'Goal breakdown','How each goal is tracking')}
+    ${bottomNudgeGoals?'<div style="margin-top:10px">'+bottomNudgeGoals+'</div>':''}
+  </div>`;
+}
+
+// Clients tab insights — about the client list only
+function buildClientsInsights(calc){
+  const items=[];
+  const n=calc.clientCount;
+  if(n===0){
+    return`<div class="insight-card nudge"><div class="insight-header"><span class="insight-icon">💡</span><span class="insight-tag">No clients yet</span></div><div class="insight-title">Add your first client to see insights</div></div>`;
+  }
+  // Client count
+  if(n>=15)items.push({dot:'good',title:`Strong client base — ${n} active clients`,
+    body:`${n} clients is a healthy roster for a service business. At this size the business is well-protected against losing any single account.`,
+    action:`→ Keep onboarding while ensuring service quality doesn't stretch too thin. Growth without quality is fragile.`});
+  else if(n>=8)items.push({dot:'good',title:`Solid client base — ${n} clients`,
+    body:`${n} clients provides a reasonable spread of revenue. The business isn't over-reliant on any one relationship at this count, especially if values are reasonably balanced.`,
+    action:`→ Aim to maintain upward momentum — each additional client improves both revenue and resilience.`});
+  else if(n>=4)items.push({dot:'warn',title:`Growing client base — ${n} clients`,
+    body:`${n} clients is a solid start but the business is still in a vulnerable zone. Losing one or two accounts could meaningfully impact monthly revenue.`,
+    action:`→ Prioritise new client acquisition. Each addition reduces risk and increases negotiating power with existing clients.`});
+  else items.push({dot:'bad',title:`Client base is small — ${n} client${n!==1?'s':''}`,
+    body:`At ${n} client${n!==1?'s':''}, the business is highly concentrated. Revenue security grows significantly with each new relationship added.`,
+    action:`→ New client acquisition should be the primary commercial focus right now.`});
+
+  // ACV
+  const acv=calc.acv;
+  if(acv>=2000)items.push({dot:'good',title:`Strong average client value — ${fmt(acv)}/month`,
+    body:`An average retainer of ${fmt(acv)}/month is excellent for a service business. It means the business doesn't need a huge client count to generate meaningful revenue.`,
+    action:`→ Protect this by maintaining premium positioning and avoiding the temptation to chase low-value clients to fill gaps.`});
+  else if(acv>=1000)items.push({dot:'good',title:`Healthy average client value — ${fmt(acv)}/month`,
+    body:`At ${fmt(acv)}/month average, each client relationship is contributing meaningfully. There's still room to grow this through tiered packages or price reviews.`,
+    action:`→ Consider whether any current clients are underpriced relative to the value being delivered.`});
+  else if(acv>=500)items.push({dot:'warn',title:`Average client value is moderate — ${fmt(acv)}/month`,
+    body:`${fmt(acv)}/month average means you need a relatively large client count to build serious revenue. Lifting this is one of the most efficient ways to grow the business.`,
+    action:`→ Review the lowest-value accounts — either reprice them or understand whether there's a path to expand the relationship.`});
+  else items.push({dot:'warn',title:`Average client value is low — ${fmt(acv)}/month`,
+    body:`At ${fmt(acv)}/month average, revenue growth will require either a lot more clients or meaningful price increases. Both take time, but pricing is faster.`,
+    action:`→ Focus on what a premium offering would look like and which current clients could step up to it.`});
+
+  // Revenue concentration
+  if(n>1){
+    const top=Math.max(...state.clients.map(c=>c.amount));
+    const topPct=calc.revenue>0?Math.round((top/calc.revenue)*100):0;
+    const topClient=state.clients.find(c=>c.amount===top);
+    if(topPct>40)items.push({dot:'bad',title:`High exposure — one client is ${topPct}% of revenue`,
+      body:`${topClient?'"'+topClient.name+'"':' Your top client'} represents ${topPct}% of total revenue. If that relationship ended or paused, the impact would be immediate and significant.`,
+      action:`→ This is the most important risk to address. Growing other client relationships is the fastest path to reducing this exposure.`});
+    else if(topPct>28)items.push({dot:'warn',title:`Watch concentration — top client is ${topPct}% of revenue`,
+      body:`Your highest-value client represents ${topPct}% of total revenue. It's not critical yet, but worth actively diversifying against.`,
+      action:`→ Aim to grow other clients so this naturally reduces below 25–30% over time.`});
+    else items.push({dot:'good',title:`Revenue concentration is healthy`,
+      body:`No single client dominates — your top account is ${topPct}% of revenue, which is within a comfortable range. The business has real resilience built in.`,
+      action:`→ Keep this balance as you grow. It's one of the most underappreciated forms of business strength.`});
+  }
+
+  // Split by type
+  const autoCount=state.clients.filter(c=>c.type==='Automotive').length;
+  const reCount=state.clients.filter(c=>c.type==='Real Estate').length;
+  const autoRev=calc.autoRev,reRev=calc.reRev,total=calc.revenue;
+  if(autoCount>0&&reCount>0){
+    const autoPct=total>0?Math.round((autoRev/total)*100):0;
+    if(autoPct>80)items.push({dot:'warn',title:`Heavy reliance on Automotive (${autoPct}% of revenue)`,
+      body:`Automotive accounts for ${autoPct}% of revenue. Real estate is still a small part of the mix — growing it would reduce sector risk and open a new growth channel.`,
+      action:`→ Real estate clients tend to have different seasonal patterns, which can smooth out the overall revenue curve.`});
+    else if(autoPct<20)items.push({dot:'warn',title:`Heavy reliance on Real Estate (${100-autoPct}% of revenue)`,
+      body:`Real estate is ${100-autoPct}% of revenue. A stronger automotive mix would provide balance across market conditions.`,
+      action:`→ Automotive is a proven market for this business — consider prioritising that pipeline.`});
+    else items.push({dot:'good',title:`Good sector diversification`,
+      body:`Automotive (${autoPct}%) and Real Estate (${100-autoPct}%) are reasonably balanced. This means sector-specific downturns are less likely to hit the whole business at once.`,
+      action:`→ Keep building both verticals. Diversification across sectors is as valuable as diversification across clients.`});
+  } else if(autoCount>0){
+    items.push({dot:'warn',title:`All clients are Automotive`,
+      body:`Every client is in the Automotive sector. Real estate is an adjacent, proven market for this business with strong revenue potential.`,
+      action:`→ A single real estate client at ${fmt(2200)}/month would immediately add meaningful diversification.`});
+  } else if(reCount>0){
+    items.push({dot:'warn',title:`All clients are Real Estate`,
+      body:`Every client is in Real Estate. Automotive is a well-understood market for this type of media work — diversifying would reduce sector exposure.`,
+      action:`→ Identifying 2–3 automotive prospects would provide a meaningful hedge against real estate market conditions.`});
+  }
+
+  return`<div class="insights-wrap">${healthCard(items,'Client health','A summary of your client list')}</div>`;
+}
+
+// Expenses tab insights — about wages, opex, debt only
+function buildExpensesInsights(calc){
+  const items=[];
+  const totalExp=calc.totalExp;
+
+  // Wages
+  const wages=calc.wages;
+  const totalRev=calc.revExGST;
+  if(wages>0){
+    const wPct=totalRev>0?Math.round((wages/totalRev)*100):null;
+    const staffCount=state.wages.length;
+    if(wPct!==null){
+      if(wPct>65)items.push({dot:'bad',title:`Wages are ${wPct}% of net revenue`,
+        body:`${fmt(wages)}/month in wages is consuming a large proportion of revenue. Service businesses typically aim for 45–55%. This is the single biggest opportunity to improve profitability.`,
+        action:`→ Before making changes, map which roles are directly revenue-generating vs. supporting. That analysis usually reveals the most efficient path forward.`});
+      else if(wPct>50)items.push({dot:'warn',title:`Wages are ${wPct}% of net revenue`,
+        body:`${fmt(wages)}/month across ${staffCount} staff member${staffCount!==1?'s':''} is workable, but limits how much profit is retained. There's not a lot of buffer if costs increase or a client is lost.`,
+        action:`→ As revenue grows, keep wages fixed where possible so the ratio naturally improves — that's the most painless path to better margin.`});
+      else items.push({dot:'good',title:`Wages are well-managed at ${wPct}% of net revenue`,
+        body:`${fmt(wages)}/month across ${staffCount} staff member${staffCount!==1?'s':''} is within healthy range. The business is building meaningful profit after paying its team.`,
+        action:`→ Protect this ratio when adding headcount. Each new hire is a fixed cost that needs to be justified by revenue growth.`});
+    }
+    // Highest earner
+    if(state.wages.length>1){
+      const top=state.wages.reduce((a,b)=>a.amount>b.amount?a:b);
+      const topPct=wages>0?Math.round((top.amount/wages)*100):0;
+      if(topPct>40)items.push({dot:'warn',title:`Wage concentration — ${top.name} is ${topPct}% of payroll`,
+        body:`When one person represents a large share of payroll, the business is exposed if that role changes. It can also create imbalance in how work and value are distributed.`,
+        action:`→ Consider whether that concentration reflects the actual value being created, and whether it could be redistributed or backed up.`});
+    }
+  }
+
+  // Opex
+  const opex=calc.opex;
+  if(opex>0){
+    const oPct=totalRev>0?Math.round((opex/totalRev)*100):null;
+    if(oPct!==null&&oPct>15)items.push({dot:'warn',title:`Operating expenses at ${fmt(opex)}/month (${oPct}% of revenue)`,
+      body:`Operating costs are on the higher side relative to revenue. For a lean service business, target below 10–12% of net revenue for non-wage operating costs.`,
+      action:`→ Review each line item against actual usage. Subscriptions and vendor costs often go unreviewed and creep up over time.`});
+    else if(oPct!==null)items.push({dot:'good',title:`Operating expenses are lean — ${fmt(opex)}/month`,
+      body:`Non-wage operating costs are well-controlled at ${oPct}% of net revenue. This reflects disciplined overhead management.`,
+      action:`→ Review periodically to make sure tools and services still earn their place — needs change as the business evolves.`});
+  }
+
+  // Debt
+  const debtOwing=calc.debtOwing;
+  const debtMonthly=calc.debtMonthly;
+  if(debtOwing>0){
+    const unserviced=state.debts.filter(d=>d.owing>0&&d.monthly===0);
+    const serviced=state.debts.filter(d=>d.monthly>0);
+    if(debtOwing>50000)items.push({dot:'bad',title:`Total debt is significant — ${fmt(debtOwing)} owing`,
+      body:`${fmt(debtOwing)} is a large obligation. With ${fmt(debtMonthly)}/month in scheduled payments, this is a material drain on monthly cash flow that directly compresses profit.`,
+      action:`→ The fastest path to reducing this load is revenue growth. More profit means faster debt clearance — the two goals reinforce each other.`});
+    else if(debtOwing>20000)items.push({dot:'warn',title:`${fmt(debtOwing)} in debt — manageable but notable`,
+      body:`Debt at this level is serviceable and with ${fmt(debtMonthly)}/month in payments, progress is being made. It's worth tracking closely to ensure the trajectory stays positive.`,
+      action:`→ Avoid taking on new debt until the existing balance is substantially reduced.`});
+    else items.push({dot:'good',title:`Debt is at a manageable level — ${fmt(debtOwing)} remaining`,
+      body:`${fmt(debtOwing)} remaining is in a range that can be cleared with disciplined monthly payments. The finish line is in view.`,
+      action:`→ Maintaining current repayment momentum will clear this ahead of schedule if cash flow permits.`});
+    if(unserviced.length>0){
+      const unsTot=unserviced.reduce((s,d)=>s+d.owing,0);
+      items.push({dot:'warn',title:`${unserviced.length} debt item${unserviced.length!==1?'s are':' is'} unserviced`,
+        body:`${unserviced.map(d=>'"'+d.desc+'"').join(', ')} — totalling ${fmt(unsTot)} — have no monthly payment recorded. These aren't being reduced.`,
+        action:`→ Even a small regular payment on unserviced debts creates momentum and prevents them from being forgotten.`});
+    }
+  } else if(state.debts.length>0||debtOwing===0){
+    items.push({dot:'good',title:`No outstanding debt`,
+      body:`All debt has been cleared — expenses are fully operational costs. This is a strong position and means every dollar of profit is yours to direct.`,
+      action:`→ With no debt, consider building a cash reserve equal to 2–3 months of operating expenses as a buffer.`});
+  }
+
+  return`<div class="insights-wrap">${healthCard(items,'Expenses health','What your costs are telling you')}</div>`;
+}
+
+function updateTopBanners(){
+  const g=state.goals;
+  const anySet=g.revenue>0||g.clients>0||g.acv>0||g.margin>0;
+  const allSet=g.revenue>0&&g.clients>0&&g.acv>0&&g.margin>0;
+  const setCount=[g.revenue,g.clients,g.acv,g.margin].filter(v=>v>0).length;
+
+  // Overview top banner
+  const ovBanner=document.getElementById('ov-top-banner');
+  if(ovBanner){
+    if(allSet){
+      ovBanner.style.display='none';
+    } else if(anySet){
+      ovBanner.style.display='block';
+      ovBanner.innerHTML=`<span style="color:var(--amber);font-weight:600">💡 Great start.</span> You've set ${setCount} of 4 goals — head to the <strong>Goals</strong> tab to fill in the rest and unlock deeper insights.`;
+    } else {
+      ovBanner.style.display='block';
+      ovBanner.innerHTML=`<span style="color:var(--amber);font-weight:600">💡 Get started.</span> Head to the <strong>Goals</strong> tab to set your first target — it only takes a few seconds and immediately brings your dashboard to life.`;
+    }
+  }
+
+  // Goals top banner
+  const goalsBanner=document.getElementById('goals-top-banner');
+  if(goalsBanner){
+    if(allSet){
+      goalsBanner.style.display='none';
+    } else if(anySet){
+      goalsBanner.style.display='block';
+      goalsBanner.innerHTML=`<span style="color:var(--amber);font-weight:600">💡 Great start.</span> You're ${setCount} of 4 goals in — click any dimmed ring to keep going and unlock the full picture.`;
+    } else {
+      goalsBanner.style.display='block';
+      goalsBanner.innerHTML=`<span style="color:var(--amber);font-weight:600">💡 Get started.</span> Click any <strong>+</strong> ring below to set your first goal — revenue, clients, average value, or profit margin.`;
+    }
+  }
+}
+
+function refreshInsights(){
+  const calc=getCalc();
+  document.getElementById('ov-insights').innerHTML=buildOverviewInsights(calc);
+  document.getElementById('clients-insights').innerHTML=buildClientsInsights(calc);
+  document.getElementById('expenses-insights').innerHTML=buildExpensesInsights(calc);
+  document.getElementById('goals-insights').innerHTML=buildGoalsInsights(calc);
+  updateTopBanners();
+}
+
+function update(){
+  const calc=getCalc();
+  const items=getGoalItems(calc);
+  renderOvRings(items);
+  renderGoalCards(items);
+  renderClients();renderWages();renderOpex();renderDebt();
+  updateOverview(calc);
+  refreshInsights();
+
+}
+
+function addClient(){
+  state.clients.push({name:'New client',amount:0,type:'Automotive'});
+  state.newClientId=state.clients.length-1;
+  snapshot();saveToStorage();
+  renderClients();
+  const calc=getCalc();
+  renderOvRings(getGoalItems(calc));updateOverview(calc);refreshInsights();
+  const rows=document.querySelectorAll('#all-clients tr');
+  if(rows.length){const inp=rows[rows.length-1].querySelector('input[type=text]');if(inp){inp.focus();inp.select();}}
+}
+function addWage(){commit(()=>state.wages.push({name:'New staff',amount:0,type:'Casual'}));}
+function addOpex(){commit(()=>state.opex.push({desc:'New expense',amount:0}));}
+function addDebt(){commit(()=>state.debts.push({desc:'New debt',owing:0,monthly:0}));}
+
+function switchTab(name,el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById(name).classList.add('active');
+  el.classList.add('active');
+}
+
+loadFromStorage();
+update();
+</script>
+</body>
+</html>
