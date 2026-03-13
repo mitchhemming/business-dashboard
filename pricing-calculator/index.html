@@ -1,1 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pricing Calculator</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0e0e0e;--bg2:#1a1a1a;--bg3:#222;--bg4:#2c2c2c;
+  --border:rgba(255,255,255,0.1);--border2:rgba(255,255,255,0.18);
+  --text:#f5f5f3;--text2:#c0c0b8;--text3:#888880;
+  --green:#3dd68c;--green-dim:rgba(61,214,140,0.1);
+  --red:#f06060;--red-dim:rgba(240,96,96,0.08);
+  --amber:#f0a840;--amber-dim:rgba(240,168,64,0.1);
+  --blue:#60aaff;--blue-dim:rgba(96,170,255,0.1);
+  --radius:10px;--radius-sm:6px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;display:flex;flex-direction:column;padding:1.5rem 1.5rem 0}
 
+/* ── Header ── */
+.header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:2rem;gap:16px;flex-wrap:wrap}
+.header-left{display:flex;flex-direction:column;gap:4px}
+.header-title{font-size:30px;font-weight:500;letter-spacing:-0.03em;color:var(--text);line-height:1.1}
+.header-sub{font-size:12px;color:var(--text3);font-family:'DM Mono',monospace}
+.header-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.save-row{display:flex;align-items:center;gap:6px}
+.saved-dot{width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0}
+.save-label,.save-time{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace}
+.btn-undo{background:var(--bg3);border:0.5px solid var(--border2);border-radius:var(--radius-sm);padding:5px 12px;font-size:12px;color:var(--text3);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;display:flex;align-items:center;gap:6px;align-self:flex-end}
+.btn-undo:hover{background:var(--bg4);color:var(--text2)}
+
+/* ── Section label ── */
+.section-label{font-size:11px;font-weight:500;color:var(--text2);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:10px;font-family:'DM Mono',monospace}
+
+/* ── Insight-style tip (matches dashboard) ── */
+.tip-card{border-radius:var(--radius);padding:14px 16px;margin-bottom:12px;transition:opacity 0.4s,max-height 0.4s,margin 0.4s,padding 0.4s;overflow:hidden;max-height:120px}
+.tip-card.nudge{background:var(--amber-dim);border:0.5px solid rgba(240,168,64,0.22)}
+.tip-card.done{opacity:0;max-height:0;padding:0;margin:0;pointer-events:none}
+.tip-header{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.tip-icon{font-size:13px}
+.tip-tag{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;font-family:'DM Mono',monospace;color:var(--amber)}
+.tip-body{font-size:12px;color:var(--text2);line-height:1.6}
+
+/* ── Big 3 ── */
+.big3-wrap{display:grid;grid-template-columns:1fr 2fr;gap:2px;margin-bottom:2px}
+@media(max-width:640px){.big3-wrap{grid-template-columns:1fr}}
+.price-col{display:flex;flex-direction:column;gap:2px}
+.rate-time-col{display:grid;grid-template-columns:1fr 1fr;gap:2px}
+@media(max-width:640px){.rate-time-col{grid-template-columns:1fr}}
+
+.big-card{background:var(--bg2);padding:24px 16px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;transition:background 0.2s;min-height:130px;overflow:hidden}
+.big-card-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;font-family:'DM Mono',monospace;margin-bottom:12px;display:flex;align-items:center;justify-content:center;gap:8px;width:100%;text-align:center;position:relative}
+.gst-badge{font-size:9px;background:rgba(96,170,255,0.15);color:var(--blue);border-radius:4px;padding:2px 6px;font-family:'DM Mono',monospace;font-weight:500;opacity:0;transition:opacity 0.3s;letter-spacing:0.04em;white-space:nowrap;pointer-events:none;display:none}
+.gst-badge.visible{opacity:1;display:inline-block}
+.big-input-row{display:flex;align-items:baseline;justify-content:center;gap:2px}
+.big-sym{font-size:24px;font-weight:400;color:var(--text3);font-family:'DM Mono',monospace;line-height:1;padding-bottom:4px;flex-shrink:0}
+.big-input{font-size:44px;font-weight:500;font-family:'DM Mono',monospace;letter-spacing:-0.03em;background:transparent;border:none;outline:none;color:var(--text);width:2ch;min-width:2ch;max-width:220px;line-height:1;text-align:left}
+.big-input::placeholder{color:var(--bg4)}
+.big-input::-webkit-inner-spin-button{-webkit-appearance:none}
+.big-unit{font-size:24px;font-weight:500;color:var(--text3);font-family:'DM Mono',monospace;padding-bottom:4px;flex-shrink:0}
+.big-sub{font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;margin-top:10px;min-height:14px;line-height:1.4;text-align:center}
+.big-card.c-green{background:var(--green-dim)}.big-card.c-green .big-input,.big-card.c-green .big-sym,.big-card.c-green .big-unit{color:var(--green)}
+.big-card.c-amber{background:var(--amber-dim)}.big-card.c-amber .big-input,.big-card.c-amber .big-sym,.big-card.c-amber .big-unit{color:var(--amber)}
+.big-card.c-red{background:var(--red-dim)}.big-card.c-red .big-input,.big-card.c-red .big-sym,.big-card.c-red .big-unit{color:var(--red)}
+.big-card.c-blue{background:var(--blue-dim)}.big-card.c-blue .big-input,.big-card.c-blue .big-sym,.big-card.c-blue .big-unit{color:var(--blue)}
+
+/* ── GST row ── */
+.gst-row{background:var(--bg2);padding:10px 26px;display:flex;align-items:center;justify-content:space-between}
+.gst-label{font-size:13px;font-weight:500;color:var(--text)}
+.gst-desc{font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;margin-left:8px}
+.toggle{position:relative;width:38px;height:20px;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0}
+.toggle-slider{position:absolute;inset:0;background:var(--bg4);border-radius:10px;cursor:pointer;transition:0.2s;border:0.5px solid var(--border2)}
+.toggle-slider:before{content:'';position:absolute;width:14px;height:14px;left:2px;top:2px;background:var(--text3);border-radius:50%;transition:0.2s}
+.toggle input:checked+.toggle-slider{background:var(--green-dim);border-color:var(--green)}
+.toggle input:checked+.toggle-slider:before{transform:translateX(18px);background:var(--green)}
+
+/* ── Calc hint ── */
+.calc-hint{text-align:center;font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;padding:8px 0 18px;line-height:1.5;transition:color 0.3s}
+.calc-hint strong{color:var(--text2);font-weight:500}
+.calc-hint.computed strong{color:var(--green)}
+
+/* ── Two column ── */
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-top:1.5rem}
+@media(max-width:900px){.three-col{grid-template-columns:1fr 1fr}}
+@media(max-width:580px){.three-col{grid-template-columns:1fr}}
+
+/* ── Time inputs ── */
+.time-stack{display:flex;flex-direction:column;gap:6px;margin-bottom:6px}
+.time-card{background:var(--bg2);border-radius:var(--radius-sm);padding:12px 14px;border:0.5px solid transparent;transition:border-color 0.15s;display:flex;justify-content:space-between;align-items:center}
+.time-card:focus-within{border-color:var(--border2)}
+.time-left{display:flex;flex-direction:column;gap:2px}
+.time-card-label{font-size:12px;color:var(--text2)}
+.time-card-hint{font-size:10px;color:var(--text3);font-family:'DM Mono',monospace}
+.time-right{display:flex;align-items:baseline;gap:4px}
+.time-input{font-size:22px;font-weight:500;font-family:'DM Mono',monospace;background:transparent;border:none;outline:none;color:var(--text);width:72px;text-align:right}
+.time-input::placeholder{color:var(--bg4)}
+.time-input::-webkit-inner-spin-button{-webkit-appearance:none}
+.time-unit-sm{font-size:12px;color:var(--text3);font-family:'DM Mono',monospace}
+.time-total-row{background:var(--blue-dim);border:0.5px solid rgba(96,170,255,0.18);border-radius:var(--radius-sm);padding:10px 14px;display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem}
+.time-total-label{font-size:11px;color:var(--blue);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:0.08em}
+.time-total-val{font-size:14px;font-weight:500;color:var(--blue);font-family:'DM Mono',monospace}
+
+/* ── Expenses ── */
+.exp-list{display:flex;flex-direction:column;gap:5px;margin-bottom:6px}
+.exp-row{display:grid;grid-template-columns:1fr 100px 28px;gap:5px;align-items:center}
+.exp-field{background:var(--bg2);border-radius:var(--radius-sm);padding:8px 10px;border:0.5px solid transparent;transition:border-color 0.15s}
+.exp-field:focus-within{border-color:var(--border2)}
+.exp-field input{background:transparent;border:none;outline:none;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;width:100%}
+.exp-field input::placeholder{color:var(--text3)}
+.exp-amt-row{display:flex;align-items:center;gap:3px}
+.exp-sym{font-size:12px;color:var(--text3);font-family:'DM Mono',monospace}
+.exp-num{font-family:'DM Mono',monospace;font-size:13px;width:100%;background:transparent;border:none;outline:none;color:var(--text)}
+.exp-num::-webkit-inner-spin-button{-webkit-appearance:none}
+.btn-del{background:transparent;border:0.5px solid var(--border);border-radius:var(--radius-sm);width:28px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text3);font-size:16px;line-height:1;transition:all 0.15s;flex-shrink:0}
+.btn-del:hover{border-color:var(--red);color:var(--red);background:var(--red-dim)}
+.btn-add{display:flex;align-items:center;gap:6px;background:transparent;border:0.5px dashed var(--border2);border-radius:var(--radius-sm);padding:8px 12px;color:var(--text3);font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.15s;width:100%;margin-bottom:6px}
+.btn-add:hover{border-color:var(--green);color:var(--green)}
+.exp-total-row{background:var(--red-dim);border:0.5px solid rgba(240,96,96,0.18);border-radius:var(--radius-sm);padding:10px 14px;display:flex;justify-content:space-between;align-items:center}
+.exp-total-label{font-size:11px;color:var(--red);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:0.08em}
+.exp-total-val{font-size:14px;font-weight:500;font-family:'DM Mono',monospace;color:var(--red)}
+
+/* ── Breakdown ── */
+.breakdown-card{background:var(--bg2);border-radius:var(--radius);overflow:hidden;border:0.5px solid var(--border)}
+.bd-row{display:flex;justify-content:space-between;align-items:center;padding:11px 16px;border-bottom:0.5px solid var(--border)}
+.bd-row:last-child{border-bottom:none}
+.bd-row.subtotal{background:var(--bg3)}
+.bd-row.total{background:var(--bg3);border-top:0.5px solid var(--border2)}
+.bd-label{font-size:13px;color:var(--text2)}
+.bd-label.muted{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace}
+.bd-val{font-size:13px;font-weight:500;font-family:'DM Mono',monospace;color:var(--text)}
+.bd-val.green{color:var(--green)}.bd-val.red{color:var(--red)}.bd-val.amber{color:var(--amber)}.bd-val.blue{color:var(--blue)}
+.bd-row.total .bd-label{font-weight:600;font-size:14px;color:var(--text)}
+.bd-row.total .bd-val{font-size:15px}
+.bd-empty{padding:40px 16px;text-align:center;font-size:12px;color:var(--text3);font-family:'DM Mono',monospace;line-height:1.8}
+.margin-bar-wrap{height:3px;background:var(--bg4);overflow:hidden}
+.margin-bar{height:100%;transition:width 0.5s cubic-bezier(0.4,0,0.2,1)}
+
+/* ── Insight cards (dashboard-identical) ── */
+.insights-wrap{display:flex;flex-direction:column;gap:10px}
+.insights-top-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:0}
+@media(max-width:800px){.insights-top-row{grid-template-columns:1fr 1fr}}
+@media(max-width:540px){.insights-top-row{grid-template-columns:1fr}}
+.insight-card{border-radius:var(--radius);padding:20px 22px}
+.insight-card.strength{background:var(--green-dim);border:0.5px solid rgba(61,214,140,0.22)}
+.insight-card.weakness{background:var(--red-dim);border:0.5px solid rgba(240,96,96,0.22)}
+.insight-card.health{background:var(--bg2);border:0.5px solid var(--border2)}
+.insight-card.nudge{background:var(--amber-dim);border:0.5px solid rgba(240,168,64,0.22)}
+.insight-header{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.insight-icon{font-size:13px}
+.insight-tag{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;font-family:'DM Mono',monospace}
+.insight-card.strength .insight-tag{color:var(--green)}
+.insight-card.weakness .insight-tag{color:var(--red)}
+.insight-card.health .insight-tag{color:var(--blue)}
+.insight-card.nudge .insight-tag{color:var(--amber)}
+.insight-title{font-size:16px;font-weight:500;color:var(--text);margin-bottom:8px;line-height:1.3}
+.insight-body{font-size:13px;color:var(--text2);line-height:1.7}
+.insight-body p{margin-bottom:8px}.insight-body p:last-child{margin-bottom:0}
+.insight-action{margin-top:12px;font-size:12px;font-family:'DM Mono',monospace;color:var(--text3);padding-top:10px;border-top:0.5px solid rgba(255,255,255,0.06);line-height:1.6}
+
+/* health card */
+.health-card{background:var(--bg2);border-radius:var(--radius);overflow:hidden;border:0.5px solid var(--border)}
+.health-header{padding:12px 16px;border-bottom:0.5px solid var(--border)}
+.health-title{font-size:13px;font-weight:500;color:var(--text)}
+.health-item{display:flex;gap:10px;padding:11px 16px;border-bottom:0.5px solid var(--border)}
+.health-item:last-child{border-bottom:none}
+.h-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.h-dot.good{background:var(--green)}.h-dot.warn{background:var(--amber)}.h-dot.bad{background:var(--red)}
+.h-body{flex:1;min-width:0}
+.h-title{font-size:13px;font-weight:500;color:var(--text);margin-bottom:3px}
+.h-body p{font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:3px}
+.h-action{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;line-height:1.5}
+.summary-empty{padding:24px 16px;text-align:center;font-size:12px;color:var(--text3);font-family:'DM Mono',monospace}
+
+/* ── Footer ── */
+.footer{margin-top:2.5rem;padding:1.25rem 0;border-top:0.5px solid var(--border);text-align:center}
+.footer p{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;line-height:1.9}
+.footer a{color:var(--text3);text-decoration:none;border-bottom:0.5px solid var(--border2)}
+.footer a:hover{color:var(--text2)}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div class="header-left">
+    <div class="header-title">Pricing Calculator</div>
+    <div class="header-sub">Photography &amp; videography job pricing</div>
+  </div>
+  <div class="header-right">
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px">
+      <div style="display:flex;align-items:center;gap:6px">
+        <div class="saved-dot" id="save-dot"></div>
+        <span class="save-label" id="save-label">Auto-saving</span>
+      </div>
+      <div id="save-time-wrap" style="display:none">
+        <span class="save-time">Last saved: <span id="save-time"></span></span>
+      </div>
+      <div style="display:flex;gap:6px">
+        <button class="btn-undo" onclick="resetAll()" style="border-color:rgba(240,96,96,0.35);color:var(--red)" title="Reset all values">⊘ Reset</button>
+        <button class="btn-undo" onclick="undo()">↩ Undo</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Tip: big 3 -->
+<div class="tip-card nudge" id="tip-big">
+  <div class="tip-header"><span class="tip-icon">💡</span><span class="tip-tag">Get started</span></div>
+  <div class="tip-body">Enter any <strong>two</strong> of the three values below — Price, Hourly Rate, or Time — and the third calculates automatically.</div>
+</div>
+
+<div class="section-label">Your numbers</div>
+
+<!-- Big 3 -->
+<div class="big3-wrap">
+  <div class="price-col">
+    <div class="big-card" id="card-price" style="border-radius:var(--radius-sm) 0 0 0;flex:1">
+      <div class="big-card-label">Price <span class="gst-badge" id="gst-badge">INC GST</span></div>
+      <div class="big-input-row">
+        <span class="big-sym">$</span>
+        <input class="big-input" type="number" id="price" min="0" step="1" placeholder="—" oninput="onBigInput('price')">
+      </div>
+      <div class="big-sub" id="price-sub"></div>
+    </div>
+    <div class="gst-row" style="border-radius:0 0 0 var(--radius-sm)">
+      <div style="display:flex;align-items:center">
+        <span class="gst-label">GST</span>
+        <span class="gst-desc">10% · Australia</span>
+      </div>
+      <label class="toggle">
+        <input type="checkbox" id="gst-toggle" onchange="state.gst=this.checked;update();queueSave()">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+  </div>
+  <div class="rate-time-col">
+    <div class="big-card" id="card-rate" style="border-radius:0">
+      <div class="big-card-label">Hourly rate <span style="font-size:9px;color:var(--text3);font-weight:400;text-transform:none;letter-spacing:0;margin-left:2px">profit/hr</span></div>
+      <div class="big-input-row">
+        <span class="big-sym">$</span>
+        <input class="big-input" type="number" id="rate" min="0" step="1" placeholder="—" oninput="onBigInput('rate')">
+      </div>
+      <div class="big-sub" id="rate-sub"></div>
+    </div>
+    <div class="big-card" id="card-time" style="border-radius:0 var(--radius-sm) var(--radius-sm) 0">
+      <div class="big-card-label">Total time <span style="font-size:9px;color:var(--text3);font-weight:400;text-transform:none;letter-spacing:0;margin-left:2px">from below</span></div>
+      <div class="big-input-row">
+        <input class="big-input" type="number" id="time-big" min="0" step="0.5" placeholder="—" oninput="onBigInput('time')">
+        <span class="big-unit">hrs</span>
+      </div>
+      <div class="big-sub" id="time-sub"></div>
+    </div>
+  </div>
+</div>
+
+<div class="calc-hint" id="calc-hint" style="display:none"></div>
+
+<!-- Three column -->
+<div class="three-col">
+  <!-- COL 1: Time -->
+  <div style="display:flex;flex-direction:column">
+    <div class="section-label">Time breakdown</div>
+    <div class="tip-card nudge" id="tip-time">
+      <div class="tip-header"><span class="tip-icon">💡</span><span class="tip-tag">Time</span></div>
+      <div class="tip-body">Break your job into phases — the total feeds directly into the calculation above.</div>
+    </div>
+    <div class="time-stack">
+      <div class="time-card">
+        <div class="time-left"><div class="time-card-label">Shoot / On-site</div><div class="time-card-hint">Hours on location</div></div>
+        <div class="time-right"><input class="time-input" type="number" id="t-shoot" min="0" step="0.5" placeholder="0" oninput="onTimeInput()"><span class="time-unit-sm">hrs</span></div>
+      </div>
+      <div class="time-card">
+        <div class="time-left"><div class="time-card-label">Travel</div><div class="time-card-hint">Total travel time</div></div>
+        <div class="time-right"><input class="time-input" type="number" id="t-travel" min="0" step="0.5" placeholder="0" oninput="onTimeInput()"><span class="time-unit-sm">hrs</span></div>
+      </div>
+      <div class="time-card">
+        <div class="time-left"><div class="time-card-label">Editing / Post</div><div class="time-card-hint">Post-production time</div></div>
+        <div class="time-right"><input class="time-input" type="number" id="t-edit" min="0" step="0.5" placeholder="0" oninput="onTimeInput()"><span class="time-unit-sm">hrs</span></div>
+      </div>
+    </div>
+    <div class="time-total-row">
+      <span class="time-total-label">Total time</span>
+      <span class="time-total-val" id="time-total-display">—</span>
+    </div>
+  </div>
+
+  <!-- COL 2: Expenses -->
+  <div style="display:flex;flex-direction:column">
+    <div class="section-label">Expenses</div>
+    <div class="tip-card nudge" id="tip-exp">
+      <div class="tip-header"><span class="tip-icon">💡</span><span class="tip-tag">Expenses</span></div>
+      <div class="tip-body">Add any costs you'll incur — second shooter, editor, travel costs, prints, software licences.</div>
+    </div>
+    <div class="exp-list" id="exp-list"></div>
+    <button class="btn-add" onclick="addExpense()">+ Add expense</button>
+    <div class="exp-total-row" id="exp-total-row" style="display:none;margin-top:6px">
+      <span class="exp-total-label">Total expenses</span>
+      <span class="exp-total-val" id="exp-total-val">—</span>
+    </div>
+  </div>
+
+  <!-- COL 3: Job Breakdown -->
+  <div style="display:flex;flex-direction:column">
+    <div class="section-label">Job breakdown</div>
+    <div class="tip-card nudge" id="tip-breakdown">
+      <div class="tip-header"><span class="tip-icon">💡</span><span class="tip-tag">Breakdown</span></div>
+      <div class="tip-body">Fill in at least two values above to see your full quote breakdown here.</div>
+    </div>
+    <div id="breakdown-wrap"></div>
+  </div>
+</div>
+
+<!-- Job analysis -->
+<div style="margin-top:2rem;margin-bottom:0">
+  <div class="section-label">Job analysis</div>
+  <div id="job-analysis"></div>
+</div>
+
+<div class="footer">
+  <p>© <span id="footer-year"></span> <strong>Consistent Creative Pty Ltd</strong> — All rights reserved.</p>
+  <p>This pricing calculator is the intellectual property of Consistent Creative Pty Ltd.</p>
+  <p>Unauthorised reproduction, distribution or use of this tool is strictly prohibited.</p>
+  <p style="margin-top:5px"><a href="https://www.consistentcreative.com" target="_blank">www.ConsistentCreative.com</a></p>
+</div>
+
+<script>
+const SK='quote_v4';
+let state={price:null,rate:null,timeBig:null,gst:false,shoot:0,travel:0,edit:0,expenses:[]};
+let hist=[],saveTimer=null,lastSaved=null,saveIv=null;
+
+// ── Storage ──────────────────────────────────────────────────────────────
+async function saveState(){
+  const s=JSON.stringify(state);
+  try{await window.storage.set(SK,s);}catch(e){}
+  try{localStorage.setItem(SK,s);}catch(e){}
+  lastSaved=new Date();showSaved();
+}
+function queueSave(){
+  document.getElementById('save-dot').style.background='var(--amber)';
+  clearTimeout(saveTimer);saveTimer=setTimeout(saveState,800);
+}
+function showSaved(){
+  document.getElementById('save-dot').style.background='var(--green)';
+  document.getElementById('save-time-wrap').style.display='flex';
+  updateSaveTime();clearInterval(saveIv);saveIv=setInterval(updateSaveTime,30000);
+}
+function updateSaveTime(){
+  if(!lastSaved)return;
+  const d=Math.round((Date.now()-lastSaved)/1000);
+  document.getElementById('save-time').textContent=d<10?'just now':d<60?d+'s ago':Math.round(d/60)+'m ago';
+}
+
+// ── Undo ─────────────────────────────────────────────────────────────────
+function pushHist(){hist.push(JSON.stringify(state));if(hist.length>50)hist.shift();}
+function undo(){if(!hist.length)return;Object.assign(state,JSON.parse(hist.pop()));applyDOM();update();queueSave();}
+document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='z'){e.preventDefault();undo();}});
+
+// ── Helpers ───────────────────────────────────────────────────────────────
+function fmt(n){return'$'+Math.abs(Math.round(n)).toLocaleString('en-AU')}
+function fmtDec(n){return'$'+(+Math.abs(n).toFixed(2)).toLocaleString('en-AU',{minimumFractionDigits:2})}
+function fmtHr(n){if(!n||n<=0)return'—';const h=Math.floor(n),m=Math.round((n-h)*60);return m===0?h+'h':h+'h '+m+'m';}
+function fmtRate(n){return'$'+Math.abs(n).toFixed(0)+'/hr';}
+function getTotalTime(){const bd=(+state.shoot||0)+(+state.travel||0)+(+state.edit||0);return bd>0?bd:(+state.timeBig||0);}
+function getTotalExp(){return state.expenses.reduce((s,e)=>s+(+e.amount||0),0);}
+function pExGST(p){return state.gst?p/1.1:p;}
+function toDisplay(exGST){return state.gst?exGST*1.1:exGST;}
+
+// ── Three-way calc ────────────────────────────────────────────────────────
+// Priority: most recently touched field is computed last.
+// We track which fields the user explicitly set. The unset one is computed.
+function compute(){
+  const exp=getTotalExp(),t=getTotalTime();
+  const p=+state.price||0,r=+state.rate||0,pEx=pExGST(p);
+  const hasP=state.price!==null&&state.price!=='';
+  const hasR=state.rate!==null&&state.rate!=='';
+  const hasT=t>0;
+  const count=[hasP,hasR,hasT].filter(Boolean).length;
+  // Need exactly 2 to compute the third
+  if(count<2)return{which:null,pEx,exp,t,p,r};
+  // All 3 set — no computation needed, just show values
+  if(count===3){
+    // recompute rate as sanity check display
+    const cr=t>0?(pEx-exp)/t:r;
+    return{which:null,pEx,exp,t,p,r:cr};
+  }
+  // Exactly 2 — compute the missing one
+  if(!hasR&&hasP&&hasT&&t>0){const cr=(pEx-exp)/t;return{which:'rate',val:cr,pEx,exp,t,p,r:cr};}
+  if(!hasT&&hasP&&hasR&&r>0){const ct=(pEx-exp)/r;return{which:'time',val:ct,pEx,exp,t:ct,p,r};}
+  if(!hasP&&hasR&&hasT&&t>0){const cpEx=r*t+exp;const cp=toDisplay(cpEx);return{which:'price',val:cp,pEx:cpEx,exp,t,p:cp,r};}
+  return{which:null,pEx,exp,t,p,r};
+}
+
+// ── Big inputs ────────────────────────────────────────────────────────────
+function onBigInput(field){
+  pushHist();
+  const v=document.getElementById(field==='price'?'price':field==='rate'?'rate':'time-big').value;
+  if(field==='price')state.price=v===''?null:+v;
+  else if(field==='rate')state.rate=v===''?null:+v;
+  else state.timeBig=v===''?null:+v;
+  update();queueSave();
+}
+function onTimeInput(){
+  pushHist();
+  state.shoot=+document.getElementById('t-shoot').value||0;
+  state.travel=+document.getElementById('t-travel').value||0;
+  state.edit=+document.getElementById('t-edit').value||0;
+  const bd=state.shoot+state.travel+state.edit;
+  if(bd>0){state.timeBig=null;document.getElementById('time-big').value='';}
+  update();queueSave();
+}
+
+// ── Tips ──────────────────────────────────────────────────────────────────
+function setTip(id,done){const el=document.getElementById(id);if(el)el.classList.toggle('done',done);}
+function updateTips(c){
+  const filled=[state.price!==null&&state.price!=='',state.rate!==null&&state.rate!=='',getTotalTime()>0].filter(Boolean).length;
+  setTip('tip-big',filled>=2);
+  setTip('tip-time',getTotalTime()>0);
+  setTip('tip-exp',state.expenses.length>0);
+  setTip('tip-breakdown',c.which!==null||(c.p>0&&c.t>0));
+}
+
+// ── Main update ───────────────────────────────────────────────────────────
+function update(){
+  const c=compute();
+  const totalTime=getTotalTime(),exp=getTotalExp();
+
+  // GST badge
+  document.getElementById('gst-badge').classList.toggle('visible',state.gst);
+
+  // Reset card colours
+  ['price','rate','time'].forEach(f=>document.getElementById('card-'+f).classList.remove('c-green','c-amber','c-red','c-blue'));
+
+  // Apply computed colour
+  if(c.which==='rate'){
+    document.getElementById('rate').value=c.val!==null?c.val.toFixed(0):'';
+    document.getElementById('card-rate').classList.add(c.val>=100?'c-green':c.val>=50?'c-amber':'c-red');
+  } else if(c.which==='price'){
+    document.getElementById('price').value=c.val>0?Math.round(c.val):'';
+    document.getElementById('card-price').classList.add('c-green');
+  } else if(c.which==='time'){
+    document.getElementById('time-big').value=c.val>0?c.val.toFixed(1):'';
+    document.getElementById('card-time').classList.add('c-blue');
+  }
+
+  // Sync time from breakdown
+  const bd=(+state.shoot||0)+(+state.travel||0)+(+state.edit||0);
+  if(bd>0&&c.which!=='time')document.getElementById('time-big').value=bd;
+
+  // Subs
+  document.getElementById('price-sub').textContent=state.gst&&(c.p>0)?'Ex GST: '+fmtDec(c.pEx):'';
+  document.getElementById('rate-sub').textContent='';
+  document.getElementById('time-sub').textContent=bd>0?`${fmtHr(state.shoot)} shoot · ${fmtHr(state.travel)} travel · ${fmtHr(state.edit)} edit`:'';
+
+  // Calc hint
+  const fc=[state.price!==null&&state.price!=='',state.rate!==null&&state.rate!=='',totalTime>0].filter(Boolean).length;
+  const hint=document.getElementById('calc-hint');
+  if(c.which){
+    const lbl={price:'Price',rate:'Hourly rate',time:'Total time'};
+    hint.innerHTML=`<strong>${lbl[c.which]}</strong> calculated automatically`;
+    hint.classList.add('computed');
+  } else if(fc===1){
+    hint.innerHTML='<strong>One more value</strong> needed to calculate';hint.classList.remove('computed');
+  } else {
+    hint.innerHTML='<strong>Enter any two values</strong> above — the third will calculate';hint.classList.remove('computed');
+  }
+
+  // Time total
+  document.getElementById('time-total-display').textContent=fmtHr(totalTime)||'—';
+
+  // Expense total
+  if(exp>0){document.getElementById('exp-total-row').style.display='flex';document.getElementById('exp-total-val').textContent=fmt(exp);}
+  else document.getElementById('exp-total-row').style.display='none';
+
+  updateTips(c);
+  renderBreakdown(c,totalTime,exp);
+  renderAnalysis(c,totalTime,exp);
+  sizeAllBigInputs();
+}
+
+// ── Breakdown ─────────────────────────────────────────────────────────────
+function renderBreakdown(c,t,exp){
+  const el=document.getElementById('breakdown-wrap');
+  const hasEnough=(c.p>0||c.which==='price')&&t>0;
+  if(!hasEnough){el.innerHTML=`<div class="breakdown-card"><div class="bd-empty">Fill in at least two values above<br>to see your breakdown here</div></div>`;return;}
+  const displayP=c.which==='price'?c.val:c.p;
+  const pEx=c.pEx,gstComp=state.gst?displayP-displayP/1.1:0;
+  const profit=pEx-exp,margin=pEx>0?Math.round((profit/pEx)*100):0;
+  const profClass=profit>=0?'green':'red',rateClass=c.r>=100?'green':c.r>=50?'amber':'red';
+
+  el.innerHTML=`<div class="breakdown-card">
+    <div class="bd-row"><div class="bd-label">Quoted price${state.gst?'<span style="font-size:10px;color:var(--text3);margin-left:6px;font-family:\'DM Mono\',monospace">inc GST</span>':''}</div><div class="bd-val">${fmt(displayP)}</div></div>
+    ${gstComp>0?`<div class="bd-row"><div class="bd-label muted">↳ GST component</div><div class="bd-val amber">−${fmtDec(gstComp)}</div></div>`:''}
+    ${exp>0?`<div class="bd-row"><div class="bd-label">Expenses</div><div class="bd-val red">−${fmt(exp)}</div></div>`:''}
+    <div class="bd-row total"><div class="bd-label">Profit</div><div class="bd-val ${profClass}">${profit<0?'−':''}${fmt(profit)}</div></div>
+    <div class="bd-row"><div class="bd-label muted">Profit margin</div><div class="bd-val ${profClass}">${margin}%</div></div>
+    <div class="bd-row"><div class="bd-label">Total time</div><div class="bd-val blue">${fmtHr(t)}</div></div>
+    <div class="bd-row total"><div class="bd-label">Hourly rate</div><div class="bd-val ${rateClass}">${fmtRate(c.r)}</div></div>
+  </div>`;
+}
+
+// ── Analysis ──────────────────────────────────────────────────────────────
+function renderAnalysis(c,t,exp){
+  const el=document.getElementById('job-analysis');
+  const hasEnough=(c.p>0||c.which==='price')&&t>0;
+  if(!hasEnough){
+    el.innerHTML=`<div class="insight-card nudge"><div class="insight-header"><span class="insight-icon">💡</span><span class="insight-tag">Not yet</span></div><div class="insight-title">Complete your quote to see job analysis</div><div class="insight-body">Once you've filled in price and time, you'll get an honest read on hourly rate, margin, and time efficiency.</div></div>`;
+    return;
+  }
+  const pEx=c.pEx,profit=pEx-exp,margin=pEx>0?Math.round((profit/pEx)*100):0,r=c.r;
+
+  function cardClass(dot){return dot==='good'?'strength':dot==='warn'?'nudge':'weakness';}
+  function cardIcon(dot){return dot==='good'?'✦':dot==='warn'?'◈':'◎';}
+  function cardTag(dot){return dot==='good'?'Looking good':dot==='warn'?'Watch this':'Needs attention';}
+  function makeCard(dot,title,body,action){
+    return`<div class="insight-card ${cardClass(dot)}"><div class="insight-header"><span class="insight-icon">${cardIcon(dot)}</span><span class="insight-tag">${cardTag(dot)}</span></div><div class="insight-title">${title}</div><div class="insight-body">${body}</div><div class="insight-action">${action}</div></div>`;
+  }
+
+  // Block 1 — Hourly rate
+  let b1;
+  if(r>=150)b1=makeCard('good',`Hourly rate — ${fmtRate(r)}`,`At ${fmtRate(r)} this job is priced well. You're earning a premium rate and building a sustainable business.`,`→ Use this as your benchmark. Any job below this rate is worth questioning.`);
+  else if(r>=100)b1=makeCard('good',`Hourly rate — ${fmtRate(r)}`,`${fmtRate(r)} is a solid, healthy rate. The job covers your time well and leaves room for the unexpected.`,`→ Look for ways to tighten editing or admin time to push this even higher over time.`);
+  else if(r>=60)b1=makeCard('warn',`Hourly rate — ${fmtRate(r)}`,`${fmtRate(r)} is workable but leaves limited buffer. Any scope creep or extra editing time will compress this quickly.`,`→ A 10–15% price increase would move this into a healthy range without losing most clients.`);
+  else if(r>=30)b1=makeCard('warn',`Hourly rate — ${fmtRate(r)}`,`At ${fmtRate(r)} this job is underpriced for the time involved. Fine for a slow period, not a sustainable baseline.`,`→ The price needs to go up, the scope needs to come down, or both.`);
+  else b1=makeCard('bad',`Hourly rate is very low — ${fmtRate(r)}`,`${fmtRate(r)} is below a viable professional rate. At this level the job is costing you more than it's worth.`,`→ Don't quote at this rate as standard. Adjust price, cut scope, or decline the job.`);
+
+  // Block 2 — Margin & profitability
+  let b2;
+  if(margin>=50)b2=makeCard('good',`Excellent margin — ${margin}%`,`Keeping ${margin}% of revenue as profit means your costs are well controlled. This is a high-quality job financially.`,`→ Protect this as complexity grows — expense creep is the most common way margins erode silently.`);
+  else if(margin>=30)b2=makeCard('good',`Healthy margin — ${margin}%`,`A ${margin}% margin is solid. After expenses, the job is returning a meaningful share of every dollar earned.`,`→ Systematising your delivery process is the cleanest way to push this higher without raising prices.`);
+  else if(margin>=15)b2=makeCard('warn',`Thin margin — ${margin}%`,`${margin}% margin means most of the quoted price is absorbed by costs. There's limited room for surprises.`,`→ Review each expense line. Is every cost necessary? Does the price fully reflect the delivery cost?`);
+  else b2=makeCard('bad',`Very thin margin — ${margin}%`,`At ${margin}%, expenses are consuming almost all revenue. This job is barely covering its costs.`,`→ A healthy rule of thumb: expenses shouldn't exceed 40% of quoted price. Reprice or restructure.`);
+
+  // Block 3 — Time & expenses
+  let b3dot='good',b3title,b3body,b3action;
+  const editPct=t>0?Math.round(((+state.edit||0)/t)*100):0;
+  const travelPct=t>0?Math.round(((+state.travel||0)/t)*100):0;
+  const expRatio=pEx>0?Math.round((exp/pEx)*100):0;
+
+  if(exp===0&&editPct<=40&&travelPct<=20){
+    b3dot='good';b3title='Time & costs look efficient';
+    b3body=`${fmtHr(t)} total time with no major cost concerns. The job has a clean, efficient structure.`;
+    b3action=`→ Add expenses to the calculator if you have any — even small ones affect your true hourly rate.`;
+  } else if(expRatio>50){
+    b3dot='bad';b3title=`Expenses are very high — ${expRatio}% of revenue`;
+    b3body=`Over half the job revenue is going to expenses. This leaves very little room for profit regardless of price.`;
+    b3action=`→ Consider passing expenses directly through to the client rather than absorbing them in your rate.`;
+  } else if(expRatio>30){
+    b3dot='warn';b3title=`Expenses are ${expRatio}% of revenue`;
+    b3body=`${fmt(exp)} in costs is significant on this job. Each expense should be clearly necessary and ideally itemised in your quote.`;
+    b3action=`→ Showing expenses to the client builds trust and justifies the total price more clearly.`;
+  } else if(editPct>50){
+    b3dot='warn';b3title=`Editing is ${editPct}% of your time`;
+    b3body=`More than half your hours are in post-production. This is common for weddings and events but only works if the rate reflects it.`;
+    b3action=`→ Outsourcing editing to a trusted contractor can free your highest-value hours, often at a net profit.`;
+  } else if(travelPct>25){
+    b3dot='warn';b3title=`Travel is ${travelPct}% of total time`;
+    b3body=`At ${fmtHr(+state.travel||0)}, travel is a meaningful part of this job. It's easy to undervalue or forget in pricing.`;
+    b3action=`→ Always include travel in your hourly rate. Over 1.5hrs, a separate travel surcharge is reasonable.`;
+  } else {
+    b3dot='good';b3title='Time is well structured';
+    b3body=`The time breakdown looks balanced across phases. No single area is disproportionately large.`;
+    b3action=`→ Keep tracking time per phase on real jobs — the estimates versus actuals will sharpen your quoting over time.`;
+  }
+  const b3=makeCard(b3dot,b3title,b3body,b3action);
+
+  el.innerHTML=`<div class="insights-top-row">${b1}${b2}${b3}</div>`;
+}
+
+// ── Expenses ──────────────────────────────────────────────────────────────
+function addExpense(){pushHist();state.expenses.push({id:'e'+Date.now(),name:'',amount:''});renderExpenses();queueSave();}
+function removeExpense(id){pushHist();state.expenses=state.expenses.filter(e=>e.id!==id);renderExpenses();update();queueSave();}
+function updateExpense(id,f,v){const e=state.expenses.find(x=>x.id===id);if(e)e[f]=v;update();queueSave();}
+function renderExpenses(){
+  document.getElementById('exp-list').innerHTML=state.expenses.map(e=>`
+    <div class="exp-row">
+      <div class="exp-field"><input type="text" value="${e.name||''}" placeholder="e.g. Second shooter, editor, prints…" oninput="updateExpense('${e.id}','name',this.value)"></div>
+      <div class="exp-field"><div class="exp-amt-row"><span class="exp-sym">$</span><input class="exp-num" type="number" value="${e.amount||''}" min="0" step="1" placeholder="0" oninput="updateExpense('${e.id}','amount',this.value)"></div></div>
+      <button class="btn-del" onclick="removeExpense('${e.id}')">×</button>
+    </div>`).join('');
+}
+
+// ── Reset ────────────────────────────────────────────────────────────────
+function resetAll(){
+  pushHist();
+  state.price=null;state.rate=null;state.timeBig=null;
+  state.shoot=0;state.travel=0;state.edit=0;state.expenses=[];
+  applyDOM();update();queueSave();
+}
+
+// ── Apply DOM ─────────────────────────────────────────────────────────────
+function applyDOM(){
+  document.getElementById('price').value=state.price!==null?state.price:'';
+  document.getElementById('rate').value=state.rate!==null?state.rate:'';
+  document.getElementById('time-big').value=state.timeBig!==null?state.timeBig:'';
+  document.getElementById('gst-toggle').checked=!!state.gst;
+  document.getElementById('t-shoot').value=state.shoot||'';
+  document.getElementById('t-travel').value=state.travel||'';
+  document.getElementById('t-edit').value=state.edit||'';
+  renderExpenses();
+  sizeAllBigInputs();
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────
+document.getElementById('footer-year').textContent=new Date().getFullYear();
+
+// Auto-size big inputs to their content
+function sizeBigInput(el){
+  const len=el.value?el.value.length:1;
+  el.style.width=Math.max(len,1)+'ch';
+}
+function sizeAllBigInputs(){
+  document.querySelectorAll('.big-input').forEach(sizeBigInput);
+}
+(async()=>{
+  try{const r=await window.storage.get(SK);if(r&&r.value){Object.assign(state,JSON.parse(r.value));applyDOM();}}
+  catch(e){try{const raw=localStorage.getItem(SK);if(raw){Object.assign(state,JSON.parse(raw));applyDOM();}}catch(e2){}}
+  update();
+})();
+</script>
+</body>
+</html>
