@@ -71,6 +71,7 @@ body::before{
 .gate-input::placeholder{color:var(--text3)}
 .gate-input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(61,214,140,0.1)}
 .gate-input.shake{animation:shakeX 0.4s ease}
+.gate-input.input-error{border-color:var(--red);box-shadow:0 0 0 3px rgba(240,96,96,0.15);animation:shakeX 0.4s ease}
 .gate-btn{
   background:var(--green);border:none;border-radius:var(--radius-sm);
   padding:10px 22px;font-size:14px;font-weight:600;color:#0e0e0e;
@@ -78,8 +79,8 @@ body::before{
   animation:btnPulse 2s ease-in-out infinite;transition:opacity 0.15s;
 }
 .gate-btn:hover{opacity:0.88}
-.gate-btn:disabled{opacity:0.35;cursor:not-allowed;animation:none;box-shadow:none}
-.gate-btn:not(:disabled){animation:btnPulse 2s ease-in-out infinite}
+.gate-btn{animation:btnPulse 2s ease-in-out infinite}
+
 .gate-note{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;margin-top:10px}
 
 /* Unlocked success banner */
@@ -178,20 +179,6 @@ body::before{
 .card-blue .tool-card-accent{background:var(--blue)}
 .card-blue .tool-card-tag{background:var(--blue-dim);color:var(--blue)}
 
-/* ── Email prompt tooltip ── */
-.email-prompt-tip{
-  position:absolute;transform:translateX(-50%);
-  background:var(--amber);color:#0e0e0e;
-  font-size:12px;font-weight:500;font-family:'DM Sans',sans-serif;
-  padding:7px 14px;border-radius:var(--radius-sm);
-  white-space:nowrap;pointer-events:none;z-index:100;
-  opacity:0;transition:opacity 0.2s;
-}
-.email-prompt-tip.show{opacity:1}
-.email-prompt-tip::after{
-  content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);
-  border:5px solid transparent;border-top-color:var(--amber);
-}
 
 /* ── Footer ── */
 .footer{position:relative;z-index:1;padding:1.25rem 2rem;border-top:0.5px solid var(--border);text-align:center}
@@ -216,17 +203,16 @@ body::before{
       <span class="wm-bold">CONSISTENT</span><span class="wm-light"> CREATIVE</span>
     </div>
     <h1 class="hero-title">Tools built for<br><span class="hero-green" id="typewriter"></span><span class="cursor" id="cursor">|</span></h1>
-    <p class="hero-sub">Built for creatives who want clarity and consistency for their business.</p>
+    <p class="hero-sub">Tools to help creatives run a stress free business.</p>
   </header>
 
   <!-- Email gate -->
   <div class="gate" id="gate">
-    <div class="gate-lock-bg">🔒</div>
     <div class="gate-title">Get Free Access To Our Tools</div>
     <div class="gate-sub">→ Enter your email below to unlock the full suite instantly</div>
     <div class="gate-form">
-      <input class="gate-input" type="email" id="gate-email" placeholder="your@email.com" oninput="checkEmail()">
-      <button class="gate-btn" id="gate-submit" onclick="unlock()" disabled>Unlock free →</button>
+      <input class="gate-input" type="email" id="gate-email" placeholder="your@email.com">
+      <button class="gate-btn" id="gate-submit" onclick="unlock()">Unlock free →</button>
     </div>
     <div class="gate-note">No spam — just occasional updates when new tools drop.</div>
   </div>
@@ -309,31 +295,16 @@ if(window.location.search.includes('reset')){
 
 function promptEmail(e){
   e.preventDefault();e.stopPropagation();
-  // Show amber tooltip near clicked badge
-  const badge=e.currentTarget;
-  let tip=document.getElementById('email-prompt-tip');
-  if(!tip){
-    tip=document.createElement('div');
-    tip.id='email-prompt-tip';
-    tip.className='email-prompt-tip';
-    tip.textContent='Enter your email above to unlock ↑';
-    document.body.appendChild(tip);
-  }
-  const r=badge.getBoundingClientRect();
-  tip.style.left=(r.left+r.width/2)+'px';
-  tip.style.top=(r.top+window.scrollY-44)+'px';
-  tip.classList.add('show');
-  clearTimeout(tip._t);
-  tip._t=setTimeout(()=>tip.classList.remove('show'),2500);
-  // Also shake the gate
-  const input=document.getElementById('gate-email');
   const gate=document.getElementById('gate');
+  const input=document.getElementById('gate-email');
   gate.scrollIntoView({behavior:'smooth',block:'center'});
   setTimeout(()=>{
-    input.classList.remove('shake');void input.offsetWidth;
-    input.classList.add('shake');input.focus();
-    setTimeout(()=>input.classList.remove('shake'),400);
-  },400);
+    input.classList.remove('input-error','shake');
+    void input.offsetWidth;
+    input.classList.add('input-error');
+    input.focus();
+    setTimeout(()=>input.classList.remove('input-error'),1800);
+  },350);
 }
 
 function handleCardClick(e){
@@ -352,19 +323,23 @@ function handleCardClick(e){
   return true;
 }
 
-function checkEmail(){
-  const v=document.getElementById('gate-email').value;
-  const valid=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
-  document.getElementById('gate-submit').disabled=!valid;
-}
+
 
 function unlock(){
-  const email=document.getElementById('gate-email').value;
-  if(!email)return;
-  // Store unlocked state
+  const input=document.getElementById('gate-email');
+  const email=input.value.trim();
+  const valid=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  if(!valid){
+    // Flash red
+    input.classList.remove('input-error');
+    void input.offsetWidth;
+    input.classList.add('input-error');
+    input.focus();
+    setTimeout(()=>input.classList.remove('input-error'),1800);
+    return;
+  }
   try{localStorage.setItem(UNLOCK_KEY,email);}catch(e){}
   applyUnlocked(true);
-  // Send to Kit
   pingKit(email);
 }
 
