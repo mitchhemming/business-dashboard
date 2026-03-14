@@ -47,16 +47,19 @@ body::before{
 @keyframes shakeX{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
 @keyframes unlockReveal{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
 
+@keyframes gateGlow{0%,100%{box-shadow:0 0 20px rgba(255,255,255,0.03),0 0 0 1px rgba(255,255,255,0.12)}50%{box-shadow:0 0 35px rgba(255,255,255,0.06),0 0 0 1px rgba(255,255,255,0.22)}}
 .gate{
-  background:var(--bg2);
-  border:0.5px solid var(--border2);
+  background:linear-gradient(135deg,rgba(255,255,255,0.06) 0%,rgba(255,255,255,0.02) 100%);
+  border:0.5px solid rgba(255,255,255,0.15);
   border-radius:var(--radius);padding:2rem 2.25rem;margin-bottom:2.5rem;
   transition:all 0.4s;position:relative;overflow:hidden;
+  animation:gateGlow 3s ease-in-out infinite;
 }
+.gate::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent)}
 .gate.unlocked{display:none}
 .gate-lock-bg{font-size:120px;position:absolute;right:-10px;top:50%;transform:translateY(-50%);opacity:0.04;line-height:1;pointer-events:none;user-select:none}
 .gate-title{font-size:20px;font-weight:600;color:var(--text);margin-bottom:6px;letter-spacing:-0.02em}
-.gate-sub{font-size:13px;color:var(--text3);margin-bottom:1.25rem;line-height:1.6;font-family:'DM Mono',monospace}
+.gate-sub{font-size:13px;color:var(--text2);margin-bottom:1.25rem;line-height:1.6;font-family:'DM Mono',monospace}
 .gate-form{display:flex;gap:8px;flex-wrap:wrap}
 .gate-input{
   flex:1;min-width:220px;
@@ -76,6 +79,7 @@ body::before{
 }
 .gate-btn:hover{opacity:0.88}
 .gate-btn:disabled{opacity:0.35;cursor:not-allowed;animation:none;box-shadow:none}
+.gate-btn:not(:disabled){animation:btnPulse 2s ease-in-out infinite}
 .gate-note{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;margin-top:10px}
 
 /* Unlocked success banner */
@@ -131,12 +135,7 @@ body::before{
 }
 .card-green .lock-badge{background:var(--green);color:#0e0e0e;border:none}
 .card-blue .lock-badge{background:var(--blue);color:#0e0e0e;border:none}
-.card-big-lock{
-  position:absolute;bottom:-8px;right:-8px;
-  opacity:0.12;pointer-events:none;user-select:none;
-}
-.card-big-lock svg{width:130px;height:130px}
-.card-big-lock svg path,.card-big-lock svg rect{fill:#ffffff}
+
 
 /* Card colour variants - locked state fully vibrant */
 .card-green{
@@ -179,6 +178,21 @@ body::before{
 .card-blue .tool-card-accent{background:var(--blue)}
 .card-blue .tool-card-tag{background:var(--blue-dim);color:var(--blue)}
 
+/* ── Email prompt tooltip ── */
+.email-prompt-tip{
+  position:absolute;transform:translateX(-50%);
+  background:var(--amber);color:#0e0e0e;
+  font-size:12px;font-weight:500;font-family:'DM Sans',sans-serif;
+  padding:7px 14px;border-radius:var(--radius-sm);
+  white-space:nowrap;pointer-events:none;z-index:100;
+  opacity:0;transition:opacity 0.2s;
+}
+.email-prompt-tip.show{opacity:1}
+.email-prompt-tip::after{
+  content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);
+  border:5px solid transparent;border-top-color:var(--amber);
+}
+
 /* ── Footer ── */
 .footer{position:relative;z-index:1;padding:1.25rem 2rem;border-top:0.5px solid var(--border);text-align:center}
 .footer p{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;line-height:1.9}
@@ -202,7 +216,7 @@ body::before{
       <span class="wm-bold">CONSISTENT</span><span class="wm-light"> CREATIVE</span>
     </div>
     <h1 class="hero-title">Tools built for<br><span class="hero-green" id="typewriter"></span><span class="cursor" id="cursor">|</span></h1>
-    <p class="hero-sub">Tools to help freelance creatives run a consistent business with less stress.</p>
+    <p class="hero-sub">Built for creatives who want clarity and consistency for their business.</p>
   </header>
 
   <!-- Email gate -->
@@ -245,8 +259,7 @@ Stop guessing. Start growing.</div>
           <span class="pill">💡 Business insights</span>
         </div>
         <div class="tool-card-footer" style="margin-top:16px">
-          <div class="lock-badge" id="lock-dashboard">🔒 Unlock free</div>
-        <div class="card-big-lock" id="big-lock-dashboard"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="11" width="14" height="10" rx="2" fill="currentColor" opacity="1"/><path d="M8 11V7a4 4 0 0 1 8 0v4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none"/></svg></div>
+          <div class="lock-badge" id="lock-dashboard" onclick="promptEmail(event)">🔒 Unlock free</div>
           <span class="tool-card-arrow">→</span>
         </div>
       </a>
@@ -264,8 +277,7 @@ Stop guessing. Start growing.</div>
           <span class="pill">🕐 Time breakdown</span>
         </div>
         <div class="tool-card-footer" style="margin-top:16px">
-          <div class="lock-badge" id="lock-pricing">🔒 Unlock free</div>
-        <div class="card-big-lock" id="big-lock-pricing"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="11" width="14" height="10" rx="2" fill="currentColor" opacity="1"/><path d="M8 11V7a4 4 0 0 1 8 0v4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none"/></svg></div>
+          <div class="lock-badge" id="lock-pricing" onclick="promptEmail(event)">🔒 Unlock free</div>
           <span class="tool-card-arrow">→</span>
         </div>
       </a>
@@ -295,19 +307,45 @@ if(window.location.search.includes('reset')){
   try{localStorage.removeItem(UNLOCK_KEY);}catch(e){}
 }
 
+function promptEmail(e){
+  e.preventDefault();e.stopPropagation();
+  // Show amber tooltip near clicked badge
+  const badge=e.currentTarget;
+  let tip=document.getElementById('email-prompt-tip');
+  if(!tip){
+    tip=document.createElement('div');
+    tip.id='email-prompt-tip';
+    tip.className='email-prompt-tip';
+    tip.textContent='Enter your email above to unlock ↑';
+    document.body.appendChild(tip);
+  }
+  const r=badge.getBoundingClientRect();
+  tip.style.left=(r.left+r.width/2)+'px';
+  tip.style.top=(r.top+window.scrollY-44)+'px';
+  tip.classList.add('show');
+  clearTimeout(tip._t);
+  tip._t=setTimeout(()=>tip.classList.remove('show'),2500);
+  // Also shake the gate
+  const input=document.getElementById('gate-email');
+  const gate=document.getElementById('gate');
+  gate.scrollIntoView({behavior:'smooth',block:'center'});
+  setTimeout(()=>{
+    input.classList.remove('shake');void input.offsetWidth;
+    input.classList.add('shake');input.focus();
+    setTimeout(()=>input.classList.remove('shake'),400);
+  },400);
+}
+
 function handleCardClick(e){
   if(!isUnlocked()){
     e.preventDefault();
-    // Pulse and shake the email input
     const input=document.getElementById('gate-email');
     const gate=document.getElementById('gate');
     input.classList.remove('shake');
-    void input.offsetWidth; // reflow
+    void input.offsetWidth;
     input.classList.add('shake');
     input.focus();
-    gate.style.animation='none';
-    void gate.offsetWidth;
-    gate.style.animation='gateGlow 3s ease-in-out infinite';
+    gate.scrollIntoView({behavior:'smooth',block:'center'});
     setTimeout(()=>input.classList.remove('shake'),400);
     return false;
   }
@@ -341,8 +379,7 @@ function applyUnlocked(fresh){
     const lock=document.getElementById('lock-'+id);
     card.classList.remove('locked');
     card.removeAttribute('onclick');
-    const bigLock=document.getElementById('big-lock-'+id);
-    if(bigLock)bigLock.remove();
+
     if(lock){
       lock.textContent='✓ Unlocked';
       lock.style.background='rgba(61,214,140,0.15)';
