@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>CC Tools — Consistent Creative</title>
+<title>Consistent Creative Tools</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -37,6 +37,8 @@ body::before{
 .wm-light{font-weight:400;color:#6a6a64}
 .hero-title{font-size:clamp(36px,6vw,58px);font-weight:500;letter-spacing:-0.035em;line-height:1.05;color:var(--text);margin-bottom:14px}
 .hero-green{color:var(--green)}
+.hero-sub-stack{display:flex;flex-direction:column;gap:8px}
+.hero-sub-2{font-size:14px;color:var(--text3);line-height:1.7;max-width:480px}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
 .cursor{color:var(--green);font-weight:300;animation:blink 0.8s step-end infinite;margin-left:2px}
 .hero-title span{color:var(--green)}
@@ -121,7 +123,7 @@ body::before{
 .tool-card-arrow{font-size:14px;color:var(--text3);transition:transform 0.15s,color 0.15s}
 .tool-card:not(.locked):hover .tool-card-arrow{transform:translateX(3px);color:var(--text2)}
 .tool-card.locked .tool-card-name{color:var(--text)}
-.tool-card.locked{cursor:pointer}
+.tool-card.locked{cursor:pointer;pointer-events:all}
 
 /* Glow animations */
 @keyframes borderGlow{0%,100%{opacity:0.6}50%{opacity:1}}
@@ -203,7 +205,10 @@ body::before{
       <span class="wm-bold">CONSISTENT</span><span class="wm-light"> CREATIVE</span>
     </div>
     <h1 class="hero-title">Tools built for<br><span class="hero-green" id="typewriter"></span><span class="cursor" id="cursor">|</span></h1>
-    <p class="hero-sub">Tools to help creatives run a stress free business.</p>
+    <div class="hero-sub-stack">
+      <p class="hero-sub">Tools to help creatives run a stress free business.</p>
+      <p class="hero-sub-2">Welcome to your new business toolkit.<br>It's time to become a creative with clarity.</p>
+    </div>
   </header>
 
   <!-- Email gate -->
@@ -231,7 +236,7 @@ body::before{
     <div class="tools-label">Available tools</div>
     <div class="tools-grid" id="tools-grid">
 
-      <a class="tool-card card-green locked" id="card-dashboard" href="https://tools.consistentcreative.com/business-dashboard/" target="_blank" rel="noopener" onclick="return handleCardClick(event)">
+      <a class="tool-card card-green locked" id="card-dashboard" href="https://tools.consistentcreative.com/business-dashboard/" target="_blank" rel="noopener" onclick="return handleCardClick(event)" style="cursor:pointer">
         <div class="tool-card-accent"></div>
         <div class="tool-card-tag" style="margin-bottom:14px;display:inline-flex">Business</div>
         <div class="tool-card-name">Business Dashboard</div>
@@ -250,7 +255,7 @@ Stop guessing. Start growing.</div>
         </div>
       </a>
 
-      <a class="tool-card card-blue locked" id="card-pricing" href="https://tools.consistentcreative.com/pricing-calculator/" target="_blank" rel="noopener" onclick="return handleCardClick(event)">
+      <a class="tool-card card-blue locked" id="card-pricing" href="https://tools.consistentcreative.com/pricing-calculator/" target="_blank" rel="noopener" onclick="return handleCardClick(event)" style="cursor:pointer">
         <div class="tool-card-accent"></div>
         <div class="tool-card-tag" style="margin-bottom:14px;display:inline-flex">Pricing</div>
         <div class="tool-card-name">Pricing Calculator</div>
@@ -310,14 +315,7 @@ function promptEmail(e){
 function handleCardClick(e){
   if(!isUnlocked()){
     e.preventDefault();
-    const input=document.getElementById('gate-email');
-    const gate=document.getElementById('gate');
-    input.classList.remove('shake');
-    void input.offsetWidth;
-    input.classList.add('shake');
-    input.focus();
-    gate.scrollIntoView({behavior:'smooth',block:'center'});
-    setTimeout(()=>input.classList.remove('shake'),400);
+    promptEmail(e);
     return false;
   }
   return true;
