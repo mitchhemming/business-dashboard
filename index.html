@@ -14,6 +14,7 @@
   --amber:#f0a840;--amber-dim:rgba(240,168,64,0.08);
   --blue:#60aaff;--blue-dim:rgba(96,170,255,0.08);
   --red:#f06060;
+  --purple:#c084fc;--purple-dim:rgba(192,132,252,0.08);
   --radius:12px;--radius-sm:6px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
@@ -102,8 +103,9 @@ body::before{
 
 /* ── Tools grid ── */
 .tools-label{font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;font-family:'DM Mono',monospace;margin-bottom:14px}
-.tools-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-@media(max-width:580px){.tools-grid{grid-template-columns:1fr}}
+.tools-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:780px){.tools-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:500px){.tools-grid{grid-template-columns:1fr}}
 
 /* ── Tool card ── */
 .tool-card{background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius);padding:22px 24px;text-decoration:none;display:flex;flex-direction:column;gap:0;transition:border-color 0.2s,background 0.2s,transform 0.15s;position:relative;overflow:hidden;cursor:pointer}
@@ -179,6 +181,26 @@ body::before{
 .card-green .tool-card-tag{background:var(--green-dim);color:var(--green)}
 .card-blue .tool-card-accent{background:var(--blue)}
 .card-blue .tool-card-tag{background:var(--blue-dim);color:var(--blue)}
+.card-purple .tool-card-accent{background:var(--purple)}
+.card-purple .tool-card-tag{background:var(--purple-dim);color:var(--purple)}
+
+.card-purple{
+  background:linear-gradient(135deg,rgba(192,132,252,0.12) 0%,rgba(192,132,252,0.04) 100%);
+  border:0.5px solid rgba(192,132,252,0.35) !important;
+  box-shadow:0 0 30px rgba(192,132,252,0.08),inset 0 1px 0 rgba(192,132,252,0.1);
+}
+.card-purple::after{
+  content:'';position:absolute;inset:-1px;border-radius:var(--radius);
+  background:linear-gradient(135deg,rgba(192,132,252,0.3),transparent 50%,rgba(192,132,252,0.1));
+  pointer-events:none;opacity:0;transition:opacity 0.3s;
+  animation:borderGlow 3s 3s ease-in-out infinite;
+}
+.card-purple .tool-card-accent{background:var(--purple);opacity:1 !important}
+.card-purple .lock-badge{background:rgba(192,132,252,0.15);border:0.5px solid rgba(192,132,252,0.4);color:var(--purple);animation:purplePulse 2s ease-in-out infinite}
+.card-purple .tool-card-tag{background:rgba(192,132,252,0.15);color:var(--purple)}
+.card-purple .tool-card-arrow{color:var(--purple)}
+.card-purple .tool-card-name{color:var(--text) !important}
+@keyframes purplePulse{0%,100%{box-shadow:0 0 0 0 rgba(192,132,252,0.4)}50%{box-shadow:0 0 0 8px rgba(192,132,252,0)}}
 
 
 /* ── Footer ── */
@@ -269,6 +291,24 @@ Stop guessing. Start growing.</div>
         </div>
       </a>
 
+      <a class="tool-card card-purple locked" id="card-income" href="https://tools.consistentcreative.com/income-allocation-calculator/" target="_blank" rel="noopener" onclick="return handleCardClick(event)" style="cursor:pointer">
+        <div class="tool-card-accent"></div>
+        <div class="tool-card-tag" style="margin-bottom:14px;display:inline-flex">Finance</div>
+        <div class="tool-card-name">Income Allocation</div>
+        <div class="tool-card-headline">Every dollar with a destination. Business and personal.</div>
+        <div class="tool-card-desc">Allocate your business revenue across owner pay, tax, expenses and savings. Then flow your personal income into a spending, housing and savings plan.</div>
+        <div class="tool-card-pills">
+          <span class="pill">💼 Business split</span>
+          <span class="pill">🏠 Personal budget</span>
+          <span class="pill">💡 Smart insights</span>
+          <span class="pill">📊 Visual rings</span>
+        </div>
+        <div class="tool-card-footer" style="margin-top:16px">
+          <div class="lock-badge" id="lock-income" onclick="promptEmail(event)">🔒 Unlock free</div>
+          <span class="tool-card-arrow">→</span>
+        </div>
+      </a>
+
     </div>
   </div>
 
@@ -343,7 +383,7 @@ function applyUnlocked(fresh){
   // Show banner if just unlocked
   if(fresh)document.getElementById('unlocked-banner').classList.add('show');
   // Unlock cards — keep colours, just remove locked state and badges
-  ['dashboard','pricing'].forEach(id=>{
+  ['dashboard','pricing','income'].forEach(id=>{
     const card=document.getElementById('card-'+id);
     const lock=document.getElementById('lock-'+id);
     card.classList.remove('locked');
