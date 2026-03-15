@@ -1,1 +1,963 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Creator Pro Calculator</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#08080f;--bg2:#10101c;--bg3:#181828;--bg4:#202035;
+  --border:rgba(255,255,255,0.09);--border2:rgba(255,255,255,0.16);
+  --text:#f4f4f2;--text2:#dcdce8;--text3:#aaaabc;
+  --green:#3dd68c;--green-dim:rgba(61,214,140,0.12);
+  --blue:#60aaff;--blue-dim:rgba(96,170,255,0.12);
+  --purple:#c084fc;--purple-dim:rgba(192,132,252,0.12);
+  --pink:#f472b6;--pink-dim:rgba(244,114,182,0.12);
+  --amber:#f0a840;--amber-dim:rgba(240,168,64,0.12);
+  --red:#f06060;
+  --radius:16px;--radius-sm:10px;--radius-xs:6px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;min-height:100vh;overflow-x:hidden}
+
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");opacity:0.5;pointer-events:none;z-index:0}
+
+.orb{position:fixed;border-radius:50%;filter:blur(90px);pointer-events:none;z-index:0;animation:orbFloat 9s ease-in-out infinite}
+.orb1{width:500px;height:500px;background:radial-gradient(circle,rgba(192,132,252,0.1),transparent 70%);top:-120px;right:-120px}
+.orb2{width:400px;height:400px;background:radial-gradient(circle,rgba(96,170,255,0.08),transparent 70%);bottom:-60px;left:-100px;animation-delay:4s}
+.orb3{width:350px;height:350px;background:radial-gradient(circle,rgba(244,114,182,0.06),transparent 70%);top:40%;left:50%;transform:translate(-50%,-50%);animation-delay:2s}
+@keyframes orbFloat{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-25px) scale(1.04)}}
+
+.wrap{max-width:940px;margin:0 auto;padding:1.5rem 1.75rem 5rem;position:relative;z-index:1}
+
+.cc-wordmark{font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;letter-spacing:0.01em;margin-bottom:0.75rem}
+.wm-bold{font-weight:600;color:#c8c8c4}.wm-light{font-weight:400;color:#6a6a64}
+
+.hero{margin-bottom:2rem}
+.hero-title{font-family:'Plus Jakarta Sans',sans-serif;font-size:clamp(38px,6vw,64px);font-weight:800;letter-spacing:-0.03em;line-height:1.05;color:var(--text);margin-bottom:14px}
+.hero-title span{background:linear-gradient(130deg,var(--purple) 20%,var(--pink) 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:16px;color:var(--text2);max-width:480px;line-height:1.7;font-weight:400}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.04);border:0.5px solid var(--border2);border-radius:20px;padding:6px 14px;font-size:12px;font-family:'DM Mono',monospace;color:var(--text3);margin-top:18px}
+.hero-badge .dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse-dot 2s ease-in-out infinite;flex-shrink:0}
+@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.75)}}
+
+
+
+/* Intro info box */
+.intro-box{display:flex;align-items:flex-start;gap:12px;background:linear-gradient(135deg,rgba(96,170,255,0.1),rgba(192,132,252,0.07));border:0.5px solid rgba(96,170,255,0.3);border-radius:12px;padding:14px 18px;margin-bottom:1.75rem;animation:fadeUp 0.4s ease both}
+.intro-box-icon{font-size:16px;flex-shrink:0;margin-top:1px}
+.intro-box-text{font-size:14px;color:var(--text2);line-height:1.6}
+.intro-box-text strong{color:var(--text);font-weight:600}
+
+/* Section */
+.section{margin-bottom:1.75rem;animation:fadeUp 0.55s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+
+.section-card{border:0.5px solid var(--border);border-radius:var(--radius);padding:2rem 2.25rem;position:relative;overflow:hidden;transition:border-color 0.3s}
+.section-card:focus-within{border-color:var(--border2)}
+.section-card::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent)}
+
+/* Section background colour tints */
+.sc-purple{background:linear-gradient(145deg,rgba(192,132,252,0.07) 0%,rgba(16,16,28,0.9) 60%)}
+.sc-blue{background:linear-gradient(145deg,rgba(96,170,255,0.07) 0%,rgba(16,16,28,0.9) 60%)}
+.sc-pink{background:linear-gradient(145deg,rgba(244,114,182,0.07) 0%,rgba(16,16,28,0.9) 60%)}
+.sc-green{background:linear-gradient(145deg,rgba(61,214,140,0.07) 0%,rgba(16,16,28,0.9) 60%)}
+.sc-amber{background:linear-gradient(145deg,rgba(240,168,64,0.07) 0%,rgba(16,16,28,0.9) 60%)}
+
+.section-accent{position:absolute;top:0;left:0;width:4px;height:100%;border-radius:4px 0 0 4px}
+.acc-purple{background:linear-gradient(180deg,var(--purple),var(--pink))}
+.acc-blue{background:linear-gradient(180deg,var(--blue),var(--purple))}
+.acc-green{background:linear-gradient(180deg,var(--green),var(--blue))}
+.acc-pink{background:linear-gradient(180deg,var(--pink),var(--amber))}
+.acc-amber{background:linear-gradient(180deg,var(--amber),var(--green))}
+
+.section-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.75rem;gap:16px}
+.section-num{font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);letter-spacing:0.1em;margin-bottom:5px}
+.section-title{font-size:21px;font-weight:700;letter-spacing:-0.02em;color:var(--text)}
+.section-tip{font-size:13px;color:var(--text3);line-height:1.55;max-width:280px;text-align:right}
+
+/* Platform chips */
+.platform-grid{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:1rem}
+.platform-chip{display:flex;align-items:center;gap:9px;background:var(--bg3);border:0.5px solid var(--border2);border-radius:var(--radius-sm);padding:12px 16px;cursor:pointer;transition:all 0.2s;user-select:none;position:relative}
+.platform-chip:hover{background:var(--bg4);transform:translateY(-1px)}
+.platform-chip.active.p-instagram{background:linear-gradient(135deg,rgba(244,114,182,0.18),rgba(192,132,252,0.12));border-color:rgba(244,114,182,0.45)}
+.platform-chip.active.p-tiktok{background:linear-gradient(135deg,rgba(244,114,182,0.18),rgba(192,132,252,0.12));border-color:rgba(244,114,182,0.45)}
+.platform-chip.active.p-youtube{background:linear-gradient(135deg,rgba(244,114,182,0.18),rgba(192,132,252,0.12));border-color:rgba(244,114,182,0.45)}
+.platform-chip.active.p-facebook{background:linear-gradient(135deg,rgba(244,114,182,0.18),rgba(192,132,252,0.12));border-color:rgba(244,114,182,0.45)}
+.platform-icon{font-size:20px;line-height:1}
+.platform-name{font-size:14px;font-weight:600;color:var(--text)}
+.platform-check{width:18px;height:18px;border-radius:50%;background:var(--bg);border:1.5px solid var(--border2);display:flex;align-items:center;justify-content:center;transition:all 0.2s;font-size:9px;color:transparent;margin-left:2px;flex-shrink:0}
+.platform-chip.active .platform-check{background:var(--green);border-color:var(--green);color:#000}
+
+.platform-followers{display:none;flex-direction:column;gap:10px;margin-top:6px}
+.platform-followers.visible{display:flex}
+.follower-row{display:flex;align-items:center;gap:12px;background:var(--bg3);border:0.5px solid var(--border);border-radius:var(--radius-sm);padding:12px 16px;transition:border-color 0.2s}
+.follower-row:focus-within{border-color:var(--border2)}
+.follower-icon{font-size:17px;flex-shrink:0}
+.follower-label{font-size:13px;color:var(--text3);font-family:'DM Mono',monospace;flex-shrink:0;min-width:90px}
+.follower-input{background:transparent;border:none;outline:none;font-family:'DM Mono',monospace;font-size:16px;font-weight:500;color:var(--text);width:100%;min-width:0}
+.follower-input::placeholder{color:var(--text3)}
+
+/* Fields */
+.field-group{display:flex;flex-direction:column;gap:18px}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:560px){.field-row{grid-template-columns:1fr}}
+.field{display:flex;flex-direction:column;gap:8px}
+.field-label{font-size:12px;font-family:'DM Mono',monospace;color:var(--text3);letter-spacing:0.07em;text-transform:uppercase}
+.field-hint{font-size:12px;color:var(--text3);margin-top:2px;line-height:1.5}
+.field-input-wrap{display:flex;align-items:center;gap:10px;background:var(--bg3);border:0.5px solid var(--border);border-radius:var(--radius-sm);padding:13px 16px;transition:all 0.2s}
+.field-input-wrap:focus-within{border-color:var(--green);box-shadow:0 0 0 3px rgba(61,214,140,0.1)}
+.field-input-wrap .sym{font-size:15px;color:var(--text3);font-family:'DM Mono',monospace;flex-shrink:0}
+.field-input{background:transparent;border:none;outline:none;font-family:'DM Mono',monospace;font-size:16px;font-weight:500;color:var(--text);width:100%;min-width:0}
+.field-input::placeholder{color:var(--text3)}
+
+/* Toggle group */
+.toggle-group{display:flex;flex-wrap:wrap;gap:8px}
+.toggle-option{display:inline-flex;align-items:center;gap:7px;background:var(--bg3);border:0.5px solid var(--border);border-radius:var(--radius-sm);padding:10px 16px;cursor:pointer;transition:all 0.18s;user-select:none;font-size:14px;font-weight:500;color:var(--text2);white-space:nowrap}
+.toggle-option:hover{border-color:var(--border2);color:var(--text);background:var(--bg4);transform:translateY(-1px)}
+.toggle-option.active.t-purple{background:rgba(192,132,252,0.15);border-color:rgba(192,132,252,0.45);color:var(--purple)}
+.toggle-option.active.t-green{background:rgba(61,214,140,0.13);border-color:rgba(61,214,140,0.4);color:var(--green)}
+.toggle-option.active.t-blue{background:rgba(96,170,255,0.13);border-color:rgba(96,170,255,0.4);color:var(--blue)}
+.toggle-option.active.t-pink{background:rgba(244,114,182,0.13);border-color:rgba(244,114,182,0.4);color:var(--pink)}
+.toggle-option.active.t-amber{background:rgba(240,168,64,0.13);border-color:rgba(240,168,64,0.4);color:var(--amber)}
+.toggle-option.active.t-red{background:rgba(240,96,96,0.13);border-color:rgba(240,96,96,0.4);color:var(--red)}
+.toggle-dot{width:7px;height:7px;border-radius:50%;background:currentColor;opacity:0;transition:opacity 0.15s;flex-shrink:0}
+.toggle-option.active .toggle-dot{opacity:1}
+
+/* Switch */
+.switch-row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:15px 0;border-bottom:0.5px solid var(--border)}
+.switch-row:last-child{border-bottom:none;padding-bottom:0}
+.switch-row:first-child{padding-top:0}
+.switch-info{flex:1}
+.switch-label{font-size:15px;font-weight:600;color:var(--text);margin-bottom:3px}
+.switch-sub{font-size:13px;color:var(--text3);line-height:1.5}
+.switch{position:relative;width:46px;height:26px;flex-shrink:0}
+.switch input{opacity:0;width:0;height:0}
+.switch-track{position:absolute;inset:0;background:var(--bg4);border:0.5px solid var(--border2);border-radius:13px;cursor:pointer;transition:all 0.22s}
+.switch-track::before{content:'';position:absolute;width:20px;height:20px;left:2px;top:2px;background:var(--text3);border-radius:50%;transition:all 0.22s}
+.switch input:checked+.switch-track{background:rgba(61,214,140,0.2);border-color:var(--green)}
+.switch input:checked+.switch-track::before{transform:translateX(20px);background:var(--green)}
+
+/* Conditional */
+.conditional{overflow:hidden;max-height:0;opacity:0;transition:max-height 0.38s cubic-bezier(0.4,0,0.2,1),opacity 0.28s ease,margin 0.28s ease;margin-top:0}
+.conditional.open{max-height:500px;opacity:1;margin-top:14px}
+
+/* Field section label */
+.field-section-label{font-size:11px;font-family:'DM Mono',monospace;letter-spacing:0.12em;text-transform:uppercase;color:var(--text3);margin:0.5rem 0 0.25rem;display:flex;align-items:center;gap:10px}
+.field-section-label::after{content:'';flex:1;height:0.5px;background:var(--border)}
+
+/* Tip pill */
+.tip-pill{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,0.04);border:0.5px solid var(--border2);border-radius:20px;padding:6px 13px;font-size:12px;color:var(--text3);font-family:'DM Mono',monospace;line-height:1.4}
+.tip-pill::before{content:'→';font-size:11px;color:var(--text3)}
+
+/* Output divider */
+.output-divider{margin:3rem 0 2.25rem;opacity:0;transition:opacity 0.6s}
+.output-divider.visible{opacity:1}
+.output-divider-inner{display:flex;align-items:center;justify-content:center;text-align:center;gap:0;background:linear-gradient(135deg,rgba(192,132,252,0.28),rgba(244,114,182,0.2));border:0.5px solid rgba(192,132,252,0.55);border-radius:14px;padding:22px 28px;position:relative;overflow:hidden;box-shadow:0 0 40px rgba(192,132,252,0.18),inset 0 0 30px rgba(192,132,252,0.08)}
+.output-divider-inner::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.04),transparent)}
+.output-divider-label{font-family:'Plus Jakarta Sans',sans-serif;font-size:30px;font-weight:800;letter-spacing:-0.03em;background:linear-gradient(130deg,var(--purple) 20%,var(--pink) 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-align:center;width:100%;line-height:1.1}
+.output-divider-sub{font-size:12px;font-family:'DM Mono',monospace;color:rgba(255,255,255,0.65);margin-top:5px;text-align:center;width:100%}
+
+/* Rate cards */
+.rate-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:1.5rem}
+@media(max-width:640px){.rate-cards{grid-template-columns:1fr}}
+
+.rate-card{border-radius:var(--radius);padding:1.75rem;position:relative;overflow:hidden;text-align:center;cursor:pointer;transition:all 0.25s;animation:scaleIn 0.45s cubic-bezier(0.34,1.56,0.64,1) both}
+.rate-card:nth-child(1){animation-delay:0.05s}
+.rate-card:nth-child(2){animation-delay:0.13s}
+.rate-card:nth-child(3){animation-delay:0.21s}
+@keyframes scaleIn{from{opacity:0;transform:scale(0.82)}to{opacity:1;transform:scale(1)}}
+
+/* Amber = discounted */
+.rate-card.discounted{background:linear-gradient(145deg,rgba(240,168,64,0.1),rgba(240,168,64,0.04));border:1px solid rgba(240,168,64,0.25)}
+.rate-card.discounted:hover{border-color:rgba(240,168,64,0.5);box-shadow:0 0 30px rgba(240,168,64,0.12)}
+.rate-card.discounted.selected{border-color:var(--amber);box-shadow:0 0 50px rgba(240,168,64,0.35),inset 0 0 30px rgba(240,168,64,0.1);background:linear-gradient(145deg,rgba(240,168,64,0.2),rgba(240,168,64,0.08))}
+/* Green = recommended */
+.rate-card.standard{background:linear-gradient(145deg,rgba(61,214,140,0.12),rgba(61,214,140,0.04));border:1px solid rgba(61,214,140,0.3)}
+.rate-card.standard:hover{border-color:rgba(61,214,140,0.55);box-shadow:0 0 30px rgba(61,214,140,0.14)}
+.rate-card.standard.selected{border-color:var(--green);box-shadow:0 0 50px rgba(61,214,140,0.35),inset 0 0 30px rgba(61,214,140,0.1);background:linear-gradient(145deg,rgba(61,214,140,0.2),rgba(61,214,140,0.08))}
+/* Blue = premium */
+.rate-card.premium{background:linear-gradient(145deg,rgba(96,170,255,0.1),rgba(96,170,255,0.04));border:1px solid rgba(96,170,255,0.25)}
+.rate-card.premium:hover{border-color:rgba(96,170,255,0.5);box-shadow:0 0 30px rgba(96,170,255,0.12)}
+.rate-card.premium.selected{border-color:var(--blue);box-shadow:0 0 50px rgba(96,170,255,0.35),inset 0 0 30px rgba(96,170,255,0.1);background:linear-gradient(145deg,rgba(96,170,255,0.2),rgba(96,170,255,0.08))}
+
+.rate-badge{font-size:10px;font-family:'DM Mono',monospace;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;margin-bottom:12px;display:block;text-align:center}
+.rate-card.discounted .rate-badge{color:var(--amber)}
+.rate-card.standard .rate-badge{color:var(--green)}
+.rate-card.premium .rate-badge{color:var(--blue)}
+
+.rate-label{font-size:13px;color:var(--text3);margin-bottom:10px}
+.rate-value{font-family:'Plus Jakarta Sans',sans-serif;font-size:clamp(30px,4vw,42px);font-weight:800;letter-spacing:-0.03em;line-height:1;margin-bottom:8px}
+.rate-card.discounted .rate-value{color:var(--amber)}
+.rate-card.standard .rate-value{color:var(--green)}
+.rate-card.premium .rate-value{color:var(--blue)}
+.rate-sub{font-size:12px;color:var(--text3);font-family:'DM Mono',monospace;line-height:1.4}
+
+
+
+.rate-selected-badge{position:absolute;top:13px;left:13px;border-radius:20px;padding:3px 10px;font-size:10px;font-family:'DM Mono',monospace;font-weight:600;letter-spacing:0.05em;display:none}
+.rate-card.selected .rate-selected-badge{display:block}
+.rate-card.discounted .rate-selected-badge{background:rgba(240,168,64,0.18);border:0.5px solid rgba(240,168,64,0.4);color:var(--amber)}
+.rate-card.standard .rate-selected-badge{background:rgba(61,214,140,0.18);border:0.5px solid rgba(61,214,140,0.4);color:var(--green)}
+.rate-card.premium .rate-selected-badge{background:rgba(96,170,255,0.18);border:0.5px solid rgba(96,170,255,0.4);color:var(--blue)}
+
+/* Breakdown */
+.breakdown{border-radius:var(--radius);padding:1.75rem;transition:all 0.3s}
+.breakdown.bd-amber{background:rgba(240,168,64,0.06);border:0.5px solid rgba(240,168,64,0.22)}
+.breakdown.bd-green{background:rgba(61,214,140,0.06);border:0.5px solid rgba(61,214,140,0.22)}
+.breakdown.bd-blue{background:rgba(96,170,255,0.06);border:0.5px solid rgba(96,170,255,0.22)}
+
+.breakdown-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem}
+.breakdown-title{font-size:12px;font-family:'DM Mono',monospace;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3)}
+.copy-btn{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.07);border:0.5px solid var(--border2);border-radius:var(--radius-xs);padding:7px 14px;font-size:12px;font-family:'DM Mono',monospace;color:var(--text2);cursor:pointer;transition:all 0.18s;white-space:nowrap;font-weight:500}
+.copy-btn:hover{background:rgba(61,214,140,0.12);border-color:rgba(61,214,140,0.4);color:var(--green)}
+.copy-btn.copied{background:rgba(61,214,140,0.15);border-color:rgba(61,214,140,0.5);color:var(--green)}
+.reset-btn{display:inline-flex;align-items:center;gap:6px;background:transparent;border:1px solid rgba(240,96,96,0.35);border-radius:var(--radius-xs);font-size:11px;font-family:'DM Mono',monospace;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:rgba(240,96,96,0.45);cursor:pointer;transition:all 0.18s;padding:7px 16px}
+.reset-btn:hover{color:rgba(240,96,96,0.8);border-color:rgba(240,96,96,0.6);background:rgba(240,96,96,0.06)}
+.breakdown-tier-tag{font-size:11px;font-family:'DM Mono',monospace;font-weight:600;letter-spacing:0.08em;padding:4px 11px;border-radius:20px}
+.bd-amber .breakdown-tier-tag{background:rgba(240,168,64,0.15);color:var(--amber);border:0.5px solid rgba(240,168,64,0.3)}
+.bd-green .breakdown-tier-tag{background:rgba(61,214,140,0.15);color:var(--green);border:0.5px solid rgba(61,214,140,0.3)}
+.bd-blue .breakdown-tier-tag{background:rgba(96,170,255,0.15);color:var(--blue);border:0.5px solid rgba(96,170,255,0.3)}
+
+.breakdown-items{display:flex;flex-direction:column}
+.breakdown-item{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:0.5px solid rgba(255,255,255,0.07);font-size:14px}
+.breakdown-item:last-child{border-bottom:none}
+.breakdown-item-label{color:var(--text2);display:flex;align-items:center;gap:9px;font-weight:400}
+.breakdown-item-label .bi-dot{width:5px;height:5px;border-radius:50%;background:var(--text3);flex-shrink:0}
+.breakdown-item-value{font-family:'DM Mono',monospace;font-size:14px;font-weight:500}
+.bi-pos{color:var(--green)}
+.bi-neg{color:var(--pink)}
+.bi-neutral{color:var(--text2)}
+
+.breakdown-total{margin-top:14px;padding-top:14px;border-top:0.5px solid rgba(255,255,255,0.12);display:flex;justify-content:space-between;align-items:center}
+.breakdown-total-label{font-size:15px;font-weight:600;color:var(--text)}
+.breakdown-total-value{font-family:'Plus Jakarta Sans',sans-serif;font-size:22px;font-weight:800;letter-spacing:-0.02em}
+.bd-amber .breakdown-total-value{color:var(--amber)}
+.bd-green .breakdown-total-value{color:var(--green)}
+.bd-blue .breakdown-total-value{color:var(--blue)}
+
+/* Footer note */
+.output-note{margin-top:14px;font-size:13px;color:var(--text2);font-family:'DM Mono',monospace;line-height:1.6;text-align:center}
+
+/* Footer */
+.footer{margin-top:0;padding:1.5rem 0;border-top:0.5px solid var(--border);text-align:center}
+.footer p{font-size:12px;color:var(--text3);font-family:'DM Mono',monospace;line-height:2}
+.footer a{color:var(--text3);text-decoration:none;border-bottom:0.5px solid var(--border2)}
+.footer a:hover{color:var(--text2)}
+
+@media(max-width:640px){
+  .wrap{padding:1.5rem 1.25rem 3.5rem}
+  .section-card{padding:1.5rem 1.25rem}
+  .section-head{flex-direction:column;gap:6px}
+  .section-tip{text-align:left;max-width:100%}
+  .hero-title{font-size:38px}
+}
+</style>
+</head>
+<body>
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
+
+<div class="wrap">
+
+  <div class="cc-wordmark"><span class="wm-bold">CONSISTENT</span><span class="wm-light"> CREATIVE</span></div>
+
+  <div class="hero">
+    <h1 class="hero-title">Creator Pro<br><span>Calculator</span></h1>
+    <p class="hero-sub">A professional rate calculator built for photographers and videographers who produce social media content for brands.</p>
+  </div>
+
+  <!-- 01 ABOUT YOU -->
+  <div class="section">
+    <div class="section-card sc-purple">
+      <div class="section-accent acc-purple"></div>
+      <div class="section-head">
+        <div>
+          <div class="section-num">01 / 05</div>
+          <div class="section-title">About you</div>
+        </div>
+        <div class="section-tip">Your experience and reach sets the base rate. Your craft drives everything on top.</div>
+      </div>
+      <div class="field-group">
+        <div class="field">
+          <div class="field-label">Your active platforms</div>
+          <div class="platform-grid" id="my-platforms">
+            <div class="platform-chip p-instagram" data-platform="instagram" onclick="toggleMyPlatform(this)"><span class="platform-icon">📸</span><span class="platform-name">Instagram</span><span class="platform-check">✓</span></div>
+            <div class="platform-chip p-tiktok" data-platform="tiktok" onclick="toggleMyPlatform(this)"><span class="platform-icon">🎵</span><span class="platform-name">TikTok</span><span class="platform-check">✓</span></div>
+            <div class="platform-chip p-youtube" data-platform="youtube" onclick="toggleMyPlatform(this)"><span class="platform-icon">▶️</span><span class="platform-name">YouTube</span><span class="platform-check">✓</span></div>
+            <div class="platform-chip p-facebook" data-platform="facebook" onclick="toggleMyPlatform(this)"><span class="platform-icon">👥</span><span class="platform-name">Facebook</span><span class="platform-check">✓</span></div>
+          </div>
+          <div class="platform-followers" id="my-followers"></div>
+        </div>
+        <div class="field">
+          <div class="field-label">Your experience level</div>
+          <div class="toggle-group" id="exp-level">
+            <div class="toggle-option t-green" data-val="starting" onclick="selectSingle(this,'exp-level')"><span class="toggle-dot"></span>Starting out</div>
+            <div class="toggle-option t-green" data-val="established" onclick="selectSingle(this,'exp-level')"><span class="toggle-dot"></span>Established</div>
+            <div class="toggle-option t-green" data-val="wellknown" onclick="selectSingle(this,'exp-level')"><span class="toggle-dot"></span>Well known</div>
+          </div>
+          <div class="field-hint" id="exp-hint" style="margin-top:6px"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 02 DELIVERABLES -->
+  <div class="section">
+    <div class="section-card sc-blue">
+      <div class="section-accent acc-blue"></div>
+      <div class="section-head">
+        <div>
+          <div class="section-num">02 / 05</div>
+          <div class="section-title">Deliverables</div>
+        </div>
+        <div class="section-tip">Every deliverable carries a production cost. Be specific with your scope.</div>
+      </div>
+      <div class="field-group">
+        <div class="field-section-label">Content scope</div>
+        <div class="field-row">
+          <div class="field">
+            <div class="field-label">Number of photos</div>
+            <div class="field-input-wrap"><span class="sym">📷</span><input class="field-input" type="number" id="num-photos" placeholder="0" min="0" oninput="autoCalc()" onkeydown="if(event.key==='Enter')this.blur()"></div>
+          </div>
+          <div class="field">
+            <div class="field-label">Number of videos / reels</div>
+            <div class="field-input-wrap"><span class="sym">🎬</span><input class="field-input" type="number" id="num-videos" placeholder="0" min="0" oninput="onVideosChange()" onkeydown="if(event.key==='Enter')this.blur()"></div>
+          </div>
+        </div>
+        <div class="field" id="video-length-field" style="display:none">
+          <div class="field-label">Video length (seconds each)</div>
+          <div class="field-input-wrap" style="max-width:220px"><span class="sym">⏱</span><input class="field-input" type="number" id="video-length" placeholder="30" min="5" max="600" oninput="autoCalc()" onkeydown="if(event.key==='Enter')this.blur()"></div>
+          <div class="tip-pill" style="margin-top:8px">Under 60s is short-form. 60 to 180s is mid-form. Over 180s commands a longer-form premium.</div>
+        </div>
+        <div class="field-section-label">Production</div>
+        <div class="field">
+          <div class="field-label">Shoot location</div>
+          <div class="toggle-group" id="shoot-location">
+            <div class="toggle-option t-green" data-val="home" onclick="selectSingle(this,'shoot-location');toggleTravel(false)"><span class="toggle-dot"></span>Home / Studio</div>
+            <div class="toggle-option t-green" data-val="local" onclick="selectSingle(this,'shoot-location');toggleTravel(false)"><span class="toggle-dot"></span>Local</div>
+            <div class="toggle-option t-green" data-val="travel" onclick="selectSingle(this,'shoot-location');toggleTravel(true)"><span class="toggle-dot"></span>Travel required</div>
+          </div>
+        </div>
+        <div class="conditional" id="travel-wrap">
+          <div class="field">
+            <div class="field-label">Travel distance (km)</div>
+            <div class="field-input-wrap" style="max-width:220px"><span class="sym">🚗</span><input class="field-input" type="number" id="travel-km" placeholder="0" min="0" oninput="autoCalc()" onkeydown="if(event.key==='Enter')this.blur()"></div>
+            <div class="tip-pill" style="margin-top:8px">Travel over 50km typically adds $50 to $150 to the quote.</div>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <div class="field-label">Shoot time (hours)</div>
+            <div class="field-input-wrap"><span class="sym">🕐</span><input class="field-input" type="number" id="shoot-hours" placeholder="2" min="0" step="0.5" oninput="autoCalc()" onkeydown="if(event.key==='Enter')this.blur()"></div>
+          </div>
+          <div class="field">
+            <div class="field-label">Edit time (hours)</div>
+            <div class="field-input-wrap"><span class="sym">✂️</span><input class="field-input" type="number" id="edit-hours" placeholder="2" min="0" step="0.5" oninput="autoCalc()" onkeydown="if(event.key==='Enter')this.blur()"></div>
+          </div>
+        </div>
+        <div class="tip-pill">A 30-second reel typically takes 1 to 2 hours to edit. Photos average 15 to 30 minutes per image.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 03 USAGE AND RIGHTS -->
+  <div class="section">
+    <div class="section-card sc-pink">
+      <div class="section-accent acc-pink"></div>
+      <div class="section-head">
+        <div>
+          <div class="section-num">03 / 05</div>
+          <div class="section-title">Usage and Rights</div>
+        </div>
+        <div class="section-tip">Licensing is often worth more than the production itself. Price it accordingly.</div>
+      </div>
+      <div class="field-group">
+        <div class="field">
+          <div class="field-label">Content is primarily for</div>
+          <div class="platform-grid" id="brand-platforms">
+            <div class="platform-chip p-instagram" data-platform="instagram" onclick="toggleBrandPlatform(this)"><span class="platform-icon">📸</span><span class="platform-name">Instagram</span><span class="platform-check">✓</span></div>
+            <div class="platform-chip p-tiktok" data-platform="tiktok" onclick="toggleBrandPlatform(this)"><span class="platform-icon">🎵</span><span class="platform-name">TikTok</span><span class="platform-check">✓</span></div>
+            <div class="platform-chip p-youtube" data-platform="youtube" onclick="toggleBrandPlatform(this)"><span class="platform-icon">▶️</span><span class="platform-name">YouTube</span><span class="platform-check">✓</span></div>
+            <div class="platform-chip p-facebook" data-platform="facebook" onclick="toggleBrandPlatform(this)"><span class="platform-icon">👥</span><span class="platform-name">Facebook</span><span class="platform-check">✓</span></div>
+          </div>
+        </div>
+        <div class="field">
+          <div class="field-label">Ad usage</div>
+          <div class="toggle-group" id="ad-usage">
+            <div class="toggle-option t-green" data-val="organic" onclick="selectSingle(this,'ad-usage')"><span class="toggle-dot"></span>Organic only</div>
+            <div class="toggle-option t-green" data-val="paid" onclick="selectSingle(this,'ad-usage')"><span class="toggle-dot"></span>Paid ads</div>
+          </div>
+          <div class="tip-pill" id="ad-tip" style="display:none;margin-top:8px"></div>
+        </div>
+        <div class="field">
+          <div class="field-label">Licensing duration</div>
+          <div class="toggle-group" id="usage-duration">
+            <div class="toggle-option t-green" data-val="single" onclick="selectSingle(this,'usage-duration')"><span class="toggle-dot"></span>Single use</div>
+            <div class="toggle-option t-green" data-val="30days" onclick="selectSingle(this,'usage-duration')"><span class="toggle-dot"></span>30 days</div>
+            <div class="toggle-option t-green" data-val="90days" onclick="selectSingle(this,'usage-duration')"><span class="toggle-dot"></span>90 days</div>
+            <div class="toggle-option t-green" data-val="1year" onclick="selectSingle(this,'usage-duration')"><span class="toggle-dot"></span>1 year</div>
+            <div class="toggle-option t-green" data-val="perpetual" onclick="selectSingle(this,'usage-duration')"><span class="toggle-dot"></span>Perpetual</div>
+          </div>
+        </div>
+        <div class="field-section-label">Additional rights</div>
+        <div class="switch-row">
+          <div class="switch-info"><div class="switch-label">Exclusive rights</div><div class="switch-sub">They own it. You cannot post, share or resell this content anywhere.</div></div>
+          <label class="switch"><input type="checkbox" id="sw-exclusive" onchange="autoCalc()"><span class="switch-track"></span></label>
+        </div>
+
+        <div class="switch-row">
+          <div class="switch-info"><div class="switch-label">Raw footage delivery</div><div class="switch-sub">All unedited files are included in the deliverables. Charges for additional export time.</div></div>
+          <label class="switch"><input type="checkbox" id="sw-raw" onchange="autoCalc()"><span class="switch-track"></span></label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 04 THE BRAND -->
+  <div class="section">
+    <div class="section-card sc-green">
+      <div class="section-accent acc-green"></div>
+      <div class="section-head">
+        <div>
+          <div class="section-num">04 / 05</div>
+          <div class="section-title">The brand</div>
+        </div>
+        <div class="section-tip">Exposure from a large brand has real value. But so does protecting your rate floor.</div>
+      </div>
+      <div class="field-group">
+        <div class="field">
+          <div class="field-label">Brand platforms and follower count</div>
+          <div class="platform-grid" id="brand-collab-platforms">
+            <div class="platform-chip p-instagram" data-platform="instagram" onclick="toggleBrandCollabPlatform(this)"><span class="platform-icon">📸</span><span class="platform-name">Instagram</span><span class="platform-check">✓</span></div>
+            <div class="platform-chip p-tiktok" data-platform="tiktok" onclick="toggleBrandCollabPlatform(this)"><span class="platform-icon">🎵</span><span class="platform-name">TikTok</span><span class="platform-check">✓</span></div>
+            <div class="platform-chip p-youtube" data-platform="youtube" onclick="toggleBrandCollabPlatform(this)"><span class="platform-icon">▶️</span><span class="platform-name">YouTube</span><span class="platform-check">✓</span></div>
+            <div class="platform-chip p-facebook" data-platform="facebook" onclick="toggleBrandCollabPlatform(this)"><span class="platform-icon">👥</span><span class="platform-name">Facebook</span><span class="platform-check">✓</span></div>
+          </div>
+          <div class="platform-followers" id="brand-followers"></div>
+        </div>
+        <div class="field">
+          <div class="field-label">Will they mention you?</div>
+          <div class="toggle-group" id="collab-type">
+            <div class="toggle-option t-green" data-val="none" onclick="selectSingle(this,'collab-type')"><span class="toggle-dot"></span>No mention</div>
+            <div class="toggle-option t-green" data-val="tag" onclick="selectSingle(this,'collab-type')"><span class="toggle-dot"></span>Tag only</div>
+            <div class="toggle-option t-green" data-val="collab" onclick="selectSingle(this,'collab-type')"><span class="toggle-dot"></span>Full collab post</div>
+          </div>
+        </div>
+        <div id="collab-tip" style="display:none;margin-top:4px"></div>
+        <div class="switch-row">
+          <div class="switch-info"><div class="switch-label">Can you post the content too?</div><div class="switch-sub">You retain the right to share this work on your own profile and portfolio.</div></div>
+          <div style="display:flex;align-items:center;gap:10px;flex-shrink:0">
+            <span id="can-post-label" style="font-size:12px;font-family:'DM Mono',monospace;color:var(--text3);min-width:24px;text-align:right">No</span>
+            <label class="switch"><input type="checkbox" id="sw-can-post" onchange="togglePostDelay(this.checked);document.getElementById('can-post-label').textContent=this.checked?'Yes':'No';document.getElementById('can-post-label').style.color=this.checked?'var(--green)':'var(--text3)'"><span class="switch-track"></span></label>
+          </div>
+        </div>
+        <div class="conditional" id="post-delay-wrap">
+          <div class="field">
+            <div class="field-label">How soon can you post?</div>
+            <div class="toggle-group" id="post-delay">
+              <div class="toggle-option t-green" data-val="immediate" onclick="selectSingle(this,'post-delay')"><span class="toggle-dot"></span>Immediately</div>
+              <div class="toggle-option t-green" data-val="30days" onclick="selectSingle(this,'post-delay')"><span class="toggle-dot"></span>30 days</div>
+              <div class="toggle-option t-green" data-val="90days" onclick="selectSingle(this,'post-delay')"><span class="toggle-dot"></span>90 days+</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 05 TIMELINE -->
+  <div class="section">
+    <div class="section-card sc-amber">
+      <div class="section-accent acc-amber"></div>
+      <div class="section-head">
+        <div>
+          <div class="section-num">05 / 05</div>
+          <div class="section-title">Timeline</div>
+        </div>
+        <div class="section-tip">Rush delivery should always cost more. Your time and calendar are a finite resource.</div>
+      </div>
+      <div class="field-group">
+        <div class="field">
+          <div class="field-label">Turnaround from brief or product receipt</div>
+          <div class="toggle-group" id="turnaround">
+            <div class="toggle-option t-green" data-val="7days" onclick="selectSingle(this,'turnaround')"><span class="toggle-dot"></span>7 days</div>
+            <div class="toggle-option t-green" data-val="14days" onclick="selectSingle(this,'turnaround')"><span class="toggle-dot"></span>14 days</div>
+            <div class="toggle-option t-green" data-val="30days" onclick="selectSingle(this,'turnaround')"><span class="toggle-dot"></span>30 days</div>
+            <div class="toggle-option t-green" data-val="60days" onclick="selectSingle(this,'turnaround')"><span class="toggle-dot"></span>60 days+</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OUTPUT -->
+  <div class="output-divider" id="output-divider">
+    <div class="output-divider-inner">
+      <div style="width:100%;text-align:center">
+        <div class="output-divider-label">✦ Your rates</div>
+        <div class="output-divider-sub">Calculated from your inputs. Select a tier below.</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="output" style="display:none">
+    <div class="rate-cards" id="rate-cards"></div>
+    <div id="breakdown-wrap"></div>
+    <div style="text-align:center;margin-top:5rem">
+      <button class="reset-btn" onclick="resetCalc()">⊘ Reset calculator</button>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <p>© <span id="footer-year"></span> <strong>Consistent Creative Pty Ltd</strong> — All rights reserved.</p>
+  <p>Rates are USD benchmarks based on 2025 industry data. Use as a guide and adjust for your market.</p>
+  <p style="margin-top:4px"><a href="https://www.consistentcreative.com" target="_blank">www.ConsistentCreative.com</a></p>
+</div>
+
+<script>
+document.getElementById('footer-year').textContent=new Date().getFullYear();
+
+const state={myPlatforms:{},brandCollabPlatforms:{}};
+let selectedTier='standard';
+let lastRates=null;
+let lastItems=null;
+
+// Comma formatting for follower inputs
+function formatFollowerInput(el){
+  const raw=el.value.replace(/,/g,'');
+  const n=parseInt(raw)||0;
+  if(n>0)el.value=n.toLocaleString('en-US');
+}
+
+// Platform toggles
+function toggleMyPlatform(el){
+  el.classList.toggle('active');
+  renderFollowerInputs('my-followers','myPlatforms');
+  updateCollabTip();
+  autoCalc();
+}
+function toggleBrandPlatform(el){el.classList.toggle('active');autoCalc();}
+function toggleBrandCollabPlatform(el){
+  el.classList.toggle('active');
+  renderFollowerInputs('brand-followers','brandCollabPlatforms');
+  updateCollabTip();
+  autoCalc();
+}
+
+function renderFollowerInputs(containerId,stateKey){
+  const container=document.getElementById(containerId);
+  const isMine=containerId==='my-followers';
+  const chips=document.querySelectorAll((isMine?'#my-platforms':'#brand-collab-platforms')+' .platform-chip.active');
+  if(!chips.length){container.classList.remove('visible');container.innerHTML='';return;}
+  container.classList.add('visible');
+  const icons={instagram:'📸',tiktok:'🎵',youtube:'▶️',facebook:'👥'};
+  const names={instagram:'Instagram',tiktok:'TikTok',youtube:'YouTube',facebook:'Facebook'};
+  const placeholders={instagram:'Number of followers',tiktok:'Number of followers',youtube:'Number of subscribers',facebook:'Number of followers'};
+  container.innerHTML=[...chips].map(c=>{
+    const p=c.dataset.platform;
+    const v=state[stateKey][p]||0;
+    const disp=v>0?v.toLocaleString('en-US'):'';
+    return`<div class="follower-row">
+      <span class="follower-icon">${icons[p]}</span>
+      <span class="follower-label">${names[p]}</span>
+      <input class="follower-input" type="text" inputmode="numeric" placeholder="${placeholders[p]}" value="${disp}"
+        onfocus="this.value=this.value.replace(/,/g,'')"
+        onblur="this.value=formatFollNum(this.value);state.${stateKey}['${p}']=parseFollNum(this.value);updateCollabTip();autoCalc()"
+        onkeydown="if(event.key==='Enter'){this.blur();}"
+        oninput="state.${stateKey}['${p}']=parseFollNum(this.value);updateCollabTip();autoCalc()">
+    </div>`;
+  }).join('');
+}
+
+function parseFollNum(v){return parseInt(String(v).replace(/,/g,''))||0;}
+function formatFollNum(v){const n=parseFollNum(v);return n>0?n.toLocaleString('en-US'):'';}
+
+// Single-select toggle (deselects others in group)
+function selectSingle(el,groupId){
+  const group=document.getElementById(groupId)||el.closest('.toggle-group');
+  const grpEl=document.getElementById(groupId);
+  if(grpEl){
+    grpEl.querySelectorAll('.toggle-option').forEach(o=>{if(o!==el)o.classList.remove('active');});
+  }
+  el.classList.toggle('active');
+  // hooks
+  if(groupId==='exp-level'){
+    const hints={starting:'Base rate: entry level (around $10 per photo, $90 per video)',established:'Base rate: mid-level (around $18 per photo, $175 per video)',wellknown:'Base rate: senior level (around $28 per photo, $350 per video)'};
+    const act=document.querySelector('#exp-level .toggle-option.active');
+    document.getElementById('exp-hint').textContent=act?hints[act.dataset.val]:'';
+  }
+  if(groupId==='ad-usage'){
+    const tips={organic:'Organic use only. No paid usage rights fee applies.',paid:'Paid ads use. Adds a 25% usage rights fee — this is a significant commercial right.'};
+    const act=document.querySelector('#ad-usage .toggle-option.active');
+    const tip=document.getElementById('ad-tip');
+    if(act){tip.textContent=tips[act.dataset.val];tip.style.display='inline-flex';}
+    else tip.style.display='none';
+    updateCollabTip();
+  }
+  if(groupId==='collab-type')updateCollabTip();
+  autoCalc();
+}
+
+function updateCollabTip(){
+  const tip=document.getElementById('collab-tip');
+  if(!tip)return;
+  const collabEl=document.querySelector('#collab-type .toggle-option.active');
+  const collabType=collabEl?collabEl.dataset.val:'none';
+  if(collabType==='none'){tip.style.display='none';return;}
+
+  let myTotal=0;
+  document.querySelectorAll('#my-platforms .active').forEach(c=>{ myTotal+=state.myPlatforms[c.dataset.platform]||0;});
+  let brandTotal=0;
+  document.querySelectorAll('#brand-collab-platforms .active').forEach(c=>{brandTotal+=state.brandCollabPlatforms[c.dataset.platform]||0;});
+
+  // Check platform overlap
+  const myActivePlatforms=new Set([...document.querySelectorAll('#my-platforms .active')].map(c=>c.dataset.platform));
+  const brandContentPlatforms=new Set([...document.querySelectorAll('#brand-platforms .active')].map(c=>c.dataset.platform));
+  const brandCollabPlatforms=new Set([...document.querySelectorAll('#brand-collab-platforms .active')].map(c=>c.dataset.platform));
+  const overlap=[...brandContentPlatforms].filter(p=>myActivePlatforms.has(p)).length;
+  const brandPlatCount=brandContentPlatforms.size;
+  const adUsageEl=document.querySelector('#ad-usage .toggle-option.active');
+  const isPaid=adUsageEl&&adUsageEl.dataset.val==='paid';
+
+  let icon,color,bg,border,msg;
+
+  if(collabType==='tag'){
+    icon='→';
+    color='var(--amber)';bg='rgba(240,168,64,0.08)';border='rgba(240,168,64,0.25)';
+    msg='A tag provides modest exposure. Audiences notice tags but rarely follow through. It has some value but should not significantly affect your rate.';
+  } else {
+    // Full collab
+    const ratio=myTotal>0&&brandTotal>0?brandTotal/myTotal:0;
+    const platformNote=overlap===0&&brandPlatCount>0?'You have no presence on their content platforms, so the collab exposure has zero reach value for you.':overlap<brandPlatCount?`You are active on ${overlap} of ${brandPlatCount} platform${brandPlatCount>1?'s':''} they are using — partial exposure value.`:'';
+    const paidNote=isPaid?' Combined with paid ads, a collab dramatically increases your brand exposure and could generate significant follow-on work.':'';
+
+    if(ratio===0||myTotal===0){
+      icon='💡';color='var(--blue)';bg='rgba(96,170,255,0.08)';border='rgba(96,170,255,0.25)';
+      msg=`Enter your follower counts above to see how lucrative this collab actually is.${platformNote?' '+platformNote:''}${paidNote}`;
+    } else if(ratio>=50){
+      icon='🔥';color='var(--green)';bg='rgba(61,214,140,0.1)';border='rgba(61,214,140,0.3)';
+      const discPct=isPaid?25:20;
+      msg=`Highly lucrative collab. Their audience is ${Math.round(ratio).toLocaleString()}x larger than yours — a full collab post exposes your brand to a massive new audience. A discount of ${discPct}% on your rate is well justified here. This kind of exposure can easily generate multiple follow-on bookings.${platformNote?' Note: '+platformNote:''}${paidNote}`;
+    } else if(ratio>=10){
+      icon='✦';color='var(--green)';bg='rgba(61,214,140,0.08)';border='rgba(61,214,140,0.25)';
+      const discPct=isPaid?18:12;
+      msg=`Strong collab value. Their audience is ${Math.round(ratio).toLocaleString()}x larger than yours. A discount of around ${discPct}% makes sense — the brand exposure is real and worth factoring in.${platformNote?' '+platformNote:''}${paidNote}`;
+    } else if(ratio>=3){
+      icon='◈';color='var(--blue)';bg='rgba(96,170,255,0.08)';border='rgba(96,170,255,0.25)';
+      msg=`Decent collab value. Their audience is ${Math.round(ratio).toLocaleString()}x yours. A modest discount of 8 to 12% is reasonable — the exposure helps but should not dominate the negotiation.${platformNote?' '+platformNote:''}${paidNote}`;
+    } else if(ratio>=0.5){
+      icon='◎';color='var(--amber)';bg='rgba(240,168,64,0.08)';border='rgba(240,168,64,0.25)';
+      msg=`Similar audience sizes. The collab has limited asymmetric value. A small goodwill discount of 5 to 8% is appropriate — do not go lower.${platformNote?' '+platformNote:''}${paidNote}`;
+    } else {
+      icon='◎';color='var(--amber)';bg='rgba(240,168,64,0.08)';border='rgba(240,168,64,0.25)';
+      msg=`Your audience is larger than theirs. The collab benefits them more than you. Hold your rate firmly — if anything, a small premium applies.${platformNote?' '+platformNote:''}${paidNote}`;
+    }
+    if(platformNote&&overlap===0&&brandPlatCount>0){
+      icon='◎';color='var(--text3)';bg='rgba(255,255,255,0.04)';border='var(--border)';
+      msg=`No platform overlap. ${platformNote} The collab post has no exposure value for your brand on this project. Price accordingly.`;
+    }
+  }
+
+  tip.style.display='block';
+  tip.innerHTML=`<div style="background:${bg};border:0.5px solid ${border};border-radius:10px;padding:14px 16px;margin-top:4px">
+    <div style="display:flex;align-items:flex-start;gap:10px">
+      <span style="font-size:14px;flex-shrink:0;margin-top:1px">${icon}</span>
+      <div style="font-size:13px;color:var(--text2);line-height:1.6">${msg}</div>
+    </div>
+  </div>`;
+}
+
+function toggleTravel(show){document.getElementById('travel-wrap').classList.toggle('open',show);}
+function togglePostDelay(show){document.getElementById('post-delay-wrap').classList.toggle('open',show);autoCalc();}
+
+function onVideosChange(){
+  const v=+document.getElementById('num-videos').value||0;
+  const f=document.getElementById('video-length-field');
+  f.style.display=v>0?'flex':'none';
+  if(v>0)f.style.flexDirection='column';
+  autoCalc();
+}
+
+function updateProgress(){
+  let done=0;
+  if(document.querySelectorAll('#my-platforms .active').length>0)done++;
+  if(document.querySelector('#exp-level .active'))done++;
+  const p=+document.getElementById('num-photos').value||0;
+  const v=+document.getElementById('num-videos').value||0;
+  if(p>0||v>0)done++;
+  if(document.querySelectorAll('#brand-platforms .active').length>0)done++;
+  if(document.querySelector('#usage-duration .active'))done++;
+  const pct=Math.round((done/5)*100);
+
+  return done;
+}
+
+function autoCalc(){
+  updateProgress();
+  const numPhotos=+document.getElementById('num-photos').value||0;
+  const numVideos=+document.getElementById('num-videos').value||0;
+  if(numPhotos===0&&numVideos===0)return;
+
+  const videoLength=+document.getElementById('video-length').value||30;
+  const shootHours=+document.getElementById('shoot-hours').value||0;
+  const editHours=+document.getElementById('edit-hours').value||0;
+  const travelKm=+document.getElementById('travel-km').value||0;
+  const expEl=document.querySelector('#exp-level .toggle-option.active');
+  const expLevel=expEl?expEl.dataset.val:'established';
+  const shootLocEl=document.querySelector('#shoot-location .toggle-option.active');
+  const shootLoc=shootLocEl?shootLocEl.dataset.val:'local';
+  const adUsageEl=document.querySelector('#ad-usage .toggle-option.active');
+  const adUsage=adUsageEl?adUsageEl.dataset.val:'organic';
+  const durationEl=document.querySelector('#usage-duration .toggle-option.active');
+  const duration=durationEl?durationEl.dataset.val:'30days';
+  const exclusive=document.getElementById('sw-exclusive').checked;
+  const rawFootage=document.getElementById('sw-raw').checked;
+  const collabEl=document.querySelector('#collab-type .toggle-option.active');
+  const collabType=collabEl?collabEl.dataset.val:'none';
+  const canPost=document.getElementById('sw-can-post').checked;
+  const postDelayEl=document.querySelector('#post-delay .toggle-option.active');
+  const postDelay=postDelayEl?postDelayEl.dataset.val:'immediate';
+  const turnaroundEl=document.querySelector('#turnaround .toggle-option.active');
+  const turnaround=turnaroundEl?turnaroundEl.dataset.val:'30days';
+  const brandPlatformCount=document.querySelectorAll('#brand-platforms .active').length;
+
+  let myTotal=0;
+  document.querySelectorAll('#my-platforms .active').forEach(c=>{myTotal+=state.myPlatforms[c.dataset.platform]||0;});
+  let brandTotal=0;
+  document.querySelectorAll('#brand-collab-platforms .active').forEach(c=>{brandTotal+=state.brandCollabPlatforms[c.dataset.platform]||0;});
+
+  const tiers={starting:{photoBase:10,videoBase:90,hourly:28},established:{photoBase:18,videoBase:175,hourly:55},wellknown:{photoBase:28,videoBase:350,hourly:95}};
+  const tier=tiers[expLevel];
+  const lenMult=videoLength<=30?1:videoLength<=60?1.3:videoLength<=120?1.7:2.2;
+  const videoRate=Math.round(tier.videoBase*lenMult);
+
+  const photoCost=numPhotos*tier.photoBase;
+  const videoCost=numVideos*videoRate;
+  let prodCost=photoCost+videoCost;
+  const timeCost=(shootHours+editHours)*tier.hourly;
+  prodCost=Math.max(prodCost,timeCost);
+
+  let travelCost=0;
+  if(shootLoc==='travel')travelCost=travelKm>200?200:travelKm>100?120:travelKm>50?70:30;
+  else if(shootLoc==='local')travelCost=15;
+
+  const adMults={organic:0,paid:0.25};
+  const durMults={single:0.05,'30days':0.15,'90days':0.3,'1year':0.5,perpetual:1.0};
+  const usageBase=prodCost*(adMults[adUsage]||0)+prodCost*(durMults[duration]||0.15);
+  const platformPremium=prodCost*Math.max(0,brandPlatformCount-1)*0.12;
+  const exclusiveFee=exclusive?prodCost*0.4:0;
+  const whitelistFee=0;
+  const rawFee=rawFootage?prodCost*0.35:0;
+
+  let collabAdj=0,collabLabel='';
+  const ratio=myTotal>0?brandTotal/myTotal:0;
+  if(collabType==='collab'){
+    if(ratio>10){collabAdj=-(prodCost*0.2);collabLabel='Collab discount (brand has 10x+ your reach)';}
+    else if(ratio>3){collabAdj=-(prodCost*0.12);collabLabel='Collab discount (brand outreaches your audience)';}
+    else if(ratio<0.5&&myTotal>0){collabAdj=prodCost*0.1;collabLabel='Collab premium (you outreach their audience)';}
+    else{collabAdj=-(prodCost*0.08);collabLabel='Collab discount (similar audience size)';}
+  } else if(collabType==='tag'){
+    collabAdj=-(prodCost*0.07);collabLabel='Tag discount';
+  }
+
+  let postFee=0;
+  if(!canPost)postFee=prodCost*0.15;
+  else if(postDelay==='30days')postFee=prodCost*0.05;
+  else if(postDelay==='90days')postFee=prodCost*0.08;
+
+  let rushFee=0,rushLabel='';
+  if(turnaround==='7days'){rushFee=prodCost*0.45;rushLabel='Rush fee (+45%) — 7 day delivery';}
+  else if(turnaround==='14days'){rushFee=prodCost*0.2;rushLabel='Rush fee (+20%) — 14 day delivery';}
+  else if(turnaround==='60days'){rushFee=-(prodCost*0.08);rushLabel='Extended timeline discount';}
+
+  const base=prodCost+travelCost+usageBase+platformPremium+exclusiveFee+whitelistFee+rawFee+collabAdj+postFee+rushFee;
+  const standard=Math.max(75,Math.round(base/50)*50);
+  const discounted=Math.max(50,Math.round(standard*0.60/25)*25);
+  const premium=Math.round(standard*1.40/50)*50;
+  lastRates={discounted,standard,premium};
+
+  const items=[];
+  if(numPhotos>0)items.push({label:`${numPhotos} photo${numPhotos>1?'s':''} at __PHOTO_RATE__ each`,value:photoCost,type:'neutral',unitRate:tier.photoBase,unitCount:numPhotos,unitLabel:'photo'});
+  if(numVideos>0)items.push({label:`${numVideos} video${numVideos>1?'s':''} at __VIDEO_RATE__ each (${videoLength}s)`,value:videoCost,type:'neutral',unitRate:videoRate,unitCount:numVideos,unitLabel:'video'});
+  if(timeCost>photoCost+videoCost&&(shootHours>0||editHours>0))items.push({label:`Production time (${shootHours+editHours}h at $${tier.hourly}/h)`,value:timeCost,type:'neutral'});
+  if(travelCost>0)items.push({label:'Travel',value:travelCost,type:'neutral'});
+  if(usageBase>0)items.push({label:`Usage rights (${adUsage}, ${duration.replace('days',' days').replace('1year','1 year')})`,value:usageBase,type:'pos'});
+  if(platformPremium>0)items.push({label:`Multi-platform licensing (${brandPlatformCount-1} additional platform${brandPlatformCount>2?'s':''})`,value:platformPremium,type:'pos'});
+  if(exclusiveFee>0)items.push({label:'Exclusive rights (+40%)',value:exclusiveFee,type:'pos'});
+  if(rawFee>0)items.push({label:'Raw footage delivery (+35%)',value:rawFee,type:'pos'});
+  if(postFee>0)items.push({label:canPost?`Delayed posting (${postDelay.replace('days',' day')} hold)`:'No posting rights retained (+15%)',value:postFee,type:'pos'});
+  if(collabAdj!==0)items.push({label:collabLabel,value:collabAdj,type:collabAdj<0?'neg':'pos'});
+  if(rushFee!==0)items.push({label:rushLabel,value:rushFee,type:rushFee<0?'neg':'pos'});
+  lastItems=items;
+
+  document.getElementById('output-divider').classList.add('visible');
+  document.getElementById('output').style.display='block';
+  renderRateCards();
+  renderBreakdown();
+}
+
+function renderRateCards(){
+  if(!lastRates)return;
+  const {discounted,standard,premium}=lastRates;
+  document.getElementById('rate-cards').innerHTML=`
+    <div class="rate-card discounted${selectedTier==='discounted'?' selected':''}" onclick="selectTier('discounted')">
+      <span class="rate-selected-badge">Selected</span>
+      <span class="rate-badge">Discounted</span>
+      <div class="rate-label">Minimum viable rate</div>
+      <div class="rate-value">$${discounted.toLocaleString()}</div>
+      <div class="rate-sub">Use if they push back hard</div>
+    </div>
+    <div class="rate-card standard${selectedTier==='standard'?' selected':''}" onclick="selectTier('standard')">
+      <span class="rate-selected-badge">Selected</span>
+      <span class="rate-badge">Standard</span>
+      <div class="rate-label">Industry benchmarked rate</div>
+      <div class="rate-value">$${standard.toLocaleString()}</div>
+      <div class="rate-sub">Lead with this number</div>
+    </div>
+    <div class="rate-card premium${selectedTier==='premium'?' selected':''}" onclick="selectTier('premium')">
+      <span class="rate-selected-badge">Selected</span>
+      <span class="rate-badge">Premium</span>
+      <div class="rate-label">Big brand rate</div>
+      <div class="rate-value">$${premium.toLocaleString()}</div>
+      <div class="rate-sub">For large or well-funded brands</div>
+    </div>`;
+}
+
+function selectTier(tier){
+  selectedTier=tier;
+  renderRateCards();
+  renderBreakdown();
+}
+
+function renderBreakdown(){
+  if(!lastRates||!lastItems)return;
+  const tierMap={discounted:{cls:'bd-amber',label:'Discounted',val:lastRates.discounted},standard:{cls:'bd-green',label:'Standard',val:lastRates.standard},premium:{cls:'bd-blue',label:'Premium',val:lastRates.premium}};
+  const t=tierMap[selectedTier];
+  const mult=selectedTier==='discounted'?0.72:selectedTier==='premium'?1.38:1;
+  const sign=v=>v>=0?'+$'+Math.abs(Math.round(v*mult)).toLocaleString():'-$'+Math.abs(Math.round(Math.abs(v)*mult)).toLocaleString();
+  const fmtVal=(v,type)=>type==='neutral'?'$'+Math.round(v*mult).toLocaleString():sign(v);
+  const fmtLabel=(it)=>{
+    let lbl=it.label;
+    if(lbl.includes('__PHOTO_RATE__'))lbl=lbl.replace('__PHOTO_RATE__','$'+Math.round(it.unitRate*mult).toLocaleString());
+    if(lbl.includes('__VIDEO_RATE__'))lbl=lbl.replace('__VIDEO_RATE__','$'+Math.round(it.unitRate*mult).toLocaleString());
+    return lbl;
+  };
+
+  document.getElementById('breakdown-wrap').innerHTML=`
+    <div class="breakdown ${t.cls}">
+      <div class="breakdown-header">
+        <div class="breakdown-title">Rate breakdown ($USD)</div>
+        <div class="breakdown-tier-tag">${t.label}</div>
+      </div>
+      <div class="breakdown-items">
+        ${lastItems.map(it=>`<div class="breakdown-item">
+          <div class="breakdown-item-label"><span class="bi-dot"></span>${fmtLabel(it)}</div>
+          <div class="breakdown-item-value ${it.type==='pos'?'bi-pos':it.type==='neg'?'bi-neg':'bi-neutral'}">${fmtVal(it.value,it.type)}</div>
+        </div>`).join('')}
+      </div>
+      <div class="breakdown-total">
+        <div class="breakdown-total-label">${t.label} rate</div>
+        <div class="breakdown-total-value">$${t.val.toLocaleString()}</div>
+      </div>
+      <div style="text-align:center;margin-top:16px">
+        <button class="copy-btn" onclick="copyQuote('${selectedTier}')">⎘ Copy quote</button>
+      </div>
+    </div>`;
+}
+
+function copyQuote(tier){
+  if(!lastRates||!lastItems)return;
+  const tierMap={discounted:{label:'Discounted',val:lastRates.discounted},standard:{label:'Standard',val:lastRates.standard},premium:{label:'Premium',val:lastRates.premium}};
+  const t=tierMap[tier];
+  const mult=tier==='discounted'?0.60:tier==='premium'?1.40:1;
+  const fmt=v=>'$'+Math.round(v).toLocaleString('en-US');
+
+  // Build rows as [label, value] pairs for clean alignment
+  const rows=[];
+  lastItems.forEach(it=>{
+    const val=Math.round(it.value*mult);
+    const sign=it.type==='neutral'?'':it.value>=0?'+':'-';
+    const display=(sign===''?'':sign)+fmt(Math.abs(val));
+    let lbl=it.label;
+    if(lbl.includes('__PHOTO_RATE__'))lbl=lbl.replace('__PHOTO_RATE__',fmt(it.unitRate*mult));
+    if(lbl.includes('__VIDEO_RATE__'))lbl=lbl.replace('__VIDEO_RATE__',fmt(it.unitRate*mult));
+    rows.push([lbl, display]);
+  });
+
+  // Find longest label for alignment
+  const maxLen=Math.max(...rows.map(r=>r[0].length), 'TOTAL'.length);
+  const pad=(s,n)=>s+' '.repeat(Math.max(1,n-s.length+4));
+  const div='─'.repeat(maxLen+18);
+
+  let lines=[];
+  lines.push('CREATOR PRO CALCULATOR');
+  lines.push(t.label.toUpperCase()+' RATE');
+  lines.push('');
+  lines.push(div);
+  rows.forEach(r=>lines.push(pad(r[0],maxLen)+r[1]));
+  lines.push(div);
+  lines.push(pad('TOTAL',maxLen)+fmt(t.val));
+  lines.push('');
+  lines.push('Generated by Creator Pro Calculator');
+  lines.push('consistentcreative.com');
+
+  const text=lines.join('\n');
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.querySelector('.copy-btn');
+    if(btn){btn.textContent='✓ Copied';btn.classList.add('copied');setTimeout(()=>{btn.innerHTML='⎘ Copy quote';btn.classList.remove('copied');},2500);}
+  }).catch(()=>{
+    // fallback
+    const ta=document.createElement('textarea');
+    ta.value=text;ta.style.position='fixed';ta.style.opacity='0';
+    document.body.appendChild(ta);ta.select();document.execCommand('copy');
+    document.body.removeChild(ta);
+    const btn=document.querySelector('.copy-btn');
+    if(btn){btn.textContent='✓ Copied';btn.classList.add('copied');setTimeout(()=>{btn.innerHTML='⎘ Copy quote';btn.classList.remove('copied');},2500);}
+  });
+}
+
+function resetCalc(){
+  if(!confirm('Reset all fields? This cannot be undone.'))return;
+  // Deactivate all platform chips
+  document.querySelectorAll('.platform-chip.active').forEach(el=>el.classList.remove('active'));
+  document.getElementById('my-followers').innerHTML='';
+  document.getElementById('my-followers').classList.remove('visible');
+  document.getElementById('brand-followers').innerHTML='';
+  document.getElementById('brand-followers').classList.remove('visible');
+  // Deactivate all toggle options
+  document.querySelectorAll('.toggle-option.active').forEach(el=>el.classList.remove('active'));
+  // Clear inputs
+  ['num-photos','num-videos','video-length','shoot-hours','edit-hours','travel-km'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.value='';
+  });
+  // Reset switches
+  ['sw-exclusive','sw-raw','sw-can-post'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.checked=false;
+  });
+  // Hide conditionals
+  document.getElementById('travel-wrap').classList.remove('open');
+  document.getElementById('post-delay-wrap').classList.remove('open');
+  document.getElementById('video-length-field').style.display='none';
+  document.getElementById('can-post-label').textContent='No';
+  document.getElementById('can-post-label').style.color='var(--text3)';
+  // Hide output
+  document.getElementById('output-divider').classList.remove('visible');
+  document.getElementById('output').style.display='none';
+  // Reset state
+  state.myPlatforms={};state.brandCollabPlatforms={};
+  lastRates=null;lastItems=null;selectedTier='standard';
+  // Hide tips
+  const adTip=document.getElementById('ad-tip');if(adTip)adTip.style.display='none';
+  const collabTip=document.getElementById('collab-tip');if(collabTip)collabTip.style.display='none';
+  const expHint=document.getElementById('exp-hint');if(expHint)expHint.textContent='';
+}
+</script>
+</body>
+</html>
