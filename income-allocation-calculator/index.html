@@ -1,1 +1,1101 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Income Allocation Calculator</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0e0e0e;--bg2:#1a1a1a;--bg3:#222;--bg4:#2c2c2c;
+  --border:rgba(255,255,255,0.1);--border2:rgba(255,255,255,0.18);
+  --text:#f5f5f3;--text2:#c0c0b8;--text3:#888880;
+  --green:#3dd68c;--green-dim:rgba(61,214,140,0.1);
+  --red:#f06060;--red-dim:rgba(240,96,96,0.08);
+  --amber:#f0a840;--amber-dim:rgba(240,168,64,0.1);
+  --blue:#60aaff;--blue-dim:rgba(96,170,255,0.1);
+  --radius:10px;--radius-sm:6px;
+  --r0:#f06060;--r1:#f0a840;--r2:#f0d840;--r3:#3dd68c;--r4:#40d0f0;--r5:#60aaff;--r6:#c084fc;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;display:flex;flex-direction:column;padding:1.5rem 1.5rem 0}
+
+/* ── Header ── */
+.cc-wordmark{margin-bottom:0.6rem;font-family:'DM Sans',sans-serif;font-size:13px;letter-spacing:0.01em}
+.wm-bold{font-weight:600;color:#c8c8c4}.wm-light{font-weight:400;color:#6a6a64}
+.header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:2rem;gap:16px;flex-wrap:wrap}
+.header-left{display:flex;flex-direction:column;gap:4px}
+.header-title{font-size:30px;font-weight:500;letter-spacing:-0.03em;color:var(--text);line-height:1.1}
+.header-sub{font-size:12px;color:var(--text3);font-family:'DM Mono',monospace}
+.header-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.save-row{display:flex;align-items:center;gap:6px}
+.saved-dot{width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0}
+.save-label,.save-time{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace}
+.btn-row{display:flex;gap:6px}
+.btn-undo{background:var(--bg3);border:0.5px solid var(--border2);border-radius:var(--radius-sm);padding:5px 12px;font-size:12px;color:var(--text3);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s}
+.btn-undo:hover{background:var(--bg4);color:var(--text2)}
+
+/* ── Tabs ── */
+.tabs-row{margin-bottom:1.5rem}
+.tabs{display:inline-flex;background:var(--bg2);border-radius:var(--radius-sm);padding:3px;gap:2px;border:0.5px solid var(--border)}
+.tab{font-size:13px;padding:6px 18px;border-radius:5px;border:none;background:transparent;color:var(--text3);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s}
+.tab:hover{color:var(--text2)}
+.tab.active{background:var(--bg4);color:var(--text);font-weight:500}
+.panel{display:none}.panel.active{display:block}
+
+/* ── Section label ── */
+.section-label{font-size:11px;font-weight:500;color:var(--text2);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:10px;font-family:'DM Mono',monospace}
+
+/* ── Tip card ── */
+.tip-card{border-radius:var(--radius);padding:12px 16px;margin-bottom:14px;border:0.5px solid rgba(240,168,64,0.22);background:var(--amber-dim);transition:opacity 0.4s,max-height 0.4s,padding 0.4s,margin 0.4s;overflow:hidden;max-height:200px}
+.tip-card.done{opacity:0;max-height:0;padding:0;margin:0;pointer-events:none}
+.tip-header{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.tip-icon{font-size:12px}.tip-tag{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;font-family:'DM Mono',monospace;color:var(--amber)}
+.tip-body{font-size:12px;color:var(--text2);line-height:1.6}
+
+/* ── Revenue input ── */
+.revenue-input-wrap{background:var(--bg2);border-radius:var(--radius);padding:20px 24px;margin-bottom:1.5rem;border:0.5px solid var(--border)}
+.rev-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;font-family:'DM Mono',monospace;margin-bottom:10px}
+.rev-input-row{display:flex;align-items:baseline;gap:4px}
+.rev-sym{font-size:22px;color:var(--text3);font-family:'DM Mono',monospace;padding-bottom:3px}
+.rev-input{font-size:42px;font-weight:500;font-family:'DM Mono',monospace;letter-spacing:-0.03em;background:transparent;border:none;outline:none;color:var(--text);width:100%;min-width:0}
+.rev-input::placeholder{color:var(--bg4)}
+.rev-input::-webkit-inner-spin-button{-webkit-appearance:none}
+.rev-sub{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;margin-top:6px}
+
+/* ── Allocation table ── */
+.alloc-table{width:100%;border-collapse:collapse;margin-bottom:8px}
+.alloc-table th{font-size:10px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;font-family:'DM Mono',monospace;padding:0 8px 8px;text-align:left}
+.alloc-table th:nth-child(2),.alloc-table th:nth-child(3){text-align:right}
+.alloc-table th:last-child{width:28px}
+.alloc-row td{padding:4px 0;vertical-align:middle}
+.row-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-right:8px;display:inline-block}
+.row-label-wrap{display:flex;align-items:center}
+.row-label-input{background:transparent;border:none;outline:none;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;width:100%;cursor:text;border-bottom:1px solid transparent;transition:border-color 0.15s;padding-bottom:1px}
+.row-label-input:hover{border-bottom-color:var(--border2)}
+.row-label-input:focus{border-bottom-color:var(--green)}
+.row-amt-cell,.row-pct-cell{text-align:right;padding:0 4px}
+.field-dual{display:flex;align-items:center;justify-content:flex-end;gap:2px}
+.field-sym{font-size:12px;color:var(--text3);font-family:'DM Mono',monospace}
+.field-input{font-size:14px;font-weight:500;font-family:'DM Mono',monospace;background:var(--bg3);border:0.5px solid var(--border);border-radius:var(--radius-sm);outline:none;color:var(--text);text-align:right;padding:5px 8px;transition:border-color 0.15s;width:100px}
+.field-input:focus{border-color:var(--green);background:var(--bg4)}
+.field-input::-webkit-inner-spin-button{-webkit-appearance:none}
+.field-pct{width:70px}
+.btn-del-row{background:transparent;border:0.5px solid var(--border);border-radius:var(--radius-sm);width:26px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text3);font-size:14px;transition:all 0.15s;flex-shrink:0}
+.btn-del-row:hover{border-color:var(--red);color:var(--red);background:var(--red-dim)}
+.btn-add-row{display:flex;align-items:center;gap:6px;background:transparent;border:0.5px dashed var(--border2);border-radius:var(--radius-sm);padding:7px 12px;color:var(--text3);font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.15s;margin-top:4px}
+.btn-add-row:hover{border-color:var(--green);color:var(--green)}
+.btn-add-row:disabled{opacity:0.3;cursor:not-allowed;pointer-events:none}
+
+/* ── Total bar ── */
+.total-bar{background:var(--bg2);border-radius:var(--radius-sm);padding:10px 14px;display:flex;justify-content:space-between;align-items:center;margin-top:10px;border:0.5px solid var(--border)}
+.total-label{font-size:12px;color:var(--text2);font-family:'DM Mono',monospace}
+.total-pct{font-size:18px;font-weight:600;font-family:'DM Mono',monospace;transition:color 0.3s}
+.total-pct.green{color:var(--green)}.total-pct.red{color:var(--red)}.total-pct.blue{color:var(--blue)}
+.total-amt{font-size:13px;font-family:'DM Mono',monospace;color:var(--text3)}
+.progress-track{height:4px;background:var(--bg4);border-radius:2px;margin-top:8px;overflow:hidden}
+.progress-fill{height:100%;border-radius:2px;transition:width 0.4s,background 0.3s}
+
+/* ── Status banner ── */
+.status-banner{border-radius:var(--radius-sm);padding:10px 14px;margin-top:10px;font-size:12px;font-family:'DM Mono',monospace;line-height:1.6;display:none}
+.status-banner.show{display:block}
+.status-banner.green{background:var(--green-dim);border:0.5px solid rgba(61,214,140,0.25);color:var(--green)}
+.status-banner.red{background:var(--red-dim);border:0.5px solid rgba(240,96,96,0.25);color:var(--red)}
+.status-banner.blue{background:var(--blue-dim);border:0.5px solid rgba(96,170,255,0.25);color:var(--blue)}
+
+/* ── Overview rings ── */
+.overview-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:2rem}
+@media(max-width:600px){.overview-grid{grid-template-columns:1fr}}
+.ring-card{background:var(--bg2);border-radius:var(--radius);padding:24px;border:0.5px solid var(--border);display:flex;flex-direction:column;align-items:center}
+.ring-title{font-size:13px;font-weight:500;color:var(--text);margin-bottom:20px;align-self:flex-start}
+.ring-wrap{position:relative;width:180px;height:180px;margin-bottom:20px}
+.ring-wrap svg{transform:rotate(-90deg)}
+.ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.ring-center-pct{font-size:28px;font-weight:600;font-family:'DM Mono',monospace;line-height:1}
+.ring-center-label{font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;margin-top:4px;text-transform:uppercase;letter-spacing:0.08em}
+.ring-legend{width:100%;display:flex;flex-direction:column;gap:6px}
+.legend-item{display:flex;align-items:center;gap:8px;font-size:12px}
+.legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.legend-label{color:var(--text2);flex:1}
+.legend-amt{font-family:'DM Mono',monospace;color:var(--text3);font-size:11px}
+.legend-pct{font-family:'DM Mono',monospace;color:var(--text3);font-size:11px;margin-left:4px}
+
+/* ── Overview summary card ── */
+.summary-card{background:var(--bg2);border-radius:var(--radius);padding:20px 24px;border:0.5px solid var(--border);margin-bottom:1rem}
+.summary-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:0.5px solid var(--border)}
+.summary-row:last-child{border-bottom:none}
+.summary-label{font-size:13px;color:var(--text2)}
+.summary-val{font-size:14px;font-weight:500;font-family:'DM Mono',monospace;color:var(--text)}
+
+/* ── Insight cards ── */
+.insights-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:1.5rem}
+@media(max-width:600px){.insights-grid{grid-template-columns:1fr}}
+.insight-card{border-radius:var(--radius);padding:18px 20px}
+.insight-card.strength{background:var(--green-dim);border:0.5px solid rgba(61,214,140,0.22)}
+.insight-card.weakness{background:var(--red-dim);border:0.5px solid rgba(240,96,96,0.22)}
+.insight-card.nudge{background:var(--amber-dim);border:0.5px solid rgba(240,168,64,0.22)}
+.insight-card.health{background:var(--bg2);border:0.5px solid var(--border2)}
+.insight-header{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.insight-icon{font-size:12px}
+.insight-tag{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;font-family:'DM Mono',monospace}
+.insight-card.strength .insight-tag{color:var(--green)}
+.insight-card.weakness .insight-tag{color:var(--red)}
+.insight-card.nudge .insight-tag{color:var(--amber)}
+.insight-card.health .insight-tag{color:var(--blue)}
+.insight-title{font-size:15px;font-weight:500;color:var(--text);margin-bottom:6px;line-height:1.3}
+.insight-body{font-size:12px;color:var(--text2);line-height:1.7}
+.insight-action{margin-top:10px;font-size:11px;font-family:'DM Mono',monospace;color:var(--text3);padding-top:8px;border-top:0.5px solid rgba(255,255,255,0.06);line-height:1.6}
+
+/* ── Footer ── */
+/* INSIGHTS GRID */
+.insights-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%/2 - 10px,260px),1fr));gap:10px;margin-top:4px}
+.ins-card{border-radius:var(--radius);padding:16px 18px}
+.ins-card.strength{background:var(--green-dim);border:0.5px solid rgba(61,214,140,0.22)}
+.ins-card.weakness{background:var(--red-dim);border:0.5px solid rgba(240,96,96,0.22)}
+.ins-card.nudge{background:var(--amber-dim);border:0.5px solid rgba(240,168,64,0.22)}
+.ins-tag{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;font-family:'DM Mono',monospace}
+.ins-card.strength .ins-tag{color:var(--green)}
+.ins-card.weakness .ins-tag{color:var(--red)}
+.ins-card.nudge .ins-tag{color:var(--amber)}
+.ins-title{font-size:14px;font-weight:500;color:var(--text);margin:6px 0 5px;line-height:1.3}
+.ins-body{font-size:12px;color:var(--text2);line-height:1.65}
+.ins-action{margin-top:8px;font-size:11px;font-family:'DM Mono',monospace;color:var(--text3);padding-top:8px;border-top:0.5px solid rgba(255,255,255,0.06);line-height:1.5}
+
+.footer{margin-top:2.5rem;padding:1.25rem 0;border-top:0.5px solid var(--border);text-align:center}
+.footer p{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;line-height:1.9}
+.footer a{color:var(--text3);text-decoration:none;border-bottom:0.5px solid var(--border2)}
+.footer a:hover{color:var(--text2)}
+</style>
+</head>
+<body>
+
+<div class="cc-wordmark"><span class="wm-bold">CONSISTENT</span><span class="wm-light"> CREATIVE</span></div>
+
+<div class="header">
+  <div class="header-left">
+    <div class="header-title">Income Allocation Calculator</div>
+    <div class="header-sub">Allocate every dollar with intention</div>
+  </div>
+  <div class="header-right">
+    <div class="save-row">
+      <div class="saved-dot" id="save-dot"></div>
+      <span class="save-label" id="save-label">Auto-saving</span>
+    </div>
+    <div class="save-row" id="save-time-wrap" style="display:none">
+      <span class="save-time">Last saved: <span id="save-time"></span></span>
+    </div>
+    <div class="btn-row">
+      <button class="btn-undo" onclick="resetAll()" style="border-color:rgba(240,96,96,0.35);color:var(--red)">⊘ Reset</button>
+      <button class="btn-undo" onclick="undo()">↩ Undo</button>
+    </div>
+  </div>
+</div>
+
+<div class="tabs-row">
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('business',this)">Business</button>
+    <button class="tab" onclick="switchTab('personal',this)">Personal</button>
+    <button class="tab" onclick="switchTab('overview',this)">Overview</button>
+  </div>
+</div>
+
+<!-- ══ BUSINESS ══ -->
+<div id="business" class="panel active">
+
+  <div class="tip-card" id="tip-biz">
+    <div class="tip-header"><span class="tip-icon">💡</span><span class="tip-tag">How it works</span></div>
+    <div class="tip-body">Enter your average monthly revenue, then allocate it across categories. Adjust percentages or dollar amounts — the other updates automatically. Aim for exactly 100%.</div>
+  </div>
+
+  <div class="section-label">Monthly revenue</div>
+  <div class="revenue-input-wrap">
+    <div class="rev-label">Average monthly revenue</div>
+    <div class="rev-input-row">
+      <span class="rev-sym">$</span>
+      <input class="rev-input" type="text" inputmode="numeric" id="biz-revenue" placeholder="0"
+      onfocus="this.value=this.value.replace(/,/g,'')"
+      onblur="formatRevInput(this);onRevChange('biz')"
+      onkeydown="if(event.key==='Enter'){this.blur();}"
+      oninput="onRevChange('biz')">
+    </div>
+    <div class="rev-sub" id="biz-rev-sub"></div>
+  </div>
+
+  <div class="section-label">Allocation</div>
+  <table class="alloc-table">
+    <thead><tr>
+      <th style="width:36%">Category</th>
+      <th style="width:28%">Amount</th>
+      <th style="width:22%">%</th>
+      <th style="width:14%"></th>
+    </tr></thead>
+    <tbody id="biz-rows"></tbody>
+  </table>
+  <button class="btn-add-row" id="biz-add-btn" onclick="addRow('biz')">+ Add category</button>
+
+  <div class="total-bar">
+    <div>
+      <div class="total-label">Total allocated</div>
+      <div class="progress-track" style="width:200px"><div class="progress-fill" id="biz-progress"></div></div>
+    </div>
+    <div style="text-align:right">
+      <div class="total-pct" id="biz-total-pct">0%</div>
+      <div class="total-amt" id="biz-total-amt">$0 of $0</div>
+    </div>
+  </div>
+  <div class="status-banner" id="biz-status"></div>
+  <div id="biz-insights" style="margin-top:1rem"></div>
+
+</div>
+
+<!-- ══ PERSONAL ══ -->
+<div id="personal" class="panel">
+
+  <div class="tip-card" id="tip-personal">
+    <div class="tip-header"><span class="tip-icon">💡</span><span class="tip-tag">How it works</span></div>
+    <div class="tip-body">Your Owner Pay from the Business tab flows in automatically. Add any other income sources, then allocate the total across your personal categories.</div>
+  </div>
+
+  <div class="section-label">Personal income</div>
+  <div class="revenue-input-wrap">
+    <div class="rev-label">Owner pay (from business)</div>
+    <div class="rev-input-row">
+      <span class="rev-sym" style="color:var(--green)">$</span>
+      <input class="rev-input" type="text" id="personal-owner-pay" placeholder="0" readonly style="color:var(--green);cursor:default">
+    </div>
+    <div class="rev-sub">Updates automatically from your Business tab Owner Pay allocation</div>
+  </div>
+
+  <div class="revenue-input-wrap" style="margin-top:-0.75rem">
+    <div class="rev-label">Other income (optional)</div>
+    <div class="rev-input-row">
+      <span class="rev-sym">$</span>
+      <input class="rev-input" type="text" inputmode="numeric" id="personal-other" placeholder="0"
+      onfocus="this.value=this.value.replace(/,/g,'')"
+      onblur="formatRevInput(this);onRevChange('personal')"
+      onkeydown="if(event.key==='Enter'){this.blur();}"
+      oninput="onRevChange('personal')">
+    </div>
+    <div class="rev-sub">Salary from job, partner income, investments, second business etc. Leave as $0 if not applicable.</div>
+  </div>
+
+  <div class="section-label">Allocation</div>
+  <table class="alloc-table">
+    <thead><tr>
+      <th style="width:36%">Category</th>
+      <th style="width:28%">Amount</th>
+      <th style="width:22%">%</th>
+      <th style="width:14%"></th>
+    </tr></thead>
+    <tbody id="personal-rows"></tbody>
+  </table>
+  <button class="btn-add-row" id="personal-add-btn" onclick="addRow('personal')">+ Add category</button>
+
+  <div class="total-bar">
+    <div>
+      <div class="total-label">Total allocated</div>
+      <div class="progress-track" style="width:200px"><div class="progress-fill" id="personal-progress"></div></div>
+    </div>
+    <div style="text-align:right">
+      <div class="total-pct" id="personal-total-pct">0%</div>
+      <div class="total-amt" id="personal-total-amt">$0 of $0</div>
+    </div>
+  </div>
+  <div class="status-banner" id="personal-status"></div>
+  <div id="personal-insights" style="margin-top:1rem"></div>
+
+</div>
+
+<!-- ══ OVERVIEW ══ -->
+<div id="overview" class="panel">
+  <div class="overview-grid">
+    <div class="ring-card">
+      <div class="ring-title">Business allocation</div>
+      <div class="ring-wrap"><svg id="biz-ring-svg" width="180" height="180" viewBox="0 0 180 180"></svg><div class="ring-center"><div class="ring-center-pct" id="biz-ring-pct">0%</div><div class="ring-center-label">Allocated</div></div></div>
+      <div class="ring-legend" id="biz-ring-legend"></div>
+    </div>
+    <div class="ring-card">
+      <div class="ring-title">Personal allocation</div>
+      <div class="ring-wrap"><svg id="personal-ring-svg" width="180" height="180" viewBox="0 0 180 180"></svg><div class="ring-center"><div class="ring-center-pct" id="personal-ring-pct">0%</div><div class="ring-center-label">Allocated</div></div></div>
+      <div class="ring-legend" id="personal-ring-legend"></div>
+    </div>
+  </div>
+
+  <div class="section-label">Summary</div>
+  <div class="summary-card">
+    <div class="summary-row"><div class="summary-label">Total business revenue</div><div class="summary-val" id="ov-biz-rev">$0</div></div>
+    <div class="summary-row"><div class="summary-label">Owner pay</div><div class="summary-val" id="ov-owner-pay">$0</div></div>
+    <div class="summary-row"><div class="summary-label">Other personal income</div><div class="summary-val" id="ov-other-inc">$0</div></div>
+    <div class="summary-row"><div class="summary-label">Total personal income</div><div class="summary-val" id="ov-personal-total">$0</div></div>
+  </div>
+
+  <div class="section-label">Insights</div>
+  <div class="insights-grid" id="ov-insights"></div>
+</div>
+
+<div class="footer">
+  <p>© <span id="footer-year"></span> <strong>Consistent Creative Pty Ltd</strong> — All rights reserved.</p>
+  <p>This tool is the intellectual property of Consistent Creative Pty Ltd.</p>
+  <p>Unauthorised reproduction, distribution or use of this tool is strictly prohibited.</p>
+  <p style="margin-top:5px"><a href="https://www.consistentcreative.com" target="_blank">www.ConsistentCreative.com</a></p>
+</div>
+
+<script>
+document.getElementById('footer-year').textContent=new Date().getFullYear();
+
+const SK='revenue_allocator_v1';
+const RAINBOW=['#3dd68c','#60aaff','#c084fc','#f0d840','#f472b6','#3dd68c','#60aaff'];
+const MAX_ROWS=7;
+
+const defaultBizRows=[
+  {id:'b0',label:'Owner Pay',amt:0,pct:0},
+  {id:'b1',label:'Expenses',amt:0,pct:0},
+  {id:'b2',label:'Tax',amt:0,pct:0},
+  {id:'b3',label:'Business Savings',amt:0,pct:0},
+];
+const defaultPersonalRows=[
+  {id:'p0',label:'Spending',amt:0,pct:0},
+  {id:'p1',label:'Rent / Mortgage',amt:0,pct:0},
+  {id:'p2',label:'Savings',amt:0,pct:0},
+];
+
+let state={
+  bizRevenue:0,
+  bizRows:JSON.parse(JSON.stringify(defaultBizRows)),
+  personalOther:0,
+  personalRows:JSON.parse(JSON.stringify(defaultPersonalRows)),
+};
+let hist=[],saveTimer=null,lastSaved=null,saveIv=null;
+let activeField=null; // track which field was last edited: 'amt' or 'pct'
+
+// ── Storage ──────────────────────────────────────────────────────────────
+async function saveState(){
+  const s=JSON.stringify(state);
+  try{await window.storage.set(SK,s);}catch(e){}
+  try{localStorage.setItem(SK,s);}catch(e){}
+  lastSaved=new Date();showSaved();
+}
+function queueSave(){
+  document.getElementById('save-dot').style.background='var(--amber)';
+  clearTimeout(saveTimer);saveTimer=setTimeout(saveState,800);
+}
+function showSaved(){
+  document.getElementById('save-dot').style.background='var(--green)';
+  document.getElementById('save-time-wrap').style.display='flex';
+  updateSaveTime();clearInterval(saveIv);saveIv=setInterval(updateSaveTime,30000);
+}
+function updateSaveTime(){
+  if(!lastSaved)return;
+  const d=Math.round((Date.now()-lastSaved)/1000);
+  document.getElementById('save-time').textContent=d<10?'just now':d<60?d+'s ago':Math.round(d/60)+'m ago';
+}
+
+// ── Undo ─────────────────────────────────────────────────────────────────
+function pushHist(){hist.push(JSON.stringify(state));if(hist.length>50)hist.shift();}
+function undo(){if(!hist.length)return;Object.assign(state,JSON.parse(hist.pop()));applyDOM();update();queueSave();}
+document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='z'){e.preventDefault();undo();}});
+
+// ── Reset ─────────────────────────────────────────────────────────────────
+function resetAll(){
+  if(!confirm('Reset all data? This cannot be undone.'))return;
+  state={bizRevenue:0,bizRows:JSON.parse(JSON.stringify(defaultBizRows)),personalOther:0,personalRows:JSON.parse(JSON.stringify(defaultPersonalRows))};
+  try{localStorage.removeItem(SK);}catch(e){}
+  hist=[];applyDOM();update();queueSave();
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────
+const fmt=n=>'$'+Math.round(Math.abs(n)).toLocaleString('en-AU');
+const fmtDec=n=>'$'+(+Math.abs(n).toFixed(0)).toLocaleString('en-AU');
+const fmtComma=n=>n>0?Math.round(n).toLocaleString('en-AU'):'';
+function formatRevInput(el){const v=parseFloat(el.value.replace(/,/g,''))||0;el.value=v>0?v.toLocaleString('en-AU'):'';}
+function getRows(tab){return tab==='biz'?state.bizRows:state.personalRows;}
+function getRevenue(tab){
+  if(tab==='biz')return+state.bizRevenue||0;
+  const ownerPay=getOwnerPay();
+  return ownerPay+(+state.personalOther||0);
+}
+function getOwnerPay(){
+  const op=state.bizRows.find(r=>r.label==='Owner Pay');
+  if(op&&state.bizRevenue>0)return Math.round((op.pct/100)*(+state.bizRevenue||0));
+  return 0;
+}
+
+// ── Row input handlers ────────────────────────────────────────────────────
+function onRevChange(tab){
+  if(tab==='biz'){
+    state.bizRevenue=parseFloat(document.getElementById('biz-revenue').value.replace(/,/g,''))||0;
+    // Biz revenue change: recalc amounts from existing pcts, update owner pay
+    recalcAmounts('biz');
+    renderRows('biz');
+    updateOwnerPayDisplay();
+  } else {
+    // Personal other income: update pool ONLY - don't touch row pcts or amts
+    // Row amts should stay fixed so existing allocation becomes a smaller % of bigger pool
+    state.personalOther=parseFloat(document.getElementById('personal-other').value.replace(/,/g,''))||0;
+    // Recalc personal row pcTs from their current amt values against new revenue pool
+    const newRev=getRevenue('personal');
+    state.personalRows.forEach(r=>{
+      r.pct=newRev>0?Math.round((r.amt/newRev)*1000)/10:0;
+    });
+    renderRows('personal');
+  }
+  drawRing(tab);
+  updateOverviewSummary();
+  updateTotals(tab);
+  renderInsights();
+  queueSave();
+}
+
+function onAmtChange(tab,id,val){
+  const rows=getRows(tab);
+  const row=rows.find(r=>r.id===id);
+  if(!row)return;
+  const rev=getRevenue(tab);
+  row.amt=+val||0;
+  row.pct=rev>0?Math.round((row.amt/rev)*1000)/10:0;
+  // Update only the corresponding pct field without rebuilding table
+  const pctEl=document.getElementById('pct-'+id);
+  if(pctEl&&document.activeElement!==pctEl)pctEl.value=row.pct||'';
+  updateTotals(tab);
+  queueSave();
+}
+
+function onPctChange(tab,id,val){
+  const rows=getRows(tab);
+  const row=rows.find(r=>r.id===id);
+  if(!row)return;
+  row.pct=+val||0;
+  const rev=getRevenue(tab);
+  row.amt=Math.round((row.pct/100)*rev);
+  // Update only the corresponding amt field without rebuilding table
+  const amtEl=document.getElementById('amt-'+id);
+  if(amtEl&&document.activeElement!==amtEl)amtEl.value=row.amt||'';
+  updateTotals(tab);
+  if(tab==='biz')updateOwnerPayDisplay();
+  queueSave();
+}
+
+function onLabelChange(tab,id,val){
+  const rows=getRows(tab);
+  const row=rows.find(r=>r.id===id);
+  if(row)row.label=val;
+  queueSave();
+  // Only refresh owner pay display if biz label changed
+  if(tab==='biz')updateOwnerPayDisplay();
+}
+
+function recalcAmounts(tab){
+  const rev=getRevenue(tab);
+  getRows(tab).forEach(r=>{r.amt=Math.round((r.pct/100)*rev);});
+}
+
+// ── Lightweight updates (no innerHTML rebuild) ────────────────────────────
+function updateTipVisibility(){
+  // Biz tip: hide when revenue is set AND all rows have a pct value
+  const bizFilled=state.bizRevenue>0&&state.bizRows.every(r=>+r.pct>0||+r.amt>0);
+  const bizTip=document.getElementById('tip-biz');
+  if(bizTip)bizTip.classList.toggle('done',bizFilled);
+  // Personal tip: hide when personal income is set AND all rows have a value
+  const persFilled=getRevenue('personal')>0&&state.personalRows.every(r=>+r.pct>0||+r.amt>0);
+  const persTip=document.getElementById('tip-personal');
+  if(persTip)persTip.classList.toggle('done',persFilled);
+}
+
+function updateTotals(tab){
+  const rows=getRows(tab);
+  const rev=getRevenue(tab);
+  const totalPct=rows.reduce((s,r)=>s+(+r.pct||0),0);
+  const totalAmt=rows.reduce((s,r)=>s+(+r.amt||0),0);
+  const rounded=Math.round(totalPct*10)/10;
+  // If amounts exactly match revenue, show clean 100% regardless of floating point pct sum
+  const displayPct=(totalAmt>0&&totalAmt===Math.round(rev))?100:rounded;
+  const pctEl=document.getElementById(tab+'-total-pct');
+  const amtEl=document.getElementById(tab+'-total-amt');
+  const prog=document.getElementById(tab+'-progress');
+  const status=document.getElementById(tab+'-status');
+  pctEl.textContent=displayPct+'%';
+  amtEl.textContent=fmtDec(totalAmt)+' of '+fmtDec(rev);
+  const w=Math.min(displayPct,100);
+  prog.style.width=w+'%';
+  pctEl.classList.remove('green','red','blue');
+  prog.style.background='var(--blue)';
+  status.className='status-banner';
+  if(displayPct===100){pctEl.classList.add('green');prog.style.background='var(--green)';status.classList.add('show','green');status.textContent='✓ Perfectly allocated — every dollar has a job.';}
+  else if(displayPct>100){pctEl.classList.add('red');prog.style.background='var(--red)';status.classList.add('show','red');status.textContent=`⚠ Over-allocated by ${Math.round((displayPct-100)*10)/10}% — reduce one or more categories to get back to 100%.`;}
+  else if(displayPct>0){pctEl.classList.add('blue');status.classList.add('show','blue');const leftover=Math.round((rev*(100-displayPct)/100));status.textContent=`→ ${Math.round((100-displayPct)*10)/10}% unallocated (${fmt(leftover)}). Consider adding to savings, debt repayment, or a growth fund.`;}
+  // Also update rings and overview without full re-render
+  drawRing(tab);
+  updateOverviewSummary();
+  updateTipVisibility();
+  // Update tab insights
+  const bizIns=document.getElementById('biz-insights');
+  if(bizIns)bizIns.innerHTML=buildBizInsights();
+  const persIns=document.getElementById('personal-insights');
+  if(persIns)persIns.innerHTML=buildPersonalInsights();
+  renderInsights();
+}
+
+function updateOwnerPayDisplay(){
+  const ownerPay=getOwnerPay();
+  const opEl=document.getElementById('personal-owner-pay');
+  if(opEl)opEl.value=ownerPay>0?ownerPay.toLocaleString('en-AU'):'';
+  // Recalc personal row pcts based on new personal revenue pool
+  const newRev=getRevenue('personal');
+  state.personalRows.forEach(r=>{
+    r.pct=newRev>0?Math.round((r.amt/newRev)*1000)/10:0;
+    const pctEl=document.getElementById('pct-'+r.id);
+    if(pctEl)pctEl.value=r.pct||'';
+  });
+  updateTotals('personal');
+}
+
+function updateOverviewSummary(){
+  const bizRev=+state.bizRevenue||0;
+  const ownerPay=getOwnerPay();
+  const other=+state.personalOther||0;
+  const personalRev=getRevenue('personal');
+  document.getElementById('ov-biz-rev').textContent=fmt(bizRev);
+  document.getElementById('ov-owner-pay').textContent=fmt(ownerPay);
+  document.getElementById('ov-other-inc').textContent=fmt(other);
+  document.getElementById('ov-personal-total').textContent=fmt(personalRev);
+}
+
+// ── Add/remove rows ───────────────────────────────────────────────────────
+function addRow(tab){
+  const rows=getRows(tab);
+  if(rows.length>=MAX_ROWS)return;
+  pushHist();
+  const id=(tab==='biz'?'b':'p')+Date.now();
+  rows.push({id,label:'New category',amt:0,pct:0});
+  update();queueSave();
+}
+function removeRow(tab,id){
+  pushHist();
+  if(tab==='biz')state.bizRows=state.bizRows.filter(r=>r.id!==id);
+  else state.personalRows=state.personalRows.filter(r=>r.id!==id);
+  update();queueSave();
+}
+
+// ── Render rows ───────────────────────────────────────────────────────────
+const LOCKED_BIZ=['b0','b1','b2','b3'];
+const LOCKED_PERSONAL=['p0','p1','p2'];
+function renderRows(tab){
+  const rows=getRows(tab);
+  const rev=getRevenue(tab);
+  const tbody=document.getElementById(tab+'-rows');
+  tbody.innerHTML=rows.map((row,i)=>{
+    const col=RAINBOW[i%RAINBOW.length];
+    const locked=(tab==='biz'&&LOCKED_BIZ.includes(row.id))||(tab==='personal'&&LOCKED_PERSONAL.includes(row.id));
+    return`<tr class="alloc-row">
+      <td><div class="row-label-wrap">
+        <span class="row-dot" style="background:${col}"></span>
+        ${locked
+          ? `<span class="row-label-input" style="cursor:default;border-color:transparent;color:var(--text)">${row.label}</span>`
+          : `<input class="row-label-input" value="${row.label.replace(/"/g,'&quot;')}" onchange="onLabelChange('${tab}','${row.id}',this.value)">`
+        }
+      </div></td>
+      <td class="row-amt-cell"><div class="field-dual">
+        <span class="field-sym">$</span>
+        <input class="field-input" id="amt-${row.id}" type="text" inputmode="numeric"
+          value="${fmtComma(row.amt)}" placeholder="0"
+          onfocus="this.value=this.value.replace(/,/g,'')"
+          onblur="this.value=fmtComma(parseFloat(this.value.replace(/,/g,''))||0)"
+          onkeydown="if(event.key==='Enter')this.blur()"
+          oninput="onAmtChange('${tab}','${row.id}',this.value.replace(/,/g,''))">
+      </div></td>
+      <td class="row-pct-cell"><div class="field-dual">
+        <input class="field-input field-pct" id="pct-${row.id}" type="number" value="${row.pct||''}" placeholder="0" min="0" max="100" step="0.1"
+          onkeydown="if(event.key==='Enter')this.blur()"
+          oninput="onPctChange('${tab}','${row.id}',this.value)">
+        <span class="field-sym">%</span>
+      </div></td>
+      <td style="text-align:center">${locked
+        ? `<span style="width:28px;display:inline-block"></span>`
+        : `<button class="btn-del-row" onclick="removeRow('${tab}','${row.id}')">×</button>`
+      }</td>
+    </tr>`;
+  }).join('');
+
+  // Total
+  const totalPct=rows.reduce((s,r)=>s+(+r.pct||0),0);
+  const totalAmt=rows.reduce((s,r)=>s+(+r.amt||0),0);
+  const rounded=Math.round(totalPct*10)/10;
+  const pctEl=document.getElementById(tab+'-total-pct');
+  const amtEl=document.getElementById(tab+'-total-amt');
+  const prog=document.getElementById(tab+'-progress');
+  const status=document.getElementById(tab+'-status');
+  const addBtn=document.getElementById(tab+'-add-btn');
+
+  pctEl.textContent=rounded+'%';
+  amtEl.textContent=fmtDec(totalAmt)+' of '+fmtDec(rev);
+  addBtn.disabled=rows.length>=MAX_ROWS;
+
+  const w=Math.min(rounded,100);
+  prog.style.width=w+'%';
+
+  pctEl.classList.remove('green','red','blue');
+  prog.style.background='var(--blue)';
+  status.className='status-banner';
+
+  if(rounded===100){
+    pctEl.classList.add('green');prog.style.background='var(--green)';
+    status.classList.add('show','green');
+    status.textContent='✓ Perfectly allocated — every dollar has a job.';
+  } else if(rounded>100){
+    pctEl.classList.add('red');prog.style.background='var(--red)';
+    status.classList.add('show','red');
+    status.textContent=`⚠ Over-allocated by ${Math.round((rounded-100)*10)/10}% — reduce one or more categories to get back to 100%.`;
+  } else if(rounded>0){
+    pctEl.classList.add('blue');
+    status.classList.add('show','blue');
+    const leftover=Math.round((rev*(100-rounded)/100));
+    status.textContent=`→ ${Math.round((100-rounded)*10)/10}% unallocated (${fmt(leftover)}). Consider adding to savings, debt repayment, or a growth fund.`;
+  }
+}
+
+// ── Ring chart ────────────────────────────────────────────────────────────
+function drawRing(tab){
+  const rows=getRows(tab);
+  const rev=getRevenue(tab);
+  const svg=document.getElementById(tab+'-ring-svg');
+  const legend=document.getElementById(tab+'-ring-legend');
+  const pctEl=document.getElementById(tab+'-ring-pct');
+  const cx=90,cy=90,r=72,stroke=18;
+  const circ=2*Math.PI*r;
+  const totalPct=Math.min(rows.reduce((s,row)=>s+(+row.pct||0),0),100);
+  pctEl.textContent=Math.round(totalPct)+'%';
+  pctEl.style.color=totalPct===100?'var(--green)':totalPct>100?'var(--red)':'var(--blue)';
+
+  const gap=1.5; // px gap between segments
+  let svgHTML=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--bg4)" stroke-width="${stroke}"/>`;
+  let offset=0;
+  rows.forEach((row,i)=>{
+    const pct=Math.min(+row.pct||0,100-offset);
+    if(pct<=0)return;
+    const col=RAINBOW[i%RAINBOW.length];
+    const dashLen=Math.max(0,(pct/100)*circ-gap);
+    const gapLen=circ-dashLen;
+    // stroke-dashoffset starts at top (-90deg = circ/4 from start)
+    const dashOffset=circ/4-(offset/100)*circ;
+    svgHTML+=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${col}" stroke-width="${stroke}"
+      stroke-dasharray="${dashLen.toFixed(2)} ${gapLen.toFixed(2)}"
+      stroke-dashoffset="${dashOffset.toFixed(2)}"/>`;
+    offset+=pct;
+  });
+  svg.innerHTML=svgHTML;
+
+  legend.innerHTML=rows.map((row,i)=>{
+    const col=RAINBOW[i%RAINBOW.length];
+    const pct=+row.pct||0;
+    return`<div class="legend-item">
+      <span class="legend-dot" style="background:${col}"></span>
+      <span class="legend-label">${row.label}</span>
+      <span class="legend-amt">${fmt(row.amt||0)}</span>
+      <span class="legend-pct">${pct}%</span>
+    </div>`;
+  }).join('');
+}
+
+// ── Overview insights ─────────────────────────────────────────────────────
+function renderInsights(){
+  const el=document.getElementById('ov-insights');
+  if(!el)return;
+  const bizRev=+state.bizRevenue||0;
+  const ownerPay=getOwnerPay();
+  const personalTotal=getRevenue('personal');
+  const bizTotalPct=state.bizRows.reduce((s,r)=>s+(+r.pct||0),0);
+  const persTotalPct=state.personalRows.reduce((s,r)=>s+(+r.pct||0),0);
+
+  if(bizRev===0&&personalTotal===0){
+    el.style.gridTemplateColumns='1fr';
+    el.innerHTML=`<div class="ins-card nudge" style="padding:16px 18px"><div style="display:flex;align-items:center;gap:6px;margin-bottom:4px"><span class="ins-tag" style="color:var(--amber)">Get started</span></div><div class="ins-title">Enter your revenue or income to see insights</div></div>`;
+    return;
+  }
+
+  // "Significant data" = biz fully allocated AND personal has some allocation
+  const hasSignificantData = bizTotalPct>=80 && personalTotal>0 && persTotalPct>=50;
+
+  const candidates=[];
+
+  // ── Business health ──
+  const taxRow=state.bizRows.find(r=>r.label==='Tax');
+  const taxPct=taxRow?+taxRow.pct:0;
+  const taxAmt=Math.round(taxPct/100*bizRev);
+  const savRow=state.bizRows.find(r=>r.label==='Business Savings');
+  const savPct=savRow?+savRow.pct:0;
+  const ownerPct=bizRev>0?Math.round((ownerPay/bizRev)*100):0;
+  const ownerRow=state.bizRows.find(r=>r.label==='Owner Pay');
+  const ownerAmt=ownerRow?Math.round((+ownerRow.pct/100)*bizRev):0;
+
+  // Tax
+  if(taxPct===0&&bizTotalPct>0){
+    candidates.push({score:4,card:insightCard('weakness','◎','Tax — urgent','No tax set — high risk',
+      `${fmt(bizRev)}/mo revenue with nothing aside for tax. A surprise bill at year end is one of the most common small business cash flow crises.`,
+      '→ Most sole traders need 20–30%. Talk to your accountant.')});
+  } else if(taxPct>0&&taxPct<15){
+    candidates.push({score:3,card:insightCard('weakness','◎','Tax','Tax at '+taxPct+'% is likely too low',
+      `Under-saving for tax is one of the most common small business traps. Most owners need 20–30% set aside.`,
+      '→ Increase this now — much easier than dealing with the shortfall later.')});
+  } else if(taxPct>=15){
+    candidates.push({score:1,card:insightCard('strength','✦','Tax','Tax covered — '+taxPct+'% ('+fmt(taxAmt)+'/mo)',
+      `Setting aside ${fmt(taxAmt)}/month means no nasty surprises at year end. Excellent discipline.`,
+      '→ Confirm this rate with your accountant to make sure it matches your actual obligation.')});
+  }
+
+  // Owner pay
+  if(ownerPct===0&&bizTotalPct>0){
+    candidates.push({score:4,card:insightCard('weakness','◎','Owner pay','Owner pay is $0',
+      `You have ${fmt(bizRev)}/mo revenue but no owner pay allocated. Make sure you are paying yourself.`,
+      '→ Healthy range is 30–50% depending on your business size and expenses.')});
+  } else if(ownerPct>0&&ownerPct<25){
+    candidates.push({score:3,card:insightCard('weakness','◎','Owner pay','Low owner pay — '+ownerPct+'% ('+fmt(ownerAmt)+'/mo)',
+      `Less than 25% owner pay is often unsustainable. You may be underpaying yourself relative to what the business earns.`,
+      '→ Review whether expenses or tax can be reduced to increase your take-home.')});
+  } else if(ownerPct>=30&&ownerPct<=50){
+    candidates.push({score:1,card:insightCard('strength','✦','Owner pay','Balanced owner pay — '+ownerPct+'% ('+fmt(ownerAmt)+'/mo)',
+      `${ownerPct}% is in the healthy range — enough to live on while the business stays properly funded.`,
+      '→ Keep this proportional as revenue grows.')});
+  } else if(ownerPct>60){
+    candidates.push({score:3,card:insightCard('weakness','◎','Owner pay','Owner pay too high — '+ownerPct+'%',
+      `More than 60% as owner pay leaves limited room for expenses, tax and reinvestment. The business may be underfunded.`,
+      '→ Reduce owner pay and redirect to tax and savings first.')});
+  }
+
+  // Business savings
+  if(savPct===0&&bizTotalPct>0){
+    candidates.push({score:2,card:insightCard('nudge','💡','Business savings','No savings buffer',
+      `No business savings means any unexpected cost hits immediately — slow month, equipment failure, late invoice.`,
+      '→ Even 5% builds meaningful protection fast. Aim for 3 months of costs over time.')});
+  } else if(savPct>=5){
+    candidates.push({score:1,card:insightCard('strength','✦','Business savings','Saving '+savPct+'% ('+fmt(Math.round(savPct/100*bizRev))+'/mo)',
+      `${fmt(Math.round(savPct/100*bizRev))}/month to savings is building real security. One of the best habits a business owner can have.`,
+      '→ Keep this as revenue grows — resist spending windfalls before the buffer is solid.')});
+  }
+
+  // ── Personal health ──
+  const pSavRow=state.personalRows.find(r=>r.label==='Savings');
+  const pSavPct=pSavRow?+pSavRow.pct:0;
+  const pSavAmt=pSavRow&&personalTotal>0?Math.round(pSavPct/100*personalTotal):0;
+  const pRentRow=state.personalRows.find(r=>r.label==='Rent / Mortgage');
+  const pRentPct=pRentRow?+pRentRow.pct:0;
+
+  if(personalTotal>0){
+    if(pSavPct===0&&persTotalPct>0){
+      candidates.push({score:3,card:insightCard('weakness','◎','Personal savings','No personal savings set',
+        `You have ${fmt(personalTotal)}/mo personal income with nothing going to savings. Even 5% (${fmt(personalTotal*0.05)}/mo) builds meaningful security.`,
+        '→ Set a savings % in the Personal tab — automate it so it happens before you spend.')});
+    } else if(pSavPct>=10){
+      candidates.push({score:1,card:insightCard('strength','✦','Personal savings','Saving '+pSavPct+'% personally ('+fmt(pSavAmt)+'/mo)',
+        `${fmt(pSavAmt)}/month in personal savings is a strong habit. Consistent savers at this rate build significant wealth over time.`,
+        '→ Consider automating this transfer so it always comes out first.')});
+    }
+    if(pRentPct>40){
+      candidates.push({score:3,card:insightCard('weakness','◎','Rent / Mortgage','Housing at '+pRentPct+'% of income',
+        `More than 40% on housing leaves very limited room for savings and daily expenses. This is a financially tight position.`,
+        '→ Focus on growing income to reduce this ratio — that is usually the cleanest path forward.')});
+    }
+  }
+
+  // If no biz data but personal data exists, ensure we still show personal insights
+  if(bizRev===0&&personalTotal>0&&!candidates.length){
+    el.style.gridTemplateColumns='1fr';
+    el.innerHTML=`<div class="ins-card nudge" style="padding:16px 18px"><div style="display:flex;align-items:center;gap:6px;margin-bottom:4px"><span class="ins-tag" style="color:var(--amber)">Personal only</span></div><div class="ins-title">Personal income entered — head to Personal tab for full insights</div></div>`;
+    return;
+  }
+
+  // Sort by score and pick 2–4 based on data completeness
+  candidates.sort((a,b)=>b.score-a.score);
+  const maxCards = hasSignificantData ? 4 : candidates.length>=3 ? 3 : 2;
+  const picked = candidates.slice(0, maxCards);
+  if(!picked.length)return;
+
+  const n=picked.length;
+  const cols=n<=2?2:n===3?3:4;
+  el.style.gridTemplateColumns=`repeat(${cols},1fr)`;
+  el.innerHTML=picked.map(c=>c.card.html).join('');
+}
+
+// ── Tab insights ─────────────────────────────────────────────────────────
+function insightCard(type,icon,tag,title,body,action){
+  return{type,html:`<div class="ins-card ${type}">
+    <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px">
+      <span style="font-size:11px">${icon}</span>
+      <span class="ins-tag">${tag}</span>
+    </div>
+    <div class="ins-title">${title}</div>
+    <div class="ins-body">${body}</div>
+    ${action?`<div class="ins-action">${action}</div>`:''}
+  </div>`};
+}
+function wrapInsights(allCards){
+  if(!allCards.length)return'';
+  // Priority order: weakness first, then nudge, then strength — cap at 4
+  const byType=t=>allCards.filter(h=>h.type===t);
+  const ordered=[...byType('weakness'),...byType('nudge'),...byType('strength')];
+  const cards=ordered.slice(0,4);
+  // Enforce minimum 2 — if only 1 card, pad with an empty placeholder to maintain grid
+  const n=cards.length;
+  const cols=n<=2?2:n===3?3:4;
+  return`<div class="insights-grid" style="grid-template-columns:repeat(${cols},1fr)">${cards.map(h=>h.html).join('')}</div>`;
+}
+
+function buildBizInsights(){
+  const rev=+state.bizRevenue||0;
+  const rows=state.bizRows;
+  const anyFilled=rows.some(r=>+r.pct>0||+r.amt>0)||rev>0;
+  if(!anyFilled)return'';
+
+  const totalPct=rows.reduce((s,r)=>s+(+r.pct||0),0);
+  const ownerRow=rows.find(r=>r.label==='Owner Pay');
+  const taxRow=rows.find(r=>r.label==='Tax');
+  const savRow=rows.find(r=>r.label==='Business Savings');
+  const expRow=rows.find(r=>r.label==='Expenses');
+  const ownerPct=ownerRow?+ownerRow.pct:0;
+  const ownerAmt=rev>0?Math.round(ownerPct/100*rev):(ownerRow?+ownerRow.amt:0);
+  const taxPct=taxRow?+taxRow.pct:0;
+  const taxAmt=rev>0?Math.round(taxPct/100*rev):(taxRow?+taxRow.amt:0);
+  const savPct=savRow?+savRow.pct:0;
+  const savAmt=rev>0?Math.round(savPct/100*rev):(savRow?+savRow.amt:0);
+  const expPct=expRow?+expRow.pct:0;
+
+  // Build candidate cards — scored by urgency (weakness=3, nudge=2, strength=1)
+  const candidates=[];
+
+  // 1. Allocation status — always show
+  if(totalPct>100){
+    candidates.push({score:3,card:insightCard('weakness','◎','Over-allocated',`Over-allocated by ${Math.round(totalPct-100)}%`,
+      `Your allocations add up to ${Math.round(totalPct)}% which is more than your revenue. Something needs to come down.`,
+      '→ Reduce one or more categories until the total reaches exactly 100%.')});
+  } else if(totalPct===100){
+    candidates.push({score:1,card:insightCard('strength','✦','Allocation','Every dollar allocated',
+      `Your ${fmt(rev)} monthly revenue is fully allocated across ${rows.filter(r=>+r.pct>0).length} categories.`,
+      '→ Review this quarterly as your revenue grows.')});
+  } else if(totalPct>0){
+    const unalloc=fmt(rev*(100-totalPct)/100);
+    candidates.push({score:2,card:insightCard('nudge','💡','Unallocated',`${Math.round(100-totalPct)}% unassigned — ${unalloc}/mo`,
+      `You have ${unalloc}/month with no destination yet. The most common use is savings or a business buffer.`,
+      '→ Every unallocated dollar is a missed opportunity to build intentionally.')});
+  }
+
+  // 2. Owner pay — always show a card
+  if(ownerPct===0&&rev>0){
+    candidates.push({score:3,card:insightCard('weakness','◎','Owner pay','Owner pay is $0',
+      `You have ${fmt(rev)}/mo revenue but no owner pay set. You need to pay yourself — aim for 30–50%.`,
+      '→ Set an Owner Pay percentage to see your take-home from the business.')});
+  } else if(ownerPct>0&&ownerPct<25){
+    candidates.push({score:3,card:insightCard('weakness','◎','Owner pay',`Owner pay is low — ${ownerPct}% (${fmt(ownerAmt)}/mo)`,
+      `Less than 25% owner pay is often unsustainable. At this rate you may be underpaying yourself relative to the value you create.`,
+      '→ Healthy range is 30–50%. Review whether expenses or tax allocations can be reduced.')});
+  } else if(ownerPct>=30&&ownerPct<=50){
+    candidates.push({score:1,card:insightCard('strength','✦','Owner pay',`Balanced — ${ownerPct}% (${fmt(ownerAmt)}/mo)`,
+      `${ownerPct}% owner pay is in the healthy range — enough to live on while the business stays funded.`,
+      '→ Keep this proportional as revenue grows.')});
+  } else if(ownerPct>50&&ownerPct<=60){
+    candidates.push({score:2,card:insightCard('nudge','💡','Owner pay',`Owner pay at ${ownerPct}% (${fmt(ownerAmt)}/mo)`,
+      `${ownerPct}% is on the higher end. Make sure expenses, tax and savings are still fully covered.`,
+      '→ Watch that remaining allocations fund the business properly.')});
+  } else if(ownerPct>60){
+    candidates.push({score:3,card:insightCard('weakness','◎','Owner pay',`Owner pay too high — ${ownerPct}% (${fmt(ownerAmt)}/mo)`,
+      `More than 60% as owner pay leaves the business underfunded. Expenses, tax and savings may not be adequately covered.`,
+      '→ Reduce owner pay and redirect to tax and savings before increasing it again.')});
+  }
+
+  // 3. Tax — critical warning
+  if(taxPct===0&&totalPct>0){
+    candidates.push({score:3,card:insightCard('weakness','◎','Tax','No tax set — this is a risk',
+      `You have ${fmt(rev)}/mo coming in with nothing put aside for tax. A surprise tax bill is one of the most common small business cash flow crises.`,
+      '→ Talk to your accountant. Most small businesses need 20–30% set aside.')});
+  } else if(taxPct>0&&taxPct<15){
+    candidates.push({score:3,card:insightCard('weakness','◎','Tax',`Tax at ${taxPct}% (${fmt(taxAmt)}/mo) is likely too low`,
+      `Under-saving for tax is one of the most common financial traps for small business owners. Most need 20–30%.`,
+      '→ Increase this now — it is much easier than dealing with the shortfall at year end.')});
+  } else if(taxPct>=15&&taxPct<20){
+    candidates.push({score:2,card:insightCard('nudge','💡','Tax',`Tax at ${taxPct}% (${fmt(taxAmt)}/mo) — check this`,
+      `${taxPct}% may be enough but it depends on your structure and deductions. Worth confirming with your accountant.`,
+      '→ A tax estimate from your accountant is one of the best investments you can make.')});
+  } else{
+    candidates.push({score:1,card:insightCard('strength','✦','Tax',`Tax covered — ${taxPct}% (${fmt(taxAmt)}/mo)`,
+      `Setting aside ${fmt(taxAmt)}/month means no nasty surprises at year end. This is excellent financial discipline.`,
+      '→ Confirm with your accountant that this rate is accurate for your situation.')});
+  }
+
+  // 4. Savings
+  if(savPct===0&&totalPct>0){
+    candidates.push({score:2,card:insightCard('nudge','💡','Business savings','No savings buffer',
+      `No business savings means any unexpected cost — equipment failure, slow month, late invoice — hits immediately.`,
+      '→ Even 5% builds meaningful protection fast. Aim for 3 months of operating costs over time.')});
+  } else if(savPct>0&&savPct<5){
+    candidates.push({score:2,card:insightCard('nudge','💡','Business savings',`Saving ${savPct}% (${fmt(savAmt)}/mo)`,
+      `${fmt(savAmt)}/month is a start. A healthy buffer is at least 5–10% — keep building toward it.`,
+      '→ Increase gradually as owner pay and expenses settle into their right proportions.')});
+  } else{
+    candidates.push({score:1,card:insightCard('strength','✦','Business savings',`Saving ${savPct}% (${fmt(savAmt)}/mo)`,
+      `${fmt(savAmt)}/month going to savings builds real security. This is one of the most important habits a business owner can have.`,
+      '→ Keep this as revenue grows — resist the urge to spend windfalls before the buffer is solid.')});
+  }
+
+  // Sort by score desc and take top 4
+  const top4=candidates.sort((a,b)=>b.score-a.score).slice(0,4).map(c=>c.card);
+  return wrapInsights(top4);
+}
+
+
+function buildPersonalInsights(){
+  const personalRev=getRevenue('personal');
+  const rows=state.personalRows;
+  const anyFilled=rows.some(r=>+r.pct>0||+r.amt>0)||personalRev>0;
+  if(!anyFilled)return'';
+
+  const totalPct=rows.reduce((s,r)=>s+(+r.pct||0),0);
+  const spendRow=rows.find(r=>r.label==='Spending');
+  const rentRow=rows.find(r=>r.label==='Rent / Mortgage');
+  const savRow=rows.find(r=>r.label==='Savings');
+  const spendPct=spendRow?+spendRow.pct:0;
+  const spendAmt=personalRev>0?Math.round(spendPct/100*personalRev):(spendRow?+spendRow.amt:0);
+  const rentPct=rentRow?+rentRow.pct:0;
+  const rentAmt=personalRev>0?Math.round(rentPct/100*personalRev):(rentRow?+rentRow.amt:0);
+  const savPct=savRow?+savRow.pct:0;
+  const savAmt=personalRev>0?Math.round(savPct/100*personalRev):(savRow?+savRow.amt:0);
+  const otherInc=+state.personalOther||0;
+
+  const candidates=[];
+
+  // 1. Allocation status — always show
+  if(totalPct>100){
+    candidates.push({score:3,card:insightCard('weakness','◎','Over-allocated',`Over by ${Math.round(totalPct-100)}%`,
+      `Your personal allocations exceed your income. Reduce one or more categories to get back to 100%.`,
+      '→ Check your largest category first — usually spending or rent.')});
+  } else if(totalPct===100){
+    candidates.push({score:1,card:insightCard('strength','✦','Allocation','Fully allocated',
+      `Every dollar of your ${fmt(personalRev)} personal income has a destination. That is financial clarity.`,
+      '→ Revisit whenever your income or living costs change.')});
+  } else if(totalPct>0){
+    const unalloc=fmt(personalRev*(100-totalPct)/100);
+    candidates.push({score:2,card:insightCard('nudge','💡','Unallocated',`${Math.round(100-totalPct)}% unassigned — ${unalloc}/mo`,
+      `You have ${unalloc}/month with no purpose assigned. The most impactful place for it is usually savings.`,
+      '→ Giving every dollar a destination removes the guesswork from your finances.')});
+  }
+
+  // 2. Savings — high priority if missing
+  if(savPct===0&&totalPct>0){
+    candidates.push({score:3,card:insightCard('weakness','◎','Savings','No savings allocated',
+      `You have ${fmt(personalRev)}/mo personal income with nothing going to savings. Even 5% (${fmt(personalRev*0.05)}/mo) makes a significant difference over time.`,
+      '→ Start small — even $50/week builds meaningful security within months.')});
+  } else if(savPct>0&&savPct<10){
+    candidates.push({score:2,card:insightCard('nudge','💡','Savings',`Saving ${savPct}% (${fmt(savAmt)}/mo)`,
+      `${fmt(savAmt)}/month is a start. Most advisors recommend 10–20% of personal income as a healthy savings rate.`,
+      '→ Increase by 1–2% whenever your income grows — you will barely notice the difference.')});
+  } else if(savPct>=10&&savPct<20){
+    candidates.push({score:1,card:insightCard('strength','✦','Savings',`Saving ${savPct}% (${fmt(savAmt)}/mo)`,
+      `${fmt(savAmt)}/month puts you in a solid position. Consistent savers at this rate build meaningful wealth over time.`,
+      '→ Automate this transfer so it happens before any discretionary spending.')});
+  } else{
+    candidates.push({score:1,card:insightCard('strength','✦','Savings',`Strong savings — ${savPct}% (${fmt(savAmt)}/mo)`,
+      `Saving ${fmt(savAmt)}/month is exceptional. Most people never reach this rate — the compounding effect is significant.`,
+      '→ Make sure spending and rent still cover your real living costs comfortably.')});
+  }
+
+  // 3. Rent / Mortgage
+  if(rentPct===0&&totalPct>0){
+    candidates.push({score:2,card:insightCard('nudge','💡','Rent / Mortgage','Housing not entered',
+      `Your largest fixed expense is missing. Add your rent or mortgage to see a complete picture of your finances.`,
+      '→ Housing typically accounts for 25–35% of personal income for most people.')});
+  } else if(rentPct>40){
+    candidates.push({score:3,card:insightCard('weakness','◎','Rent / Mortgage',`Housing at ${rentPct}% is high (${fmt(rentAmt)}/mo)`,
+      `More than 40% on housing leaves very little room for savings and daily expenses. This is a financially tight position.`,
+      '→ If the amount is fixed, focus on growing income to bring this percentage down over time.')});
+  } else if(rentPct>35){
+    candidates.push({score:2,card:insightCard('nudge','💡','Rent / Mortgage',`Housing at ${rentPct}% (${fmt(rentAmt)}/mo)`,
+      `${rentPct}% is slightly above the recommended 30% ceiling. Not critical, but worth keeping an eye on as costs change.`,
+      '→ Growing income is usually the cleanest way to reduce this ratio.')});
+  } else{
+    candidates.push({score:1,card:insightCard('strength','✦','Rent / Mortgage',`Housing at ${rentPct}% (${fmt(rentAmt)}/mo)`,
+      `${rentPct}% on housing is within a healthy range — leaving good room for savings and day-to-day spending.`,
+      '→ Keep this ratio in mind if you are considering moving or refinancing.')});
+  }
+
+  // 4. Spending or income mix
+  if(spendPct===0&&totalPct>0){
+    candidates.push({score:2,card:insightCard('nudge','💡','Spending','Day-to-day spending not set',
+      `Add a spending allocation for groceries, transport, dining and subscriptions to complete your picture.`,
+      '→ Knowing your spending budget as a % of income is the simplest way to stay in control.')});
+  } else if(otherInc>0&&personalRev>0){
+    const otherPct=Math.round((otherInc/personalRev)*100);
+    candidates.push({score:1,card:insightCard('strength','✦','Income mix',`${otherPct}% from other income (${fmt(otherInc)}/mo)`,
+      `${fmt(otherInc)}/month from outside your business reduces reliance on a single income stream.`,
+      '→ Multiple income sources are one of the strongest personal resilience strategies available.')});
+  } else if(spendPct>60){
+    candidates.push({score:3,card:insightCard('weakness','◎','Spending',`Spending at ${spendPct}% (${fmt(spendAmt)}/mo) is very high`,
+      `More than 60% on day-to-day spending leaves very little for savings or unexpected costs.`,
+      '→ Identify fixed vs variable costs in your spending — variable is where cuts are easiest.')});
+  } else{
+    candidates.push({score:1,card:insightCard('strength','✦','Spending',`Spending budget: ${spendPct}% (${fmt(spendAmt)}/mo)`,
+      `Your daily spending budget of ${fmt(spendAmt)}/month is set. Knowing this number is the first step to staying within it.`,
+      '→ Track against this monthly — even a rough check every few weeks makes a difference.')});
+  }
+
+  const top4=candidates.sort((a,b)=>b.score-a.score).slice(0,4).map(c=>c.card);
+  return wrapInsights(top4);
+}
+
+
+// ── Main update ───────────────────────────────────────────────────────────
+function update(){
+  // Sync owner pay to personal tab
+  const ownerPay=getOwnerPay();
+  const opEl=document.getElementById('personal-owner-pay');
+  if(opEl)opEl.value=ownerPay>0?ownerPay.toLocaleString('en-AU'):'';
+
+  // Render
+  renderRows('biz');
+  renderRows('personal');
+  drawRing('biz');
+  drawRing('personal');
+
+  // Overview summary
+  const bizRev=+state.bizRevenue||0;
+  const other=+state.personalOther||0;
+  const personalRev=getRevenue('personal');
+  document.getElementById('ov-biz-rev').textContent=fmt(bizRev);
+  document.getElementById('ov-owner-pay').textContent=fmt(ownerPay);
+  document.getElementById('ov-other-inc').textContent=fmt(other);
+  document.getElementById('ov-personal-total').textContent=fmt(personalRev);
+
+  // Biz rev sub
+  const bizRows=state.bizRows;
+  const totalBizPct=bizRows.reduce((s,r)=>s+(+r.pct||0),0);
+  document.getElementById('biz-rev-sub').textContent=bizRev>0?'':'Enter your average monthly revenue above';
+
+  const bizIns=document.getElementById('biz-insights');
+  if(bizIns)bizIns.innerHTML=buildBizInsights();
+  const persIns=document.getElementById('personal-insights');
+  if(persIns)persIns.innerHTML=buildPersonalInsights();
+  renderInsights();
+}
+
+// ── Apply DOM ─────────────────────────────────────────────────────────────
+function applyDOM(){
+  const br=document.getElementById('biz-revenue');
+  const pr=document.getElementById('personal-other');
+  if(br)br.value=state.bizRevenue>0?state.bizRevenue.toLocaleString('en-AU'):'';
+  if(pr)pr.value=state.personalOther>0?state.personalOther.toLocaleString('en-AU'):'';
+}
+
+// ── Tab switching ─────────────────────────────────────────────────────────
+function switchTab(name,el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById(name).classList.add('active');
+  el.classList.add('active');
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────
+(async()=>{
+  try{const r=await window.storage.get(SK);if(r&&r.value){const s=JSON.parse(r.value);state.bizRevenue=s.bizRevenue||0;state.bizRows=s.bizRows||JSON.parse(JSON.stringify(defaultBizRows));state.personalOther=s.personalOther||0;state.personalRows=s.personalRows||JSON.parse(JSON.stringify(defaultPersonalRows));}}
+  catch(e){try{const raw=localStorage.getItem(SK);if(raw){const s=JSON.parse(raw);state.bizRevenue=s.bizRevenue||0;state.bizRows=s.bizRows||JSON.parse(JSON.stringify(defaultBizRows));state.personalOther=s.personalOther||0;state.personalRows=s.personalRows||JSON.parse(JSON.stringify(defaultPersonalRows));}}catch(e2){}}
+  applyDOM();update();
+})();
+</script>
+</body>
+</html>
