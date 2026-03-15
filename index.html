@@ -75,15 +75,15 @@ body::before{
 .gate-input.shake{animation:shakeX 0.4s ease}
 .gate-input.input-error{border-color:var(--red);box-shadow:0 0 0 3px rgba(240,96,96,0.15);animation:shakeX 0.4s ease}
 .gate-btn{
-  background:linear-gradient(135deg,#3dd68c,#22c97a);border:none;border-radius:var(--radius-sm);
-  padding:10px 22px;font-size:14px;font-weight:600;color:#0a1a12;
+  background:var(--green);border:none;border-radius:var(--radius-sm);
+  padding:10px 22px;font-size:14px;font-weight:600;color:#0e0e0e;
   font-family:'DM Sans',sans-serif;cursor:pointer;white-space:nowrap;
-  animation:greenBtnPulse 2s ease-in-out infinite;transition:all 0.15s;
+  animation:greenBtnPulse 2.5s ease-in-out infinite;transition:opacity 0.15s;
 }
-.gate-btn:hover{opacity:0.9;transform:translateY(-1px)}
+.gate-btn:hover{opacity:0.88}
 @keyframes greenBtnPulse{
-  0%,100%{background:linear-gradient(135deg,#3dd68c,#22c97a)}
-  50%{background:linear-gradient(135deg,#52ffaa,#3dd68c)}
+  0%,100%{filter:brightness(0.8)}
+  50%{filter:brightness(1.15)}
 }
 
 .gate-note{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;margin-top:10px}
@@ -229,37 +229,37 @@ body::before{
 /* ── Featured card ── */
 .featured-section{margin-bottom:2rem}
 .featured-label{font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;font-family:'DM Mono',monospace;margin-bottom:14px;display:flex;align-items:center;gap:10px}
-.featured-label::after{content:'';flex:1;height:0.5px;background:linear-gradient(90deg,rgba(192,132,252,0.4),transparent)}
+.featured-label::after{content:'';flex:1;height:0.5px;background:linear-gradient(90deg,rgba(168,85,247,0.5),transparent)}
 .featured-card{
-  background:linear-gradient(135deg,rgba(192,132,252,0.26) 0%,rgba(244,114,182,0.18) 50%,rgba(192,132,252,0.12) 100%);
-  border:0.5px solid rgba(192,132,252,0.65) !important;
+  background:linear-gradient(135deg,rgba(168,85,247,0.28) 0%,rgba(139,58,220,0.18) 50%,rgba(168,85,247,0.1) 100%);
+  border:0.5px solid rgba(168,85,247,0.65) !important;
   border-radius:var(--radius);
-  box-shadow:0 0 20px rgba(192,132,252,0.1),inset 0 0 40px rgba(192,132,252,0.1),inset 0 1px 0 rgba(255,255,255,0.08);
+  box-shadow:0 0 20px rgba(168,85,247,0.1),inset 0 0 40px rgba(168,85,247,0.12),inset 0 1px 0 rgba(255,255,255,0.08);
   padding:30px 32px;text-decoration:none;display:flex;align-items:center;justify-content:space-between;
   gap:32px;position:relative;overflow:hidden;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;
   animation:featuredGlow 3.5s ease-in-out infinite;
 }
 @keyframes featuredGlow{
-  0%,100%{box-shadow:0 0 20px rgba(192,132,252,0.1),inset 0 0 40px rgba(192,132,252,0.1),inset 0 1px 0 rgba(255,255,255,0.08)}
-  50%{box-shadow:0 0 30px rgba(192,132,252,0.18),inset 0 0 60px rgba(192,132,252,0.18),inset 0 1px 0 rgba(255,255,255,0.14)}
+  0%,100%{box-shadow:0 0 20px rgba(168,85,247,0.1),inset 0 0 40px rgba(168,85,247,0.1),inset 0 1px 0 rgba(255,255,255,0.06)}
+  50%{box-shadow:0 0 30px rgba(168,85,247,0.2),inset 0 0 70px rgba(168,85,247,0.2),inset 0 1px 0 rgba(255,255,255,0.12)}
 }
-.featured-card::before{content:'';position:absolute;inset:-1px;border-radius:var(--radius);background:linear-gradient(135deg,rgba(192,132,252,0.35),transparent 45%,rgba(244,114,182,0.2));pointer-events:none;animation:borderGlow 3.5s ease-in-out infinite}
-.featured-card::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--purple),var(--pink));opacity:1}
-.featured-card:not(.locked):hover{transform:translateY(-2px)}
+.featured-card::before{content:'';position:absolute;inset:-1px;border-radius:var(--radius);background:linear-gradient(135deg,rgba(168,85,247,0.4),transparent 50%,rgba(168,85,247,0.15));pointer-events:none;animation:borderGlow 3.5s ease-in-out infinite}
+.featured-card::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#6d28d9,#a855f7,#c084fc);opacity:1}
+.featured-card:not(.locked):hover{transform:translateY(-2px);box-shadow:0 0 35px rgba(168,85,247,0.22),inset 0 0 80px rgba(168,85,247,0.22)}
 .featured-left{flex:1;min-width:0}
-.featured-tag{display:inline-block;font-size:10px;font-family:'DM Mono',monospace;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:3px 8px;border-radius:4px;background:rgba(192,132,252,0.2);color:var(--purple);border:0.5px solid rgba(192,132,252,0.4);margin-bottom:12px}
+.featured-tag{display:inline-block;font-size:10px;font-family:'DM Mono',monospace;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:3px 8px;border-radius:4px;background:rgba(168,85,247,0.18);color:#c084fc;border:0.5px solid rgba(168,85,247,0.45);margin-bottom:12px}
 .featured-name{font-size:clamp(28px,4vw,42px);font-weight:800;letter-spacing:-0.04em;line-height:1.0;margin-bottom:12px}
 .featured-name-plain{color:var(--text);display:block}
 .featured-name-grad{color:#fff;display:block;-webkit-text-fill-color:#fff}
 .featured-sub{font-size:14px;color:var(--text2);line-height:1.6;max-width:380px;margin-bottom:20px}
 .featured-footer{display:flex;align-items:center;gap:14px}
-.featured-lock-badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-family:'DM Mono',monospace;font-weight:600;letter-spacing:0.06em;padding:7px 16px;border-radius:20px;background:linear-gradient(135deg,var(--purple),var(--pink));color:#fff;border:none;cursor:pointer;animation:btnPulse 2s ease-in-out infinite}
-.featured-card.unlocked-card .featured-lock-badge{background:rgba(192,132,252,0.18);border:0.5px solid rgba(192,132,252,0.45);color:var(--purple);animation:none}
-.featured-arrow{font-size:18px;color:var(--purple);transition:transform 0.15s,color 0.15s}
+.featured-lock-badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-family:'DM Mono',monospace;font-weight:600;letter-spacing:0.06em;padding:7px 16px;border-radius:20px;background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;border:none;cursor:pointer;animation:btnPulse 2s ease-in-out infinite}
+.featured-card.unlocked-card .featured-lock-badge{background:rgba(168,85,247,0.18);border:0.5px solid rgba(168,85,247,0.45);color:#a855f7;animation:none}
+.featured-arrow{font-size:18px;color:#a855f7;transition:transform 0.15s,color 0.15s}
 .featured-card:not(.locked):hover .featured-arrow{transform:translateX(4px);color:#fff}
 .featured-right{display:flex;flex-direction:column;gap:8px;align-items:flex-end;flex-shrink:0}
 .featured-pills{display:flex;flex-direction:column;gap:7px;align-items:flex-end}
-.featured-pill{font-size:12px;font-family:'DM Mono',monospace;padding:6px 14px;border-radius:20px;background:rgba(192,132,252,0.1);color:rgba(220,180,255,0.9);border:0.5px solid rgba(192,132,252,0.3);white-space:nowrap}
+.featured-pill{font-size:12px;font-family:'DM Mono',monospace;padding:6px 14px;border-radius:20px;background:rgba(168,85,247,0.12);color:rgba(210,170,255,0.95);border:0.5px solid rgba(168,85,247,0.35);white-space:nowrap}
 @media(max-width:640px){
   .featured-card{flex-direction:column;align-items:flex-start;gap:20px;padding:22px 20px}
   .featured-right{align-items:flex-start;width:100%}
@@ -318,7 +318,7 @@ body::before{
       <div class="featured-left">
         <div class="featured-tag">NEW</div>
         <div class="featured-name" style="display:flex;flex-direction:column;align-items:flex-start">
-          <div style="color:#ffffff;font-weight:800;letter-spacing:0.06em;text-transform:uppercase;font-size:clamp(34px,4.5vw,52px);line-height:1;text-shadow:0 0 40px rgba(192,132,252,0.6),0 0 80px rgba(244,114,182,0.3);margin-left:-4px">Creator Pro</div>
+          <div style="color:#ffffff;font-weight:800;letter-spacing:0.06em;text-transform:uppercase;font-size:clamp(34px,4.5vw,52px);line-height:1;text-shadow:0 0 30px rgba(168,85,247,0.7),0 0 60px rgba(168,85,247,0.3);margin-left:-4px">Creator Pro</div>
           <div style="color:rgba(255,255,255,0.95);font-weight:600;letter-spacing:0.15em;text-transform:uppercase;font-size:clamp(16px,1.8vw,20px);margin-top:6px">Calculator</div>
         </div>
         <div class="featured-sub">A professional rate calculator built for photographers and videographers who produce social media content for brands.</div>
