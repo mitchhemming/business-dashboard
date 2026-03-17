@@ -272,7 +272,6 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
   </div>
 </div>
 
-<div class="calc-hint" id="calc-hint" style="display:none"></div>
 
 <!-- Three column -->
 <div class="three-col">
@@ -482,31 +481,19 @@ function update(){
   // Subs
   const _taxAmt=state.taxPct>0&&c.p>0?c.p*(state.taxPct/100):0;
   const _totalWithTax=c.p+_taxAmt;
-  // Show tax-inclusive in big price card when tax is set
   if(_taxAmt>0){
     document.getElementById('gst-badge').textContent='+ TAX';
     document.getElementById('gst-badge').classList.add('visible');
   } else {
     document.getElementById('gst-badge').classList.remove('visible');
   }
-  const _priceSub=_taxAmt>0?`Inc tax: ${fmt(_totalWithTax)}`:'';
+  const _priceSub=c.which==='price'?'calculated automatically':(_taxAmt>0?`Inc tax: ${fmt(_totalWithTax)}`:'');
+  const _rateSub=c.which==='rate'?'calculated automatically':'';
+  const _timeSub=c.which==='time'?'calculated automatically':(bd>0?`${fmtHr(state.shoot)} shoot · ${fmtHr(state.travel)} travel · ${fmtHr(state.edit)} edit`:'');
   document.getElementById('price-sub').textContent=_priceSub;
-  document.getElementById('rate-sub').textContent='';
-  document.getElementById('time-sub').textContent=bd>0?`${fmtHr(state.shoot)} shoot · ${fmtHr(state.travel)} travel · ${fmtHr(state.edit)} edit`:'';
+  document.getElementById('rate-sub').textContent=_rateSub;
+  document.getElementById('time-sub').textContent=_timeSub;
 
-  // Calc hint
-  const fc=[state.price!==null&&state.price!=='',state.rate!==null&&state.rate!=='',totalTime>0].filter(Boolean).length;
-  const hint=document.getElementById('calc-hint');
-  hint.style.display='block';
-  if(c.which){
-    const lbl={price:'Price',rate:'Hourly rate',time:'Total time'};
-    hint.innerHTML=`<strong>${lbl[c.which]}</strong> calculated automatically`;
-    hint.classList.add('computed');
-  } else if(fc===1){
-    hint.innerHTML='<strong>One more value</strong> needed to calculate';hint.classList.remove('computed');
-  } else {
-    hint.innerHTML='<strong>Enter any two values</strong> above — the third will calculate';hint.classList.remove('computed');
-  }
 
   // Time total
   document.getElementById('time-total-display').textContent=fmtHr(totalTime)||'—';
