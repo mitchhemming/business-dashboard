@@ -4,12 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Income Allocation Calculator</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#0e0e0e;--bg2:#1a1a1a;--bg3:#222;--bg4:#2c2c2c;
+  --bg:#08080f;--bg2:#111116;--bg3:#18181f;--bg4:#202028;
   --border:rgba(255,255,255,0.1);--border2:rgba(255,255,255,0.18);
-  --text:#f5f5f3;--text2:#c0c0b8;--text3:#888880;
+  --text:#f4f4f2;--text2:#dcdce8;--text3:#aaaabc;
   --green:#3dd68c;--green-dim:rgba(61,214,140,0.1);
   --red:#f06060;--red-dim:rgba(240,96,96,0.08);
   --amber:#f0a840;--amber-dim:rgba(240,168,64,0.1);
@@ -18,28 +18,28 @@
   --r0:#f06060;--r1:#f0a840;--r2:#f0d840;--r3:#3dd68c;--r4:#40d0f0;--r5:#60aaff;--r6:#c084fc;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;display:flex;flex-direction:column;padding:1.5rem 1.75rem 0}
+body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;min-height:100vh;display:flex;flex-direction:column;padding:1.5rem 1.75rem 0}
 .page-wrap{max-width:940px;margin:0 auto;width:100%;flex:1}
 
 /* ── Header ── */
-.cc-wordmark{margin-bottom:0.75rem;font-family:'DM Sans',sans-serif;font-size:13px;letter-spacing:0.01em}
-.wm-bold{font-weight:600;color:#c8c8c4}.wm-light{font-weight:400;color:#6a6a64}
+.cc-wordmark{margin-bottom:0.75rem;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;letter-spacing:0.01em}
+.wm-bold{font-weight:600;color:#d0d0ce}.wm-light{font-weight:400;color:#7a7a80}
 .header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:2rem;gap:16px;flex-wrap:wrap}
 .header-left{display:flex;flex-direction:column;gap:4px}
-.header-title{font-size:30px;font-weight:500;letter-spacing:-0.03em;color:var(--text);line-height:1.1}
-.header-sub{font-size:12px;color:var(--text3);font-family:'DM Mono',monospace}
+.header-title{font-size:32px;font-weight:700;letter-spacing:-0.03em;color:var(--text);line-height:1.1;font-family:'Plus Jakarta Sans',sans-serif}
+.header-sub{font-size:13px;color:var(--text3);font-family:'DM Mono',monospace}
 .header-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
 .save-row{display:flex;align-items:center;gap:6px}
 .saved-dot{width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0}
 .save-label,.save-time{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace}
 .btn-row{display:flex;gap:6px}
-.btn-undo{background:var(--bg3);border:0.5px solid var(--border2);border-radius:var(--radius-sm);padding:5px 12px;font-size:12px;color:var(--text3);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s}
+.btn-undo{background:var(--bg3);border:0.5px solid var(--border2);border-radius:var(--radius-sm);padding:5px 12px;font-size:12px;color:var(--text3);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all 0.15s}
 .btn-undo:hover{background:var(--bg4);color:var(--text2)}
 
 /* ── Tabs ── */
 .tabs-row{margin-bottom:1.5rem}
 .tabs{display:inline-flex;background:var(--bg2);border-radius:var(--radius-sm);padding:3px;gap:2px;border:0.5px solid var(--border)}
-.tab{font-size:13px;padding:6px 18px;border-radius:5px;border:none;background:transparent;color:var(--text3);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s}
+.tab{font-size:13px;padding:6px 18px;border-radius:5px;border:none;background:transparent;color:var(--text3);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all 0.15s}
 .tab:hover{color:var(--text2)}
 .tab.active{background:var(--bg4);color:var(--text);font-weight:500}
 .panel{display:none}.panel.active{display:block}
@@ -48,7 +48,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .section-label{font-size:11px;font-weight:500;color:var(--text2);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:10px;font-family:'DM Mono',monospace}
 
 /* ── Tip card ── */
-.tip-card{border-radius:var(--radius);padding:12px 16px;margin-bottom:14px;border:0.5px solid rgba(240,168,64,0.22);background:var(--amber-dim);transition:opacity 0.4s,max-height 0.4s,padding 0.4s,margin 0.4s;overflow:hidden;max-height:200px}
+.tip-card{border-radius:var(--radius);padding:12px 16px;margin-bottom:14px;background:rgba(240,168,64,0.05);border:0.5px solid var(--border2);border-left:2px solid var(--amber);transition:opacity 0.4s,max-height 0.4s,padding 0.4s,margin 0.4s;overflow:hidden;max-height:200px}
 .tip-card.done{opacity:0;max-height:0;padding:0;margin:0;pointer-events:none}
 .tip-header{display:flex;align-items:center;gap:8px;margin-bottom:4px}
 .tip-icon{font-size:12px}.tip-tag{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;font-family:'DM Mono',monospace;color:var(--amber)}
@@ -66,25 +66,25 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 
 /* ── Allocation table ── */
 .alloc-table{width:100%;border-collapse:collapse;margin-bottom:8px}
-.alloc-table th{font-size:10px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;font-family:'DM Mono',monospace;padding:0 8px 8px;text-align:left}
+.alloc-table th{font-size:11px;font-weight:500;color:var(--text2);text-transform:uppercase;letter-spacing:0.1em;font-family:'DM Mono',monospace;padding:0 8px 10px;text-align:left}
 .alloc-table th:nth-child(2),.alloc-table th:nth-child(3){text-align:right}
 .alloc-table th:last-child{width:28px}
 .alloc-row td{padding:4px 0;vertical-align:middle}
 .row-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-right:8px;display:inline-block}
 .row-label-wrap{display:flex;align-items:center}
-.row-label-input{background:transparent;border:none;outline:none;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;width:100%;cursor:text;border-bottom:1px solid transparent;transition:border-color 0.15s;padding-bottom:1px}
+.row-label-input{background:transparent;border:none;outline:none;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:500;width:100%;cursor:text;border-bottom:1px solid transparent;transition:border-color 0.15s;padding-bottom:1px}
 .row-label-input:hover{border-bottom-color:var(--border2)}
 .row-label-input:focus{border-bottom-color:var(--green)}
 .row-amt-cell,.row-pct-cell{text-align:right;padding:0 4px}
 .field-dual{display:flex;align-items:center;justify-content:flex-end;gap:2px}
 .field-sym{font-size:12px;color:var(--text3);font-family:'DM Mono',monospace}
-.field-input{font-size:14px;font-weight:500;font-family:'DM Mono',monospace;background:var(--bg3);border:0.5px solid var(--border);border-radius:var(--radius-sm);outline:none;color:var(--text);text-align:right;padding:5px 8px;transition:border-color 0.15s;width:100px}
+.field-input{font-size:15px;font-weight:600;font-family:'DM Mono',monospace;background:var(--bg3);border:0.5px solid var(--border);border-radius:var(--radius-sm);outline:none;color:var(--text);text-align:right;padding:6px 8px;transition:border-color 0.15s;width:100px}
 .field-input:focus{border-color:var(--green);background:var(--bg4)}
 .field-input::-webkit-inner-spin-button{-webkit-appearance:none}
 .field-pct{width:70px}
 .btn-del-row{background:transparent;border:0.5px solid var(--border);border-radius:var(--radius-sm);width:26px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text3);font-size:14px;transition:all 0.15s;flex-shrink:0}
 .btn-del-row:hover{border-color:var(--red);color:var(--red);background:var(--red-dim)}
-.btn-add-row{display:flex;align-items:center;gap:6px;background:transparent;border:0.5px dashed var(--border2);border-radius:var(--radius-sm);padding:7px 12px;color:var(--text3);font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.15s;margin-top:4px}
+.btn-add-row{display:flex;align-items:center;gap:6px;background:transparent;border:0.5px dashed var(--border2);border-radius:var(--radius-sm);padding:7px 12px;color:var(--text3);font-size:12px;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;transition:all 0.15s;margin-top:4px}
 .btn-add-row:hover{border-color:var(--green);color:var(--green)}
 .btn-add-row:disabled{opacity:0.3;cursor:not-allowed;pointer-events:none}
 
@@ -108,7 +108,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .overview-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:2rem}
 @media(max-width:600px){.overview-grid{grid-template-columns:1fr}}
 .ring-card{background:var(--bg2);border-radius:var(--radius);padding:24px;border:0.5px solid var(--border);display:flex;flex-direction:column;align-items:center}
-.ring-title{font-size:13px;font-weight:500;color:var(--text);margin-bottom:20px;align-self:flex-start}
+.ring-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:20px;align-self:flex-start}
 .ring-wrap{position:relative;width:180px;height:180px;margin-bottom:20px}
 .ring-wrap svg{transform:rotate(-90deg)}
 .ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
@@ -117,25 +117,25 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .ring-legend{width:100%;display:flex;flex-direction:column;gap:6px}
 .legend-item{display:flex;align-items:center;gap:8px;font-size:12px}
 .legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.legend-label{color:var(--text2);flex:1}
-.legend-amt{font-family:'DM Mono',monospace;color:var(--text3);font-size:11px}
-.legend-pct{font-family:'DM Mono',monospace;color:var(--text3);font-size:11px;margin-left:4px}
+.legend-label{color:var(--text);flex:1;font-weight:500}
+.legend-amt{font-family:'DM Mono',monospace;color:var(--text2);font-size:12px;font-weight:500}
+.legend-pct{font-family:'DM Mono',monospace;color:var(--text3);font-size:12px;margin-left:4px}
 
 /* ── Overview summary card ── */
 .summary-card{background:var(--bg2);border-radius:var(--radius);padding:20px 24px;border:0.5px solid var(--border);margin-bottom:1rem}
 .summary-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:0.5px solid var(--border)}
 .summary-row:last-child{border-bottom:none}
-.summary-label{font-size:13px;color:var(--text2)}
-.summary-val{font-size:14px;font-weight:500;font-family:'DM Mono',monospace;color:var(--text)}
+.summary-label{font-size:14px;color:var(--text2);font-weight:500}
+.summary-val{font-size:15px;font-weight:600;font-family:'DM Mono',monospace;color:var(--text)}
 
 /* ── Insight cards ── */
 .insights-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:1.5rem}
 @media(max-width:600px){.insights-grid{grid-template-columns:1fr}}
-.insight-card{border-radius:var(--radius);padding:18px 20px}
-.insight-card.strength{background:var(--green-dim);border:0.5px solid rgba(61,214,140,0.22)}
-.insight-card.weakness{background:var(--red-dim);border:0.5px solid rgba(240,96,96,0.22)}
-.insight-card.nudge{background:var(--amber-dim);border:0.5px solid rgba(240,168,64,0.22)}
-.insight-card.health{background:var(--bg2);border:0.5px solid var(--border2)}
+.insight-card{border-radius:var(--radius);padding:18px 20px;border:0.5px solid var(--border2)}
+.insight-card.strength{background:rgba(61,214,140,0.05);border-left:2px solid var(--green)}
+.insight-card.weakness{background:rgba(240,96,96,0.05);border-left:2px solid var(--red)}
+.insight-card.nudge{background:rgba(240,168,64,0.05);border-left:2px solid var(--amber)}
+.insight-card.health{background:rgba(96,170,255,0.05);border-left:2px solid var(--blue)}
 .insight-header{display:flex;align-items:center;gap:8px;margin-bottom:8px}
 .insight-icon{font-size:12px}
 .insight-tag{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;font-family:'DM Mono',monospace}
@@ -150,25 +150,45 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 /* ── Footer ── */
 /* INSIGHTS GRID */
 .insights-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%/2 - 10px,260px),1fr));gap:10px;margin-top:4px}
-.ins-card{border-radius:var(--radius);padding:16px 18px}
-.ins-card.strength{background:var(--green-dim);border:0.5px solid rgba(61,214,140,0.22)}
-.ins-card.weakness{background:var(--red-dim);border:0.5px solid rgba(240,96,96,0.22)}
-.ins-card.nudge{background:var(--amber-dim);border:0.5px solid rgba(240,168,64,0.22)}
+.ins-card{border-radius:var(--radius);padding:16px 18px;border:0.5px solid var(--border2)}
+.ins-card.strength{background:rgba(61,214,140,0.05);border-left:2px solid var(--green)}
+.ins-card.weakness{background:rgba(240,96,96,0.05);border-left:2px solid var(--red)}
+.ins-card.nudge{background:rgba(240,168,64,0.05);border-left:2px solid var(--amber)}
 .ins-tag{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;font-family:'DM Mono',monospace}
 .ins-card.strength .ins-tag{color:var(--green)}
 .ins-card.weakness .ins-tag{color:var(--red)}
 .ins-card.nudge .ins-tag{color:var(--amber)}
-.ins-title{font-size:14px;font-weight:500;color:var(--text);margin:6px 0 5px;line-height:1.3}
-.ins-body{font-size:12px;color:var(--text2);line-height:1.65}
+.ins-title{font-size:15px;font-weight:600;color:var(--text);margin:6px 0 5px;line-height:1.3}
+.ins-body{font-size:13px;color:var(--text2);line-height:1.65}
 .ins-action{margin-top:8px;font-size:11px;font-family:'DM Mono',monospace;color:var(--text3);padding-top:8px;border-top:0.5px solid rgba(255,255,255,0.06);line-height:1.5}
 
-.footer{margin-top:2.5rem;padding:1.25rem 0;border-top:0.5px solid var(--border);text-align:center}
+.footer{position:relative;z-index:1;padding:1.25rem 2rem;border-top:0.5px solid var(--border);text-align:center;margin-top:2.5rem}
 .footer p{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;line-height:1.9}
 .footer a{color:var(--text3);text-decoration:none;border-bottom:0.5px solid var(--border2)}
 .footer a:hover{color:var(--text2)}
+/* ── Ambient orbs ── */
+.orb{position:fixed;border-radius:50%;filter:blur(90px);pointer-events:none;z-index:0;animation:orbFloat 9s ease-in-out infinite}
+.orb1{width:500px;height:500px;background:radial-gradient(circle,rgba(168,85,247,0.07),transparent 70%);top:-120px;right:-120px}
+.orb2{width:400px;height:400px;background:radial-gradient(circle,rgba(96,170,255,0.07),transparent 70%);bottom:-60px;left:-100px;animation-delay:4s}
+.orb3{width:350px;height:350px;background:radial-gradient(circle,rgba(139,92,246,0.05),transparent 70%);top:40%;left:50%;transform:translate(-50%,-50%);animation-delay:2s}
+@keyframes orbFloat{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-25px) scale(1.04)}}
+/* ── Background texture ── */
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:linear-gradient(rgba(255,255,255,0.012) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.012) 1px,transparent 1px);
+  background-size:48px 48px;pointer-events:none;z-index:0;
+}
+body::after{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  opacity:0.45;pointer-events:none;z-index:0;
+}
 </style>
 </head>
 <body>
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
 <div class="page-wrap">
 <div class="cc-wordmark"><span class="wm-bold">CONSISTENT</span><span class="wm-light"> CREATIVE</span></div>
 
@@ -208,44 +228,64 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
     <div class="tip-body">Enter your average monthly revenue, then allocate it across categories. Adjust percentages or dollar amounts — the other updates automatically. Aim for exactly 100%.</div>
   </div>
 
-  <div class="section-label">Monthly revenue</div>
-  <div class="revenue-input-wrap">
-    <div class="rev-label">Average monthly revenue</div>
-    <div class="rev-input-row">
-      <span class="rev-sym">$</span>
-      <input class="rev-input" type="text" inputmode="numeric" id="biz-revenue" placeholder="0"
-      onfocus="this.value=this.value.replace(/,/g,'')"
-      onblur="formatRevInput(this);onRevChange('biz')"
-      onkeydown="if(event.key==='Enter'){this.blur();}"
-      oninput="onRevChange('biz')">
-    </div>
-    <div class="rev-sub" id="biz-rev-sub"></div>
-  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;align-items:start">
 
-  <div class="section-label">Allocation</div>
-  <table class="alloc-table">
-    <thead><tr>
-      <th style="width:36%">Category</th>
-      <th style="width:28%">Amount</th>
-      <th style="width:22%">%</th>
-      <th style="width:14%"></th>
-    </tr></thead>
-    <tbody id="biz-rows"></tbody>
-  </table>
-  <button class="btn-add-row" id="biz-add-btn" onclick="addRow('biz')">+ Add category</button>
-
-  <div class="total-bar">
+    <!-- Left: Revenue + Allocation -->
     <div>
-      <div class="total-label">Total allocated</div>
-      <div class="progress-track" style="width:200px"><div class="progress-fill" id="biz-progress"></div></div>
+      <div class="section-label">Monthly revenue</div>
+      <div class="revenue-input-wrap" style="margin-bottom:1.25rem">
+        <div class="rev-label">Average monthly revenue</div>
+        <div class="rev-input-row">
+          <span class="rev-sym">$</span>
+          <input class="rev-input" type="text" inputmode="numeric" id="biz-revenue" placeholder="0"
+          onfocus="this.value=this.value.replace(/,/g,'')"
+          onblur="formatRevInput(this);onRevChange('biz')"
+          onkeydown="if(event.key==='Enter'){this.blur();}"
+          oninput="onRevChange('biz')">
+        </div>
+        <div class="rev-sub" id="biz-rev-sub"></div>
+      </div>
+
+      <div class="section-label">Allocation</div>
+      <table class="alloc-table">
+        <thead><tr>
+          <th style="width:36%">Category</th>
+          <th style="width:28%">Amount</th>
+          <th style="width:22%">%</th>
+          <th style="width:14%"></th>
+        </tr></thead>
+        <tbody id="biz-rows"></tbody>
+      </table>
+      <button class="btn-add-row" id="biz-add-btn" onclick="addRow('biz')">+ Add category</button>
+
+      <div class="total-bar" style="margin-top:12px">
+        <div>
+          <div class="total-label">Total allocated</div>
+          <div class="progress-track" style="width:140px;margin-top:6px"><div class="progress-fill" id="biz-progress"></div></div>
+        </div>
+        <div style="text-align:right">
+          <div class="total-pct" id="biz-total-pct">0%</div>
+          <div class="total-amt" id="biz-total-amt">$0 of $0</div>
+        </div>
+      </div>
+      <div class="status-banner" id="biz-status"></div>
     </div>
-    <div style="text-align:right">
-      <div class="total-pct" id="biz-total-pct">0%</div>
-      <div class="total-amt" id="biz-total-amt">$0 of $0</div>
+
+    <!-- Right: Live ring -->
+    <div style="position:sticky;top:80px">
+      <div class="section-label">Split</div>
+      <div style="background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius);padding:20px 24px">
+        <div style="display:flex;justify-content:center;margin-bottom:16px">
+          <div class="ring-wrap"><svg id="biz-ring-svg-inline" width="180" height="180" viewBox="0 0 180 180"></svg><div class="ring-center"><div class="ring-center-pct" id="biz-ring-pct-inline">0%</div><div class="ring-center-label">Allocated</div></div></div>
+        </div>
+        <div id="biz-ring-legend-inline" style="display:flex;flex-direction:column;gap:8px"></div>
+      </div>
     </div>
+
   </div>
-  <div class="status-banner" id="biz-status"></div>
-  <div id="biz-insights" style="margin-top:1rem"></div>
+
+  <div class="section-label" style="margin-top:1.75rem">Insights</div>
+  <div id="biz-insights"></div>
 
 </div>
 
@@ -494,7 +534,7 @@ function recalcAmounts(tab){
 // ── Lightweight updates (no innerHTML rebuild) ────────────────────────────
 function updateTipVisibility(){
   // Biz tip: hide when revenue is set AND all rows have a pct value
-  const bizFilled=state.bizRevenue>0&&state.bizRows.every(r=>+r.pct>0||+r.amt>0);
+  const bizFilled=state.bizRevenue>0;
   const bizTip=document.getElementById('tip-biz');
   if(bizTip)bizTip.classList.toggle('done',bizFilled);
   // Personal tip: hide when personal income is set AND all rows have a value
@@ -659,9 +699,13 @@ function renderRows(tab){
 function drawRing(tab){
   const rows=getRows(tab);
   const rev=getRevenue(tab);
-  const svg=document.getElementById(tab+'-ring-svg');
-  const legend=document.getElementById(tab+'-ring-legend');
-  const pctEl=document.getElementById(tab+'-ring-pct');
+  // Draw to both overview ring and inline ring (if exists)
+  const svgIds=[tab+'-ring-svg',tab+'-ring-svg-inline'].filter(id=>document.getElementById(id));
+  const legendIds=[tab+'-ring-legend',tab+'-ring-legend-inline'].filter(id=>document.getElementById(id));
+  const pctIds=[tab+'-ring-pct',tab+'-ring-pct-inline'].filter(id=>document.getElementById(id));
+  const svg=document.getElementById(tab+'-ring-svg')||document.getElementById(tab+'-ring-svg-inline');
+  const legend=document.getElementById(tab+'-ring-legend')||document.getElementById(tab+'-ring-legend-inline');
+  const pctEl=document.getElementById(tab+'-ring-pct')||document.getElementById(tab+'-ring-pct-inline');
   const cx=90,cy=90,r=72,stroke=18;
   const circ=2*Math.PI*r;
   const totalPct=Math.min(rows.reduce((s,row)=>s+(+row.pct||0),0),100);
@@ -685,6 +729,8 @@ function drawRing(tab){
     offset+=pct;
   });
   svg.innerHTML=svgHTML;
+  svgIds.forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=svgHTML;});
+  pctIds.forEach(id=>{const el=document.getElementById(id);if(el){el.textContent=Math.round(totalPct)+'%';el.style.color=totalPct===100?'var(--green)':totalPct>100?'var(--red)':'var(--blue)';}});
 
   legend.innerHTML=rows.map((row,i)=>{
     const col=RAINBOW[i%RAINBOW.length];
@@ -710,7 +756,7 @@ function renderInsights(){
 
   if(bizRev===0&&personalTotal===0){
     el.style.gridTemplateColumns='1fr';
-    el.innerHTML=`<div class="ins-card nudge" style="padding:16px 18px"><div style="display:flex;align-items:center;gap:6px;margin-bottom:4px"><span class="ins-tag" style="color:var(--amber)">Get started</span></div><div class="ins-title">Enter your revenue or income to see insights</div></div>`;
+    el.innerHTML=`<div class="ins-card nudge"><div style="display:flex;align-items:center;gap:6px;margin-bottom:4px"><span class="ins-tag" style="color:var(--amber)">Get started</span></div><div class="ins-title">Enter your revenue or income to see insights</div></div>`;
     return;
   }
 
@@ -801,7 +847,7 @@ function renderInsights(){
   // If no biz data but personal data exists, ensure we still show personal insights
   if(bizRev===0&&personalTotal>0&&!candidates.length){
     el.style.gridTemplateColumns='1fr';
-    el.innerHTML=`<div class="ins-card nudge" style="padding:16px 18px"><div style="display:flex;align-items:center;gap:6px;margin-bottom:4px"><span class="ins-tag" style="color:var(--amber)">Personal only</span></div><div class="ins-title">Personal income entered — head to Personal tab for full insights</div></div>`;
+    el.innerHTML=`<div class="ins-card nudge"><div style="display:flex;align-items:center;gap:6px;margin-bottom:4px"><span class="ins-tag" style="color:var(--amber)">Personal only</span></div><div class="ins-title">Personal income entered — head to Personal tab for full insights</div></div>`;
     return;
   }
 
