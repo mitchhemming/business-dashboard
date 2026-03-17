@@ -4,12 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Business Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#08080f;--bg2:#1a1a1a;--bg3:#222;--bg4:#2c2c2c;
+  --bg:#08080f;--bg2:#111116;--bg3:#18181f;--bg4:#202028;
   --border:rgba(255,255,255,0.1);--border2:rgba(255,255,255,0.18);
-  --text:#f4f4f2;--text2:#dcdce8;--text3:#aaaabc;
+  --text:#ffffff;--text2:#e8e8e6;--text3:#9e9e9c;
   --green:#3dd68c;--green-dim:rgba(61,214,140,0.1);
   --red:#f06060;--red-dim:rgba(240,96,96,0.1);
   --amber:#f0a840;--amber-dim:rgba(240,168,64,0.1);
@@ -69,7 +69,7 @@ body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans
 /* ── TABLES ── */
 .card{background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius);margin-bottom:10px}
 table{width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed}
-th{font-size:12px;font-weight:500;color:var(--text);text-align:left;padding:10px 12px;border-bottom:0.5px solid var(--border);background:var(--bg3);white-space:nowrap;user-select:none;font-family:'DM Sans',sans-serif;position:relative}
+th{font-size:12px;font-weight:500;color:var(--text);text-align:left;padding:10px 12px;border-bottom:0.5px solid var(--border);background:var(--bg3);white-space:nowrap;user-select:none;font-family:'Plus Jakarta Sans',sans-serif;position:relative}
 td{padding:8px 12px;border-bottom:0.5px solid var(--border);color:var(--text);vertical-align:middle}
 tr:last-child td{border-bottom:none}
 .total-row td{font-weight:500;background:var(--bg3);color:var(--text2);font-family:'DM Mono',monospace;font-size:13px}
@@ -87,7 +87,7 @@ tbody tr:nth-child(odd) td{background:var(--bg2)}
 .th-inner.active .th-chevron{opacity:1;color:var(--green)}
 .sort-menu{display:none;position:absolute;top:100%;left:0;z-index:200;background:var(--bg3);border:0.5px solid var(--border2);border-radius:var(--radius-sm);min-width:150px;margin-top:4px;overflow:hidden}
 .sort-menu.open{display:block}
-.sort-option{padding:9px 12px;font-size:12px;cursor:pointer;color:var(--text2);display:flex;align-items:center;gap:8px;font-family:'DM Sans',sans-serif}
+.sort-option{padding:9px 12px;font-size:12px;cursor:pointer;color:var(--text2);display:flex;align-items:center;gap:8px;font-family:'Plus Jakarta Sans',sans-serif}
 .sort-option:hover{background:var(--bg4);color:var(--text)}
 .sort-option .check{font-size:10px;width:12px;color:var(--green)}
 
@@ -97,15 +97,15 @@ tbody tr:nth-child(odd) td{background:var(--bg2)}
 .field-money input[type=number]{font-family:'DM Mono',monospace;font-size:17px;font-weight:500;padding:2px 4px;border:0.5px solid transparent;border-radius:var(--radius-sm);background:transparent;color:var(--text);width:100%;min-width:0}
 .field-money input[type=number]:hover{border-color:var(--border2);background:var(--bg4)}
 .field-money input[type=number]:focus{outline:none;border-color:var(--green);background:var(--bg4)}
-input[type=text]{font-family:'DM Sans',sans-serif;font-size:13px;padding:5px 8px;border:0.5px solid var(--border);border-radius:var(--radius-sm);background:transparent;color:var(--text);width:100%;transition:border-color 0.15s}
+input[type=text]{font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;padding:5px 8px;border:0.5px solid var(--border);border-radius:var(--radius-sm);background:transparent;color:var(--text);width:100%;transition:border-color 0.15s}
 input[type=text]:focus{outline:none;border-color:var(--green);background:var(--bg4)}
-select{font-family:'DM Sans',sans-serif;font-size:12px;padding:4px 7px;border:0.5px solid var(--border);border-radius:var(--radius-sm);background:transparent;color:var(--text2);width:100%;cursor:pointer}
+select{font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;padding:4px 7px;border:0.5px solid var(--border);border-radius:var(--radius-sm);background:transparent;color:var(--text2);width:100%;cursor:pointer}
 select:focus{outline:none;border-color:var(--green)}
 
 /* BUTTONS */
-.btn{font-family:'DM Sans',sans-serif;font-size:12px;padding:6px 13px;border-radius:var(--radius-sm);border:0.5px solid var(--border2);background:transparent;color:var(--text2);cursor:pointer;transition:all 0.15s}
+.btn{font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;padding:6px 13px;border-radius:var(--radius-sm);border:0.5px solid var(--border2);background:transparent;color:var(--text2);cursor:pointer;transition:all 0.15s}
 .btn:hover{background:var(--bg3);color:var(--text)}
-.btn-danger{color:var(--red);border-color:rgba(240,96,96,0.2);font-size:11px;padding:3px 7px;background:transparent;cursor:pointer;font-family:'DM Sans',sans-serif;border-radius:var(--radius-sm);transition:all 0.15s}
+.btn-danger{color:var(--red);border-color:rgba(240,96,96,0.2);font-size:11px;padding:3px 7px;background:transparent;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;border-radius:var(--radius-sm);transition:all 0.15s}
 .btn-danger:hover{background:var(--red-dim)}
 .btn-add{margin-top:8px;border-style:dashed;color:var(--text3)}
 .btn-add:hover{color:var(--green);border-color:rgba(61,214,140,0.4);background:var(--green-dim)}
@@ -149,38 +149,25 @@ select:focus{outline:none;border-color:var(--green)}
 .goal-current-label{font-size:9px;color:var(--text3);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:3px}
 .goal-current-val{font-size:14px;font-weight:400;font-family:'DM Mono',monospace;color:var(--text2)}
 
+/* ── ins-card (uniform with other tools) ── */
+.ins-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:4px}
+.ins-card{border-radius:var(--radius);padding:20px 22px;border:0.5px solid var(--border2)}
+.ins-card.strength{background:rgba(61,214,140,0.05);border-left:2px solid var(--green)}
+.ins-card.weakness{background:rgba(240,96,96,0.05);border-left:2px solid var(--red)}
+.ins-card.nudge{background:rgba(240,168,64,0.05);border-left:2px solid var(--amber)}
+.ins-tag{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;font-family:'DM Mono',monospace}
+.ins-card.strength .ins-tag{color:var(--green)}
+.ins-card.weakness .ins-tag{color:var(--red)}
+.ins-card.nudge .ins-tag{color:var(--amber)}
+.ins-title{font-size:17px;font-weight:600;color:var(--text);margin:7px 0 6px;line-height:1.3}
+.ins-body{font-size:14px;color:var(--text);line-height:1.7}
+.ins-action{margin-top:10px;font-size:12px;font-family:'DM Mono',monospace;color:var(--text2);padding-top:10px;border-top:0.5px solid rgba(255,255,255,0.06);line-height:1.5}
+
 /* INSIGHTS */
-.insights-wrap{display:flex;flex-direction:column;gap:10px}
-.insights-top-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-@media(max-width:600px){.insights-top-row{grid-template-columns:1fr}}
-.insight-card{border-radius:var(--radius);padding:20px 22px;border:0.5px solid var(--border2)}
-.insight-card.strength{background:rgba(61,214,140,0.05);border-left:2px solid var(--green)}
-.insight-card.weakness{background:rgba(240,96,96,0.05);border-left:2px solid var(--red)}
-.insight-card.health{background:rgba(96,170,255,0.05);border-left:2px solid var(--blue)}
-.insight-card.nudge{background:rgba(240,168,64,0.05);border-left:2px solid var(--amber)}
-.insight-header{display:flex;align-items:center;gap:8px;margin-bottom:10px}
-.insight-icon{font-size:15px;line-height:1}
-.insight-tag{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;font-family:'DM Mono',monospace}
-.insight-card.strength .insight-tag{color:var(--green)}
-.insight-card.weakness .insight-tag{color:var(--red)}
-.insight-card.health .insight-tag{color:var(--blue)}
-.insight-card.nudge .insight-tag{color:var(--amber)}
-.insight-title{font-size:16px;font-weight:500;color:var(--text);margin-bottom:8px;line-height:1.3}
-.insight-body{font-size:13px;color:var(--text2);line-height:1.7}
-.insight-body p{margin-bottom:8px}.insight-body p:last-child{margin-bottom:0}
-.insight-action{margin-top:12px;font-size:12px;font-family:'DM Mono',monospace;color:var(--text3);padding-top:10px;border-top:0.5px solid rgba(255,255,255,0.06);line-height:1.6}
-.health-items{display:flex;flex-direction:column;gap:14px;margin-top:4px}
-.health-item{display:flex;flex-direction:column;gap:5px}
-.health-item-header{display:flex;align-items:center;gap:8px}
-.health-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
-.health-dot.good{background:var(--green)}.health-dot.warn{background:var(--amber)}.health-dot.bad{background:var(--red)}
-.health-item-title{font-size:13px;font-weight:500;color:var(--text)}
-.health-item-body{font-size:12px;color:var(--text2);line-height:1.65;padding-left:15px}
-.health-item-action{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;padding-left:15px;margin-top:2px}
 
 /* ── Custom category dropdown ── */
 .cat-select-wrap{position:relative;display:inline-block;width:100%}
-.cat-select-display{font-family:'DM Sans',sans-serif;font-size:13px;padding:5px 28px 5px 8px;border:0.5px solid var(--border);border-radius:var(--radius-sm);background:transparent;color:var(--text);width:100%;cursor:pointer;transition:border-color 0.15s;text-align:left;appearance:none;-webkit-appearance:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cat-select-display{font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;padding:5px 28px 5px 8px;border:0.5px solid var(--border);border-radius:var(--radius-sm);background:transparent;color:var(--text);width:100%;cursor:pointer;transition:border-color 0.15s;text-align:left;appearance:none;-webkit-appearance:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .cat-select-display:focus,.cat-select-display.open{outline:none;border-color:var(--green);background:var(--bg4)}
 .cat-select-arrow{position:absolute;right:8px;top:50%;transform:translateY(-50%);pointer-events:none;font-size:10px;color:var(--text3)}
 .cat-dropdown{display:none;position:fixed;background:var(--bg3);border:0.5px solid var(--border2);border-radius:var(--radius-sm);z-index:9999;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,0.4);min-width:160px}
@@ -192,7 +179,7 @@ select:focus{outline:none;border-color:var(--green)}
 .cat-option-x:hover{color:var(--red)}
 .cat-empty{padding:7px 10px;font-size:12px;color:var(--text3);font-style:italic}
 .cat-add-row{display:flex;gap:0;border-top:0.5px solid var(--border);margin-top:2px}
-.cat-inline-input{flex:1;background:transparent;border:none;outline:none;padding:7px 10px;font-size:13px;color:var(--text);font-family:'DM Sans',sans-serif}
+.cat-inline-input{flex:1;background:transparent;border:none;outline:none;padding:7px 10px;font-size:13px;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif}
 .cat-inline-input::placeholder{color:var(--text3)}
 .cat-inline-btn{background:var(--green);border:none;padding:6px 12px;font-size:12px;font-weight:600;color:#0e0e0e;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:opacity 0.15s;white-space:nowrap}
 .cat-inline-btn:hover{opacity:0.85}
@@ -913,366 +900,267 @@ function updateOverview(calc){
   document.getElementById('ov-profit-card').className='metric '+(calc.profit>0?'positive':calc.profit<0?'negative':'');
 }
 
-function healthCard(items,tag,title){
-  if(!items.length)return'';
-  return`<div class="insight-card health">
-    <div class="insight-header"><span class="insight-icon">◈</span><span class="insight-tag">${tag}</span></div>
-    <div class="insight-title">${title}</div>
-    <div class="health-items">${items.map(h=>`<div class="health-item">
-      <div class="health-item-header"><span class="health-dot ${h.dot}"></span><span class="health-item-title">${h.title}</span></div>
-      <div class="health-item-body">${h.body}</div>
-      <div class="health-item-action">${h.action}</div>
-    </div>`).join('')}</div>
+function insCard(type,icon,tag,title,body,action){
+  return`<div class="ins-card ${type}">
+    <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px">
+      <span style="font-size:11px">${icon}</span>
+      <span class="ins-tag">${tag}</span>
+    </div>
+    <div class="ins-title">${title}</div>
+    <div class="ins-body">${body}</div>
+    ${action?`<div class="ins-action">${action}</div>`:''}
   </div>`;
+}
+function insGrid(cards){
+  return`<div class="ins-grid">${cards.slice(0,3).join('')}</div>`;
 }
 
 function buildOverviewInsights(calc){
   const g=state.goals;
-  const goalsSet=g.revenue>0&&g.clients>0&&g.acv>0&&g.margin>0;
-  const goalScores=goalsSet?[
-    {label:'Monthly Revenue',p:pct(calc.revenue,g.revenue),current:fmt(calc.revenue),goal:fmt(g.revenue),
-      strongMsg:`Revenue is tracking well at ${fmt(calc.revenue)} against your ${fmt(g.revenue)} goal — the business is generating solid income.`,
-      strongAction:`Consider raising the goal to keep the business stretching. Growth follows ambition.`,
-      weakMsg:`Revenue is at ${fmt(calc.revenue)} against your ${fmt(g.revenue)} goal. There's meaningful ground to close here.`,
-      weakAction:`Focus on adding 1–2 new retainer clients or review pricing with existing ones — even a modest increase across the board adds up fast.`},
-    {label:'Total Clients',p:pct(calc.clientCount,g.clients),current:String(calc.clientCount),goal:String(g.clients),
-      strongMsg:`You have ${calc.clientCount} clients, well on the way to your ${g.clients} target. A healthy client base is one of the best assets a service business can have.`,
-      strongAction:`With a strong count, make sure no single client makes up more than 25–30% of total revenue — diversity protects you.`,
-      weakMsg:`At ${calc.clientCount} of ${g.clients} clients, there's room to grow the base and reduce reliance on any single relationship.`,
-      weakAction:`Consistent outreach — even 2–3 conversations a week — compounds over time. A warm referral from a happy client is the fastest path to a new one.`},
-    {label:'Avg Client Value',p:pct(calc.acv,g.acv),current:fmt(calc.acv),goal:fmt(g.acv),
-      strongMsg:`Average client value is ${fmt(calc.acv)}, ahead of your ${fmt(g.acv)} target. You're earning strong revenue per relationship.`,
-      strongAction:`Protect your pricing discipline on renewals. Erosion here is often gradual and easy to miss.`,
-      weakMsg:`Average client value is ${fmt(calc.acv)} against your ${fmt(g.acv)} target. Lifting this is one of the highest-leverage moves available.`,
-      weakAction:`Even a 10–15% price increase across existing clients can make a significant difference without adding a single new client.`},
-    {label:'Profit Margin',p:pct(calc.margin,g.margin),current:calc.margin+'%',goal:g.margin+'%',
-      strongMsg:`A ${calc.margin}% margin against a ${g.margin}% goal means the business is keeping healthy profit from every dollar earned.`,
-      strongAction:`Keep watching wage costs as the team grows — they're the main lever that compresses margin at scale.`,
-      weakMsg:`Margin is at ${calc.margin}% against your ${g.margin}% goal. Understanding whether it's a cost or revenue issue is the key question.`,
-      weakAction:`Higher revenue at the same cost base will naturally lift margin — it's often the cleaner path than cutting costs.`},
-  ]:null;
+  const cards=[];
 
-  const healthItems=[];
-  if(calc.debtOwing>0){
-    const months=calc.monthsToDebtFree,dVR=calc.revExGST>0?calc.debtOwing/calc.revExGST:999;
-    if(calc.profit<=0)healthItems.push({dot:'bad',title:'Debt requires immediate attention',
-      body:`The business carries ${fmt(calc.debtOwing)} in total debt and is not generating profit to service it. Knowing is the first step.`,
-      action:`→ Focus on revenue growth or cost reduction before accelerating debt repayment.`});
-    else if(dVR>12)healthItems.push({dot:'warn',title:'Debt is significant — grow revenue first',
-      body:`${fmt(calc.debtOwing)} in debt at ${fmt(calc.profit)}/month profit means roughly ${months?Math.round(months)+' months':'some time'} to clear. Growing revenue shortens that timeline faster than anything else.`,
-      action:`→ Every new client or price increase directly reduces months to debt-free.`});
-    else if(months&&months<=24)healthItems.push({dot:'good',title:'Debt is on a clear path to being cleared',
-      body:`With ${fmt(calc.debtOwing)} owing and ${fmt(calc.profit)}/month profit, you're roughly ${Math.round(months)} months from debt-free. That's a real milestone within reach.`,
-      action:`→ Stay consistent. Every month of discipline gets you closer to keeping 100% of your profit.`});
-    else healthItems.push({dot:'warn',title:'Debt is manageable — stay consistent',
-      body:`${fmt(calc.debtOwing)} total debt, ${fmt(calc.debtMonthly)}/month in payments. At current profit, freedom is ${months?Math.round(months)+' months away':'achievable with focus'}.`,
-      action:`→ Any surplus beyond drawings is best directed at debt. It's the most reliable return available right now.`});
-  } else {
-    healthItems.push({dot:'good',title:'No outstanding debt',
-      body:`No debt recorded — profit flows directly to wealth rather than past obligations. That opens real options for growth and investment.`,
-      action:`→ Surplus cash is best directed toward growth, a cash reserve, or long-term investment.`});
-  }
+  // 1. Profit / margin
+  if(calc.profit>0&&calc.margin>=25)
+    cards.push({score:1,card:insCard('strength','✦','Profit',`Healthy margin — ${calc.margin}%`,
+      `${fmt(calc.profit)}/month at ${calc.margin}% margin. The business is creating real value, not just turning over revenue.`,
+      '→ Protect this as you scale. Wage creep and scope expansion are the two most common ways margin erodes silently.')});
+  else if(calc.profit>0&&calc.margin<15)
+    cards.push({score:2,card:insCard('nudge','💡','Profit',`Thin margin — ${calc.margin}%`,
+      `At ${calc.margin}%, the buffer is slim. Thin margins make businesses fragile when costs shift or a client is lost.`,
+      '→ A 10–15% revenue lift or equivalent cost reduction would move this meaningfully.')});
+  else if(calc.profit<=0&&calc.revenue>0)
+    cards.push({score:3,card:insCard('weakness','◎','Profit','Not generating profit',
+      `Expenses are exceeding net revenue. Seeing it clearly is the first step — now you can act on it.`,
+      '→ Identify the biggest cost lever and the fastest revenue opportunity. Small moves on both sides compound quickly.')});
+
+  // 2. Wages
   if(calc.revExGST>0){
     const wr=Math.round(calc.wageRatio*100);
-    if(calc.wageRatio>0.65)healthItems.push({dot:'bad',title:'Wages are absorbing most of revenue',
-      body:`Wages at ${wr}% of net revenue is above healthy range (target: below 55%). This is the biggest single lever on profitability.`,
-      action:`→ Ask whether efficiency or process improvements could reduce cost before cutting roles.`});
-    else if(calc.wageRatio>0.5)healthItems.push({dot:'warn',title:'Wage costs are worth watching',
-      body:`Wages at ${wr}% of net revenue — not critical, but limited room to absorb growth without compressing margin.`,
-      action:`→ Before adding headcount, confirm existing capacity is fully utilised.`});
-    else healthItems.push({dot:'good',title:'Wage structure is running efficiently',
-      body:`At ${wr}% of net revenue, wages are well-managed. The business is retaining a healthy portion of each dollar earned.`,
-      action:`→ Keep this ratio in check as you scale — it's a primary indicator of operational health.`});
+    if(calc.wageRatio>0.65)
+      cards.push({score:3,card:insCard('weakness','◎','Wages',`Wages at ${wr}% of revenue`,
+        `${fmt(calc.wages)}/month in wages is consuming a large share of revenue. Service businesses typically target 45–55%.`,
+        '→ Map which roles are directly revenue-generating vs. supporting — that analysis reveals the most efficient path forward.')});
+    else if(calc.wageRatio>0.5)
+      cards.push({score:2,card:insCard('nudge','💡','Wages',`Wages at ${wr}% of revenue`,
+        `Workable, but limits how much profit is retained. There's not a lot of buffer if costs increase or a client is lost.`,
+        '→ As revenue grows, keep wages fixed where possible so the ratio naturally improves.')});
+    else
+      cards.push({score:1,card:insCard('strength','✦','Wages',`Wages well-managed — ${wr}% of revenue`,
+        `${fmt(calc.wages)}/month is within healthy range. The business is building meaningful profit after paying its team.`,
+        '→ Protect this ratio when adding headcount. Each new hire needs to be justified by revenue growth.')});
   }
-  if(calc.clientCount>0){
-    const top=Math.max(...state.clients.map(c=>c.amount)),topPct=calc.revenue>0?Math.round((top/calc.revenue)*100):0;
-    if(topPct>35)healthItems.push({dot:'warn',title:'Revenue is concentrated in one relationship',
-      body:`Your highest-value client is ~${topPct}% of total revenue. A change to that relationship would be felt immediately.`,
-      action:`→ Actively grow others so no single client exceeds 25–30% of revenue. Diversification is protection.`});
-    else if(calc.clientCount>=6)healthItems.push({dot:'good',title:'Revenue is well spread across clients',
-      body:`${calc.clientCount} clients with no single dominant account means the business has a resilient base. Losing any one won't threaten the whole.`,
-      action:`→ Keep this balance as you grow. Diversification is one of the most underappreciated strengths a service business can have.`});
-  }
-  if(calc.profit>0&&calc.margin>=25)healthItems.push({dot:'good',title:'Profit is healthy and sustainable',
-    body:`${fmt(calc.profit)}/month at ${calc.margin}% margin — the business is creating real value, not just turning over revenue.`,
-    action:`→ Protect this margin as you scale. It's easier to erode than to rebuild.`});
-  else if(calc.profit>0&&calc.margin<15)healthItems.push({dot:'warn',title:'Profit is positive but the margin is thin',
-    body:`At ${calc.margin}%, the buffer is slim. Thin margins make businesses fragile when costs shift or a client is lost.`,
-    action:`→ A 10–15% revenue lift or equivalent cost reduction would move this meaningfully.`});
-  else if(calc.profit<=0)healthItems.push({dot:'bad',title:'The business is not currently generating profit',
-    body:`Expenses are exceeding net revenue. Seeing it clearly is the first step — now you can act on it.`,
-    action:`→ Identify the biggest cost lever and the fastest revenue opportunity. Small moves on both sides compound quickly.`});
 
-  const anyGoalSetOv=g.revenue>0||g.clients>0||g.acv>0||g.margin>0;
-  const allGoalsSetOv=g.revenue>0&&g.clients>0&&g.acv>0&&g.margin>0;
-  const bottomNudgeOv=allGoalsSetOv?'':anyGoalSetOv
-    ?`<div class="insight-card nudge">
-      <div class="insight-header"><span class="insight-icon">💡</span><span class="insight-tag">Great start</span></div>
-      <div class="insight-title">Fill in more goals to unlock deeper insights</div>
-      <div class="insight-body">Head to the <strong>Goals</strong> tab to set more targets — the more you set, the more the dashboard can tell you about where to focus.</div>
-      <div class="insight-action">→ Goals tab → click any + ring to add another goal</div>
-    </div>`
-    :`<div class="insight-card nudge">
-      <div class="insight-header"><span class="insight-icon">💡</span><span class="insight-tag">Get started</span></div>
-      <div class="insight-title">Head to the Goals tab to set your first target</div>
-      <div class="insight-body">It only takes a few seconds and immediately brings your dashboard to life — revenue target, client count, average value, or profit margin.</div>
-      <div class="insight-action">→ Goals tab → click any + ring to set your first goal</div>
-    </div>`;
-  let topRow='';
-  if(anyGoalSetOv){
-    const g2=state.goals;
-    const goalScoresOv=[
-      {label:'Monthly Revenue',p:pct(calc.revenue,g2.revenue),current:fmt(calc.revenue),goal:fmt(g2.revenue),active:g2.revenue>0,
-        strongMsg:`Revenue is at ${fmt(calc.revenue)} against your ${fmt(g2.revenue)} goal — a strong position.`,
-        strongAction:`Consider raising the revenue goal to keep stretching.`,
-        weakMsg:`At ${fmt(calc.revenue)} against a ${fmt(g2.revenue)} goal, revenue has the most room to move.`,
-        weakAction:`Adding 1–2 new retainer clients or a modest price increase can close this gap quickly.`},
-      {label:'Total Clients',p:pct(calc.clientCount,g2.clients),current:String(calc.clientCount),goal:String(g2.clients),active:g2.clients>0,
-        strongMsg:`${calc.clientCount} clients against a goal of ${g2.clients} — the client base is healthy.`,
-        strongAction:`Focus on the quality of each relationship. A satisfied client stays longer and refers others.`,
-        weakMsg:`${calc.clientCount} of ${g2.clients} clients — room to grow the base.`,
-        weakAction:`A warm referral from an existing client is the lowest-friction path to the next one.`},
-      {label:'Avg Client Value',p:pct(calc.acv,g2.acv),current:fmt(calc.acv),goal:fmt(g2.acv),active:g2.acv>0,
-        strongMsg:`Average client value at ${fmt(calc.acv)} is ahead of your ${fmt(g2.acv)} goal.`,
-        strongAction:`Maintain pricing discipline on renewals.`,
-        weakMsg:`Average client value is ${fmt(calc.acv)} against a ${fmt(g2.acv)} target — a high-leverage lever.`,
-        weakAction:`A 10–15% price increase on lower-value clients can lift this without adding new clients.`},
-      {label:'Profit Margin',p:pct(calc.margin,g2.margin),current:calc.margin+'%',goal:g2.margin+'%',active:g2.margin>0,
-        strongMsg:`${calc.margin}% margin against a ${g2.margin}% goal — healthy.`,
-        strongAction:`Protect it. Wage creep and scope expansion erode margins silently.`,
-        weakMsg:`Margin at ${calc.margin}% against a ${g2.margin}% goal — costs may be high relative to revenue.`,
-        weakAction:`Revenue growth at a fixed cost base is the most natural path to higher margin.`},
-    ].filter(gs=>gs.active);
-    if(goalScoresOv.length>=2){
-      const srt=[...goalScoresOv].sort((a,b)=>b.p-a.p),best=srt[0],worst=srt[srt.length-1];
-      topRow=`<div class="insights-top-row" style="margin-bottom:10px">
-        <div class="insight-card strength">
-          <div class="insight-header"><span class="insight-icon">✦</span><span class="insight-tag">Strongest area</span></div>
-          <div class="insight-title">${best.label}</div>
-          <div class="insight-body"><p>${best.strongMsg}</p></div>
-          <div class="insight-action">→ ${best.strongAction}<br><br>Current: ${best.current} &nbsp;·&nbsp; Goal: ${best.goal}</div>
-        </div>
-        <div class="insight-card weakness">
-          <div class="insight-header"><span class="insight-icon">◎</span><span class="insight-tag">Focus area</span></div>
-          <div class="insight-title">${worst.label}</div>
-          <div class="insight-body"><p>${worst.weakMsg}</p></div>
-          <div class="insight-action">→ ${worst.weakAction}<br><br>Current: ${worst.current} &nbsp;·&nbsp; Goal: ${worst.goal}</div>
-        </div>
-      </div>`;
-    }
+  // 3. Debt
+  if(calc.debtOwing>0){
+    const months=calc.monthsToDebtFree;
+    if(calc.profit<=0)
+      cards.push({score:3,card:insCard('weakness','◎','Debt','Debt with no profit to service it',
+        `The business carries ${fmt(calc.debtOwing)} in debt and is not generating profit to reduce it.`,
+        '→ Focus on revenue growth or cost reduction before accelerating repayments.')});
+    else if(months&&months<=24)
+      cards.push({score:1,card:insCard('strength','✦','Debt',`Debt-free in ~${Math.round(months)} months`,
+        `With ${fmt(calc.debtOwing)} owing and ${fmt(calc.profit)}/month profit, you're on a clear path to clearing it.`,
+        '→ Stay consistent. Every month of discipline brings you closer to keeping 100% of your profit.')});
+    else
+      cards.push({score:2,card:insCard('nudge','💡','Debt',`${fmt(calc.debtOwing)} owing`,
+        `${fmt(calc.debtMonthly)}/month in payments. At current profit, freedom is ${months?Math.round(months)+' months away':'achievable with focus'}.`,
+        '→ Any surplus beyond drawings is best directed at debt. It\'s the most reliable return available right now.')});
+  } else {
+    cards.push({score:1,card:insCard('strength','✦','Debt','No outstanding debt',
+      `Profit flows directly to wealth rather than past obligations. That opens real options for growth and investment.`,
+      '→ Surplus cash is best directed toward growth, a cash reserve, or long-term investment.')});
   }
-  return`<div class="insights-wrap">${topRow}${healthCard(healthItems,'Business health','What the numbers are telling you')}${bottomNudgeOv?'<div style="margin-top:10px">'+bottomNudgeOv+'</div>':''}</div>`;
+
+  // 4. Goals nudge
+  const anyGoalSet=g.revenue>0||g.clients>0||g.acv>0||g.margin>0;
+  if(!anyGoalSet)
+    cards.push({score:2,card:insCard('nudge','💡','Goals','Set your first goal to unlock insights',
+      'Head to the Goals tab to set a revenue target, client count, average value, or profit margin — it only takes seconds.',
+      '→ Goals tab → click any + ring to get started.')});
+
+  // 5. Client concentration
+  if(calc.clientCount>0){
+    const top=Math.max(...state.clients.map(c=>c.amount));
+    const topPct=calc.revenue>0?Math.round((top/calc.revenue)*100):0;
+    if(topPct>35)
+      cards.push({score:2,card:insCard('nudge','💡','Clients',`Top client is ${topPct}% of revenue`,
+        `Revenue is concentrated in one relationship. A change there would be felt immediately.`,
+        '→ Actively grow others so no single client exceeds 25–30% of revenue.')});
+  }
+
+  const sorted=cards.sort((a,b)=>b.score-a.score).slice(0,3).map(c=>c.card);
+  if(!sorted.length)return insGrid([insCard('nudge','💡','Overview','Add your data to see insights',
+    'Enter clients on the Clients tab and expenses on the Expenses tab to get a full read on your business health.','')]);
+  return insGrid(sorted);
+}
+
+function buildClientsInsights(calc){
+  const cards=[];
+  const n=calc.clientCount;
+
+  if(n===0)return insGrid([insCard('nudge','💡','Clients','Add your first client to see insights',
+    'Once you have clients entered, you\'ll see analysis on your base size, average value, concentration risk and more.','')]);
+
+  // Client count
+  if(n>=8)cards.push({score:1,card:insCard('strength','✦','Client base',`Strong base — ${n} clients`,
+    `${n} clients provides a resilient spread of revenue. The business isn't over-reliant on any one relationship.`,
+    '→ Maintain upward momentum — each additional client improves both revenue and resilience.')});
+  else if(n>=4)cards.push({score:2,card:insCard('nudge','💡','Client base',`Growing — ${n} clients`,
+    `A solid start but still in a vulnerable zone. Losing one or two accounts could meaningfully impact monthly revenue.`,
+    '→ Prioritise new client acquisition. Each addition reduces risk and improves negotiating power.')});
+  else cards.push({score:3,card:insCard('weakness','◎','Client base',`Small base — ${n} client${n!==1?'s':''}`,
+    `At ${n} client${n!==1?'s':''}, the business is highly concentrated. Revenue security grows significantly with each new relationship.`,
+    '→ New client acquisition should be the primary commercial focus right now.')});
+
+  // ACV
+  const acv=calc.acv;
+  if(acv>=1000)cards.push({score:1,card:insCard('strength','✦','Avg client value',`${fmt(acv)}/month`,
+    `Each client relationship is contributing meaningfully. There's still room to grow through tiered packages or price reviews.`,
+    '→ Consider whether any current clients are underpriced relative to the value being delivered.')});
+  else if(acv>=500)cards.push({score:2,card:insCard('nudge','💡','Avg client value',`${fmt(acv)}/month`,
+    `You need a relatively large client count to build serious revenue at this average. Lifting it is one of the most efficient ways to grow.`,
+    '→ Review the lowest-value accounts — either reprice them or find a path to expand the relationship.')});
+  else cards.push({score:2,card:insCard('nudge','💡','Avg client value',`${fmt(acv)}/month average`,
+    `Revenue growth will require either a lot more clients or meaningful price increases. Pricing is faster.`,
+    '→ Focus on what a premium offering would look like and which clients could step up to it.')});
+
+  // Concentration
+  if(n>1){
+    const top=Math.max(...state.clients.map(c=>c.amount));
+    const topPct=calc.revenue>0?Math.round((top/calc.revenue)*100):0;
+    const topClient=state.clients.find(c=>c.amount===top);
+    if(topPct>40)cards.push({score:3,card:insCard('weakness','◎','Concentration',`${topPct}% from one client`,
+      `${topClient?'"'+topClient.name+'"':'Your top client'} is ${topPct}% of total revenue. If that relationship changed, the impact would be immediate.`,
+      '→ Growing other client relationships is the fastest path to reducing this exposure.')});
+    else if(topPct>28)cards.push({score:2,card:insCard('nudge','💡','Concentration',`Top client is ${topPct}% of revenue`,
+      `Not critical yet, but worth actively diversifying against. Aim to keep no single client above 25–30%.`,
+      '→ Grow other clients so this naturally reduces over time.')});
+    else cards.push({score:1,card:insCard('strength','✦','Concentration','Revenue is well spread',
+      `No single client dominates — your top account is ${topPct}% of revenue. The business has real resilience built in.`,
+      '→ Keep this balance as you grow. It\'s one of the most underappreciated forms of business strength.')});
+  }
+
+  // Category diversity
+  const cs=calc.catsSorted||[];
+  if(cs.length>=2){
+    const autoPct=calc.revenue>0?Math.round((cs[0][1]/calc.revenue)*100):0;
+    if(autoPct>75)cards.push({score:2,card:insCard('nudge','💡','Sectors',`Heavy reliance on ${cs[0][0]}`,
+      `${cs[0][0]} makes up ${autoPct}% of revenue. Adding more ${cs[1][0]} clients would reduce sector risk.`,
+      '→ Diversification across sectors smooths revenue and reduces exposure to industry downturns.')});
+    else cards.push({score:1,card:insCard('strength','✦','Sectors','Good sector diversification',
+      `${cs[0][0]} and ${cs[1][0]} are well spread. Sector-specific downturns are less likely to hit the whole business.`,
+      '→ Keep building both categories.')});
+  }
+
+  const sorted=cards.sort((a,b)=>b.score-a.score).slice(0,3).map(c=>c.card);
+  return insGrid(sorted);
+}
+
+function buildExpensesInsights(calc){
+  const cards=[];
+
+  // Wages
+  if(calc.wages>0&&calc.revExGST>0){
+    const wPct=Math.round((calc.wages/calc.revExGST)*100);
+    const sc=state.wages.length;
+    if(wPct>65)cards.push({score:3,card:insCard('weakness','◎','Wages',`Wages at ${wPct}% of revenue`,
+      `${fmt(calc.wages)}/month in wages is consuming a large proportion of revenue. Target: below 55%.`,
+      '→ Map which roles are directly revenue-generating vs. supporting before making changes.')});
+    else if(wPct>50)cards.push({score:2,card:insCard('nudge','💡','Wages',`Wages at ${wPct}% of revenue`,
+      `${fmt(calc.wages)}/month across ${sc} staff member${sc!==1?'s':''} is workable but leaves limited buffer for cost increases.`,
+      '→ As revenue grows, keep wages fixed so the ratio naturally improves.')});
+    else cards.push({score:1,card:insCard('strength','✦','Wages',`Wages well-managed — ${wPct}%`,
+      `${fmt(calc.wages)}/month across ${sc} staff member${sc!==1?'s':''} is within healthy range. Meaningful profit is being retained.`,
+      '→ Protect this ratio when adding headcount. Each new hire needs to be justified by revenue growth.')});
+  }
+
+  // Opex
+  if(calc.opex>0&&calc.revExGST>0){
+    const oPct=Math.round((calc.opex/calc.revExGST)*100);
+    if(oPct>15)cards.push({score:2,card:insCard('nudge','💡','Operating costs',`Opex at ${fmt(calc.opex)}/month (${oPct}%)`,
+      `Operating costs are on the higher side. For a lean service business, target below 10–12% of net revenue.`,
+      '→ Review each line item against actual usage. Subscriptions often creep up and go unreviewed.')});
+    else cards.push({score:1,card:insCard('strength','✦','Operating costs',`Lean opex — ${fmt(calc.opex)}/month`,
+      `Non-wage operating costs are well-controlled at ${oPct}% of net revenue. Disciplined overhead management.`,
+      '→ Review periodically to make sure tools and services still earn their place.')});
+  }
+
+  // Debt
+  if(calc.debtOwing>0){
+    const unserviced=state.debts.filter(d=>d.owing>0&&d.monthly===0);
+    if(calc.debtOwing>50000)cards.push({score:3,card:insCard('weakness','◎','Debt',`${fmt(calc.debtOwing)} total debt`,
+      `A large obligation. ${fmt(calc.debtMonthly)}/month in payments is a material drain on monthly cash flow.`,
+      '→ Revenue growth is the fastest path. More profit means faster debt clearance.')});
+    else if(calc.debtOwing>20000)cards.push({score:2,card:insCard('nudge','💡','Debt',`${fmt(calc.debtOwing)} owing`,
+      `Serviceable with ${fmt(calc.debtMonthly)}/month in payments — but worth tracking closely to ensure progress.`,
+      '→ Avoid taking on new debt until the existing balance is substantially reduced.')});
+    else cards.push({score:1,card:insCard('strength','✦','Debt',`Manageable — ${fmt(calc.debtOwing)} remaining`,
+      `This balance can be cleared with disciplined monthly payments. The finish line is in view.`,
+      '→ Maintaining current repayment momentum will clear this ahead of schedule if cash flow permits.')});
+    if(unserviced.length>0)cards.push({score:2,card:insCard('nudge','💡','Unserviced debt',`${unserviced.length} debt item${unserviced.length!==1?'s':''} with no payment`,
+      `${unserviced.map(d=>'"'+d.desc+'"').join(', ')} — totalling ${fmt(unserviced.reduce((s,d)=>s+d.owing,0))} — have no monthly payment recorded.`,
+      '→ Even a small regular payment creates momentum and prevents these from being forgotten.')});
+  } else {
+    cards.push({score:1,card:insCard('strength','✦','Debt','No outstanding debt',
+      `All expenses are operational costs. Every dollar of profit is yours to direct toward growth or savings.`,
+      '→ Consider building a cash reserve equal to 2–3 months of operating expenses as a buffer.')});
+  }
+
+  if(!cards.length)return insGrid([insCard('nudge','💡','Expenses','Add your expenses to see insights',
+    'Enter wages, operating costs and any debt above to get a full read on your cost structure.','')]);
+
+  const sorted=cards.sort((a,b)=>b.score-a.score).slice(0,3).map(c=>c.card);
+  return insGrid(sorted);
 }
 
 function buildGoalsInsights(calc){
   const g=state.goals;
   const anyGoalSet=g.revenue>0||g.clients>0||g.acv>0||g.margin>0;
-  const allGoalsSet=g.revenue>0&&g.clients>0&&g.acv>0&&g.margin>0;
-  if(!anyGoalSet)return`<div class="insight-card nudge">
-    <div class="insight-header"><span class="insight-icon">💡</span><span class="insight-tag">Set your first goal</span></div>
-    <div class="insight-title">Click any + ring above to set your first goal</div>
-    <div class="insight-body">You only need to set one goal to start getting insights. Set a revenue target, a client count, an average client value, or a profit margin — whichever matters most to you right now. You can always add more later.</div>
-  </div>`;
-  const allGoalDefs=[
-    {label:'Monthly Revenue',p:pct(calc.revenue,g.revenue),current:fmt(calc.revenue),goal:fmt(g.revenue),active:g.revenue>0,
-      strongMsg:`Revenue is at ${fmt(calc.revenue)} against your ${fmt(g.revenue)} goal — a strong position that the rest of the business needs to catch up to.`,
-      strongAction:`Consider raising the revenue goal to keep stretching. The best businesses always give themselves a moving target.`,
-      weakMsg:`At ${fmt(calc.revenue)} against a ${fmt(g.revenue)} goal, revenue is the area with the most room to move.`,
-      weakAction:`Adding 1–2 new retainer clients or a modest price increase across existing ones can close a meaningful portion of this gap quickly.`},
-    {label:'Total Clients',p:pct(calc.clientCount,g.clients),current:String(calc.clientCount),goal:String(g.clients),
-      active:g.clients>0,
-      strongMsg:`${calc.clientCount} clients against a goal of ${g.clients} — the client base is healthy and well on track.`,
-      strongAction:`With a strong count, focus on the quality of each relationship as much as the quantity. A satisfied client stays longer and refers others.`,
-      weakMsg:`${calc.clientCount} of ${g.clients} clients — there's room to grow the base and reduce risk from any single relationship.`,
-      weakAction:`Consistent outreach compounds over time. A warm referral from an existing client is the lowest-friction path to the next one.`},
-    {label:'Avg Client Value',p:pct(calc.acv,g.acv),current:fmt(calc.acv),goal:fmt(g.acv),
-      active:g.acv>0,
-      strongMsg:`Average client value at ${fmt(calc.acv)} is ahead of your ${fmt(g.acv)} goal — you're earning strong revenue per relationship.`,
-      strongAction:`Protect this by maintaining pricing discipline on renewals. It's easy to erode gradually without noticing.`,
-      weakMsg:`Average client value is ${fmt(calc.acv)} against a ${fmt(g.acv)} target. This is one of the highest-leverage levers available — small changes here have a big impact.`,
-      weakAction:`A structured review of your service tiers or a 10–15% price increase on lower-value clients can lift this number without adding a single new client.`},
-    {label:'Profit Margin',p:pct(calc.margin,g.margin),current:calc.margin+'%',goal:g.margin+'%',
-      active:g.margin>0,
-      strongMsg:`${calc.margin}% margin against a ${g.margin}% goal — the business is retaining a healthy share of every dollar it earns.`,
-      strongAction:`The margin goal is met — now protect it. Wage creep and scope expansion are the two most common ways this erodes silently.`,
-      weakMsg:`Margin at ${calc.margin}% against a ${g.margin}% goal suggests either costs are high relative to revenue, or revenue hasn't caught up to the cost base yet.`,
-      weakAction:`Revenue growth at a fixed cost base is the most natural path to higher margin — every additional dollar earned at the same overhead improves it directly.`},
-  ];
-  const goalScores=allGoalDefs.filter(g=>g.active);
-  if(goalScores.length===0)return'';
-  const srt=[...goalScores].sort((a,b)=>b.p-a.p),best=srt[0],worst=srt[srt.length-1];
-  const gi=[];
-  goalScores.forEach(gs=>{
-    gi.push({dot:gs.p>=100?'good':gs.p>=75?'good':gs.p>=41?'warn':'bad',
-      title:`${gs.label}: ${gs.p>=100?'Goal achieved':gs.p+'% of goal'}`,
-      body:gs.p>=75?gs.strongMsg:gs.weakMsg,
-      action:`→ ${gs.p>=75?gs.strongAction:gs.weakAction}`});
+  if(!anyGoalSet)return insGrid([insCard('nudge','💡','Goals','Set your first goal to get started',
+    'Click any + ring above to set a target — revenue, clients, average value, or profit margin. You only need one to start seeing insights.','')]);
+
+  const defs=[
+    {label:'Revenue',p:pct(calc.revenue,g.revenue),current:fmt(calc.revenue),goal:fmt(g.revenue),active:g.revenue>0,
+      strongMsg:`Revenue is at ${fmt(calc.revenue)} against your ${fmt(g.revenue)} goal — a strong position.`,
+      strongAction:`Consider raising the goal to keep stretching.`,
+      weakMsg:`At ${fmt(calc.revenue)} against a ${fmt(g.revenue)} goal, revenue has the most room to move.`,
+      weakAction:`Adding 1–2 new retainer clients or a modest price increase can close this gap quickly.`},
+    {label:'Clients',p:pct(calc.clientCount,g.clients),current:String(calc.clientCount),goal:String(g.clients),active:g.clients>0,
+      strongMsg:`${calc.clientCount} clients against a goal of ${g.clients} — the client base is healthy.`,
+      strongAction:`Focus on quality of each relationship. A satisfied client stays longer and refers others.`,
+      weakMsg:`${calc.clientCount} of ${g.clients} clients — room to grow the base.`,
+      weakAction:`A warm referral from an existing client is the lowest-friction path to the next one.`},
+    {label:'Avg Client Value',p:pct(calc.acv,g.acv),current:fmt(calc.acv),goal:fmt(g.acv),active:g.acv>0,
+      strongMsg:`Average client value at ${fmt(calc.acv)} is ahead of your ${fmt(g.acv)} goal.`,
+      strongAction:`Maintain pricing discipline on renewals.`,
+      weakMsg:`Average client value is ${fmt(calc.acv)} against a ${fmt(g.acv)} target — a high-leverage lever.`,
+      weakAction:`A 10–15% price increase on lower-value clients can lift this without adding new clients.`},
+    {label:'Profit Margin',p:pct(calc.margin,g.margin),current:calc.margin+'%',goal:g.margin+'%',active:g.margin>0,
+      strongMsg:`${calc.margin}% margin against a ${g.margin}% goal — healthy.`,
+      strongAction:`Protect it. Wage creep and scope expansion erode margins silently.`,
+      weakMsg:`Margin at ${calc.margin}% against a ${g.margin}% goal.`,
+      weakAction:`Revenue growth at a fixed cost base is the most natural path to higher margin.`},
+  ].filter(d=>d.active);
+
+  const cards=defs.map(d=>{
+    const type=d.p>=75?'strength':d.p>=41?'nudge':'weakness';
+    const icon=d.p>=75?'✦':d.p>=41?'💡':'◎';
+    const tag=d.p>=100?'Goal achieved':d.p>=75?'On track':d.p>=41?'In progress':'Needs focus';
+    return{score:d.p>=75?1:d.p>=41?2:3,card:insCard(type,icon,d.label,
+      `${d.label}: ${d.p>=100?'Achieved ✓':d.p+'% of goal'}`,
+      d.p>=75?d.strongMsg:d.weakMsg,
+      `→ ${d.p>=75?d.strongAction:d.weakAction}\n\nCurrent: ${d.current} · Goal: ${d.goal}`)};
   });
-  const topRow=goalScores.length>=2?`<div class="insights-top-row" style="margin-bottom:10px">
-      <div class="insight-card strength">
-        <div class="insight-header"><span class="insight-icon">✦</span><span class="insight-tag">Strongest area</span></div>
-        <div class="insight-title">${best.label}</div>
-        <div class="insight-body"><p>${best.strongMsg}</p></div>
-        <div class="insight-action">→ ${best.strongAction}<br><br>Current: ${best.current} &nbsp;·&nbsp; Goal: ${best.goal}</div>
-      </div>
-      <div class="insight-card weakness">
-        <div class="insight-header"><span class="insight-icon">◎</span><span class="insight-tag">Focus area</span></div>
-        <div class="insight-title">${worst.label}</div>
-        <div class="insight-body"><p>${worst.weakMsg}</p></div>
-        <div class="insight-action">→ ${worst.weakAction}<br><br>Current: ${worst.current} &nbsp;·&nbsp; Goal: ${worst.goal}</div>
-      </div>
-    </div>`:'';
-  const bottomNudgeGoals=allGoalsSet?'':goalScores.length===1
-    ?`<div class="insight-card nudge">
-      <div class="insight-header"><span class="insight-icon">💡</span><span class="insight-tag">Great start</span></div>
-      <div class="insight-title">Set more goals to unlock deeper insights</div>
-      <div class="insight-body">You've made a start — add more targets above and you'll start seeing your strongest area, your biggest opportunity, and what to focus on next.</div>
-      <div class="insight-action">→ Click any dimmed + ring above to add another goal</div>
-    </div>`
-    :`<div class="insight-card nudge">
-      <div class="insight-header"><span class="insight-icon">💡</span><span class="insight-tag">Almost there</span></div>
-      <div class="insight-title">Set all four goals to get the full picture</div>
-      <div class="insight-body">You're ${goalScores.length} of 4 goals in — one or two more and every insight on this page will be fully unlocked.</div>
-      <div class="insight-action">→ Click any dimmed + ring above to complete your goals</div>
-    </div>`;
-  return`<div class="insights-wrap">
-    ${topRow}
-    ${healthCard(gi,'Goal breakdown','How each goal is tracking')}
-    ${bottomNudgeGoals?'<div style="margin-top:10px">'+bottomNudgeGoals+'</div>':''}
-  </div>`;
-}
 
-function buildClientsInsights(calc){
-  const items=[];
-  const n=calc.clientCount;
-  if(n===0){
-    return`<div class="insight-card nudge"><div class="insight-header"><span class="insight-icon">💡</span><span class="insight-tag">No clients yet</span></div><div class="insight-title">Add your first client to see insights</div></div>`;
-  }
-  if(n>=15)items.push({dot:'good',title:`Strong client base — ${n} active clients`,
-    body:`${n} clients is a healthy roster for a service business. At this size the business is well-protected against losing any single account.`,
-    action:`→ Keep onboarding while ensuring service quality doesn't stretch too thin. Growth without quality is fragile.`});
-  else if(n>=8)items.push({dot:'good',title:`Solid client base — ${n} clients`,
-    body:`${n} clients provides a reasonable spread of revenue. The business isn't over-reliant on any one relationship at this count, especially if values are reasonably balanced.`,
-    action:`→ Aim to maintain upward momentum — each additional client improves both revenue and resilience.`});
-  else if(n>=4)items.push({dot:'warn',title:`Growing client base — ${n} clients`,
-    body:`${n} clients is a solid start but the business is still in a vulnerable zone. Losing one or two accounts could meaningfully impact monthly revenue.`,
-    action:`→ Prioritise new client acquisition. Each addition reduces risk and increases negotiating power with existing clients.`});
-  else items.push({dot:'bad',title:`Client base is small — ${n} client${n!==1?'s':''}`,
-    body:`At ${n} client${n!==1?'s':''}, the business is highly concentrated. Revenue security grows significantly with each new relationship added.`,
-    action:`→ New client acquisition should be the primary commercial focus right now.`});
-  const acv=calc.acv;
-  if(acv>=2000)items.push({dot:'good',title:`Strong average client value — ${fmt(acv)}/month`,
-    body:`An average retainer of ${fmt(acv)}/month is excellent for a service business. It means the business doesn't need a huge client count to generate meaningful revenue.`,
-    action:`→ Protect this by maintaining premium positioning and avoiding the temptation to chase low-value clients to fill gaps.`});
-  else if(acv>=1000)items.push({dot:'good',title:`Healthy average client value — ${fmt(acv)}/month`,
-    body:`At ${fmt(acv)}/month average, each client relationship is contributing meaningfully. There's still room to grow this through tiered packages or price reviews.`,
-    action:`→ Consider whether any current clients are underpriced relative to the value being delivered.`});
-  else if(acv>=500)items.push({dot:'warn',title:`Average client value is moderate — ${fmt(acv)}/month`,
-    body:`${fmt(acv)}/month average means you need a relatively large client count to build serious revenue. Lifting this is one of the most efficient ways to grow the business.`,
-    action:`→ Review the lowest-value accounts — either reprice them or understand whether there's a path to expand the relationship.`});
-  else items.push({dot:'warn',title:`Average client value is low — ${fmt(acv)}/month`,
-    body:`At ${fmt(acv)}/month average, revenue growth will require either a lot more clients or meaningful price increases. Both take time, but pricing is faster.`,
-    action:`→ Focus on what a premium offering would look like and which current clients could step up to it.`});
-  if(n>1){
-    const top=Math.max(...state.clients.map(c=>c.amount));
-    const topPct=calc.revenue>0?Math.round((top/calc.revenue)*100):0;
-    const topClient=state.clients.find(c=>c.amount===top);
-    if(topPct>40)items.push({dot:'bad',title:`High exposure — one client is ${topPct}% of revenue`,
-      body:`${topClient?'"'+topClient.name+'"':' Your top client'} represents ${topPct}% of total revenue. If that relationship ended or paused, the impact would be immediate and significant.`,
-      action:`→ This is the most important risk to address. Growing other client relationships is the fastest path to reducing this exposure.`});
-    else if(topPct>28)items.push({dot:'warn',title:`Watch concentration — top client is ${topPct}% of revenue`,
-      body:`Your highest-value client represents ${topPct}% of total revenue. It's not critical yet, but worth actively diversifying against.`,
-      action:`→ Aim to grow other clients so this naturally reduces below 25–30% over time.`});
-    else items.push({dot:'good',title:`Revenue concentration is healthy`,
-      body:`No single client dominates — your top account is ${topPct}% of revenue, which is within a comfortable range. The business has real resilience built in.`,
-      action:`→ Keep this balance as you grow. It's one of the most underappreciated forms of business strength.`});
-  }
-  const cs2=calc.catsSorted||[];
-  const cat1Name=cs2[0]?cs2[0][0]:null;
-  const cat2Name=cs2[1]?cs2[1][0]:null;
-  const autoRev=calc.autoRev,reRev=calc.reRev,total=calc.revenue;
-  if(cat1Name&&cat2Name){
-    const autoPct=total>0?Math.round((autoRev/total)*100):0;
-    if(autoPct>80)items.push({dot:'warn',title:`Heavy reliance on ${cat1Name} (${autoPct}% of revenue)`,
-      body:`${cat1Name} makes up ${autoPct}% of revenue. Adding more ${cat2Name} clients would reduce sector risk and open a new growth channel.`,
-      action:`→ Diversification across sectors smooths out revenue and reduces exposure to any single industry downturn.`});
-    else if(autoPct<20)items.push({dot:'warn',title:`Heavy reliance on ${cat2Name} (${100-autoPct}% of revenue)`,
-      body:`${cat2Name} makes up ${100-autoPct}% of revenue. Building more ${cat1Name} work would add balance.`,
-      action:`→ Aim for no single category to exceed 70-80% of total revenue.`});
-    else items.push({dot:'good',title:`Good sector diversification`,
-      body:`${cat1Name} (${autoPct}%) and ${cat2Name} (${100-autoPct}%) are well balanced. Sector-specific downturns are less likely to hit the whole business at once.`,
-      action:`→ Keep building both categories. Diversification across sectors is as valuable as diversification across clients.`});
-  } else if(cat1Name){
-    items.push({dot:'warn',title:`All clients are ${cat1Name}`,
-      body:`Every client is in the ${cat1Name} category. Adding clients from a second category would reduce your exposure to any single sector.`,
-      action:`→ Even one or two clients in a new category provides meaningful diversification.`});
-  }
-  return`<div class="insights-wrap">${healthCard(items,'Client health','A summary of your client list')}</div>`;
-}
+  if(defs.length<4)cards.push({score:2,card:insCard('nudge','💡','Goals',
+    defs.length===0?'Set your first goal':'Set all four goals for the full picture',
+    defs.length===0?'Click any + ring above to set a target.':
+      `You're ${defs.length} of 4 goals in — add the rest to unlock every insight.`,
+    '→ Click any dimmed + ring above to complete your goals.')});
 
-function buildExpensesInsights(calc){
-  const items=[];
-  const wages=calc.wages;
-  const totalRev=calc.revExGST;
-  if(wages>0){
-    const wPct=totalRev>0?Math.round((wages/totalRev)*100):null;
-    const staffCount=state.wages.length;
-    if(wPct!==null){
-      if(wPct>65)items.push({dot:'bad',title:`Wages are ${wPct}% of net revenue`,
-        body:`${fmt(wages)}/month in wages is consuming a large proportion of revenue. Service businesses typically aim for 45–55%. This is the single biggest opportunity to improve profitability.`,
-        action:`→ Before making changes, map which roles are directly revenue-generating vs. supporting. That analysis usually reveals the most efficient path forward.`});
-      else if(wPct>50)items.push({dot:'warn',title:`Wages are ${wPct}% of net revenue`,
-        body:`${fmt(wages)}/month across ${staffCount} staff member${staffCount!==1?'s':''} is workable, but limits how much profit is retained. There's not a lot of buffer if costs increase or a client is lost.`,
-        action:`→ As revenue grows, keep wages fixed where possible so the ratio naturally improves — that's the most painless path to better margin.`});
-      else items.push({dot:'good',title:`Wages are well-managed at ${wPct}% of net revenue`,
-        body:`${fmt(wages)}/month across ${staffCount} staff member${staffCount!==1?'s':''} is within healthy range. The business is building meaningful profit after paying its team.`,
-        action:`→ Protect this ratio when adding headcount. Each new hire is a fixed cost that needs to be justified by revenue growth.`});
-    }
-    if(state.wages.length>1){
-      const top=state.wages.reduce((a,b)=>a.amount>b.amount?a:b);
-      const topPct=wages>0?Math.round((top.amount/wages)*100):0;
-      if(topPct>40)items.push({dot:'warn',title:`Wage concentration — ${top.name} is ${topPct}% of payroll`,
-        body:`When one person represents a large share of payroll, the business is exposed if that role changes. It can also create imbalance in how work and value are distributed.`,
-        action:`→ Consider whether that concentration reflects the actual value being created, and whether it could be redistributed or backed up.`});
-    }
-  }
-  const opex=calc.opex;
-  if(opex>0){
-    const oPct=totalRev>0?Math.round((opex/totalRev)*100):null;
-    if(oPct!==null&&oPct>15)items.push({dot:'warn',title:`Operating expenses at ${fmt(opex)}/month (${oPct}% of revenue)`,
-      body:`Operating costs are on the higher side relative to revenue. For a lean service business, target below 10–12% of net revenue for non-wage operating costs.`,
-      action:`→ Review each line item against actual usage. Subscriptions and vendor costs often go unreviewed and creep up over time.`});
-    else if(oPct!==null)items.push({dot:'good',title:`Operating expenses are lean — ${fmt(opex)}/month`,
-      body:`Non-wage operating costs are well-controlled at ${oPct}% of net revenue. This reflects disciplined overhead management.`,
-      action:`→ Review periodically to make sure tools and services still earn their place — needs change as the business evolves.`});
-  }
-  const debtOwing=calc.debtOwing;
-  const debtMonthly=calc.debtMonthly;
-  if(debtOwing>0){
-    const unserviced=state.debts.filter(d=>d.owing>0&&d.monthly===0);
-    if(debtOwing>50000)items.push({dot:'bad',title:`Total debt is significant — ${fmt(debtOwing)} owing`,
-      body:`${fmt(debtOwing)} is a large obligation. With ${fmt(debtMonthly)}/month in scheduled payments, this is a material drain on monthly cash flow that directly compresses profit.`,
-      action:`→ The fastest path to reducing this load is revenue growth. More profit means faster debt clearance — the two goals reinforce each other.`});
-    else if(debtOwing>20000)items.push({dot:'warn',title:`${fmt(debtOwing)} in debt — manageable but notable`,
-      body:`Debt at this level is serviceable and with ${fmt(debtMonthly)}/month in payments, progress is being made. It's worth tracking closely to ensure the trajectory stays positive.`,
-      action:`→ Avoid taking on new debt until the existing balance is substantially reduced.`});
-    else items.push({dot:'good',title:`Debt is at a manageable level — ${fmt(debtOwing)} remaining`,
-      body:`${fmt(debtOwing)} remaining is in a range that can be cleared with disciplined monthly payments. The finish line is in view.`,
-      action:`→ Maintaining current repayment momentum will clear this ahead of schedule if cash flow permits.`});
-    if(unserviced.length>0){
-      const unsTot=unserviced.reduce((s,d)=>s+d.owing,0);
-      items.push({dot:'warn',title:`${unserviced.length} debt item${unserviced.length!==1?'s are':' is'} unserviced`,
-        body:`${unserviced.map(d=>'"'+d.desc+'"').join(', ')} — totalling ${fmt(unsTot)} — have no monthly payment recorded. These aren't being reduced.`,
-        action:`→ Even a small regular payment on unserviced debts creates momentum and prevents them from being forgotten.`});
-    }
-  } else if(state.debts.length>0||debtOwing===0){
-    items.push({dot:'good',title:`No outstanding debt`,
-      body:`All debt has been cleared — expenses are fully operational costs. This is a strong position and means every dollar of profit is yours to direct.`,
-      action:`→ With no debt, consider building a cash reserve equal to 2–3 months of operating expenses as a buffer.`});
-  }
-  return`<div class="insights-wrap">${healthCard(items,'Expenses health','What your costs are telling you')}</div>`;
+  const sorted=cards.sort((a,b)=>b.score-a.score).slice(0,3).map(c=>c.card);
+  return insGrid(sorted);
 }
-
 function updateTopBanners(){
   const g=state.goals;
   const anySet=g.revenue>0||g.clients>0||g.acv>0||g.margin>0;
